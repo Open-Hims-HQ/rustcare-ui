@@ -4,8 +4,11 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react";
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { generateNonce } from "./lib/security";
 
 import styles from "./styles/tailwind.css?url";
 
@@ -22,6 +25,21 @@ export const links: LinksFunction = () => [
   },
   { rel: "stylesheet", href: styles },
 ];
+
+// Generate CSRF token on each request
+export async function loader({ request }: LoaderFunctionArgs) {
+  const csrfToken = generateNonce();
+  
+  return json(
+    { csrfToken },
+    {
+      headers: {
+        // Set CSRF token as cookie
+        'Set-Cookie': `XSRF-TOKEN=${csrfToken}; Path=/; HttpOnly; SameSite=Strict; Secure=${process.env.NODE_ENV === 'production'}`,
+      },
+    }
+  );
+}
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -43,5 +61,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  const { csrfToken } = useLoaderData<typeof loader>();
+  
+  return (
+    <>
+      {/* CSRF token meta tag for client-side access */}
+      <head>
+        <meta name="csrf-token" content={csrfToken} />
+      </head>
+      <Outlet />
+    </>
+  );
 }
