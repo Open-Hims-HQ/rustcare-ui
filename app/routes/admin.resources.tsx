@@ -1,7 +1,7 @@
 import { json, type LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData, Link, Form } from "@remix-run/react";
 import { useState } from "react";
-import { resourcesApi } from "~/lib/api";
+import { resourcesApi } from "~/lib/api.server";
 import type { Resource } from "~/types/permissions";
 import { Button } from "~/components/ui/button";
 import {

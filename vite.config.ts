@@ -9,6 +9,7 @@ export default defineConfig({
         v3_relativeSplatPath: true,
         v3_throwAbortReason: true,
       },
+      serverModuleFormat: "esm",
     }),
   ],
   server: {
@@ -19,5 +20,8 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
+  },
+  ssr: {
+    noExternal: ['~/lib/api.server'],
   },
 });
