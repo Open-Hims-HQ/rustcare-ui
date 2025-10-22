@@ -1,356 +1,435 @@
-import { json, type LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData, Link, Form } from "@remix-run/react";
+import { json, type LoaderFunctionArgs, type ActionFunctionArgs } from "@remix-run/node";
+import { useLoaderData, useActionData, Form, useNavigation } from "@remix-run/react";
 import { useState } from "react";
+import { Building2, Hospital, FlaskConical, Pill, Plus, Search, Pencil, Trash2 } from "lucide-react";
+import { organizationsApi } from "~/lib/api.server";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import { Checkbox } from "~/components/ui/checkbox";
 
-// Mock data for now - will connect to backend later
-interface Organization {
+// Organization type definition
+export interface Organization {
   id: string;
   name: string;
   code: string;
-  type: "Hospital" | "Clinic" | "Lab" | "Pharmacy";
+  type: "hospital" | "clinic" | "lab" | "pharmacy";
   address: string;
   contact: string;
   is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
-export async function loader() {
-  // Mock data - replace with actual API call
-  const organizations: Organization[] = [];
+// Loader: Fetch all organizations
+export async function loader({ request }: LoaderFunctionArgs) {
+  const organizations = await organizationsApi.list();
   return json({ organizations });
+}
+
+// Action: Handle create, update, delete
+export async function action({ request }: ActionFunctionArgs) {
+  const formData = await request.formData();
+  const intent = formData.get("intent");
+
+  try {
+    if (intent === "create") {
+      const organization = {
+        name: formData.get("name") as string,
+        code: formData.get("code") as string,
+        type: formData.get("type") as Organization["type"],
+        address: formData.get("address") as string,
+        contact: formData.get("contact") as string,
+        is_active: formData.get("is_active") === "true",
+      };
+      await organizationsApi.create(organization);
+      return json({ success: true, message: "Organization created successfully" });
+    }
+
+    if (intent === "delete") {
+      const id = formData.get("id") as string;
+      await organizationsApi.delete(id);
+      return json({ success: true, message: "Organization deleted successfully" });
+    }
+
+    return json({ success: false, error: "Invalid action" }, { status: 400 });
+  } catch (error) {
+    return json(
+      { success: false, error: error instanceof Error ? error.message : "An error occurred" },
+      { status: 500 }
+    );
+  }
+}
+
+// Organization icon helper
+function getOrgIcon(type: Organization["type"]) {
+  switch (type) {
+    case "hospital":
+      return <Hospital className="h-5 w-5" />;
+    case "clinic":
+      return <Building2 className="h-5 w-5" />;
+    case "lab":
+      return <FlaskConical className="h-5 w-5" />;
+    case "pharmacy":
+      return <Pill className="h-5 w-5" />;
+  }
+}
+
+// Organization type badge colors
+function getTypeBadgeClass(type: Organization["type"]) {
+  switch (type) {
+    case "hospital":
+      return "bg-error/10 text-error";
+    case "clinic":
+      return "bg-primary/10 text-primary";
+    case "lab":
+      return "bg-tertiary/10 text-tertiary";
+    case "pharmacy":
+      return "bg-secondary/10 text-secondary";
+  }
 }
 
 export default function OrganizationsPage() {
   const { organizations } = useLoaderData<typeof loader>();
-  const [isAddingOrg, setIsAddingOrg] = useState(false);
+  const actionData = useActionData<typeof action>();
+  const navigation = useNavigation();
+  
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterType, setFilterType] = useState<Organization["type"] | "all">("all");
+
+  const isSubmitting = navigation.state === "submitting";
+
+  // Filter organizations
+  const filteredOrganizations = organizations.filter((org) => {
+    const matchesSearch = org.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         org.code.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesType = filterType === "all" || org.type === filterType;
+    return matchesSearch && matchesType;
+  });
+
+  // Stats
+  const stats = {
+    total: organizations.length,
+    hospitals: organizations.filter(o => o.type === "hospital").length,
+    clinics: organizations.filter(o => o.type === "clinic").length,
+    labs: organizations.filter(o => o.type === "lab").length,
+    pharmacies: organizations.filter(o => o.type === "pharmacy").length,
+    active: organizations.filter(o => o.is_active).length,
+  };
 
   return (
-    <div className="min-h-screen" style={{ background: "linear-gradient(135deg, #1A0030 0%, #2C004D 50%, #5A00C0 100%)" }}>
+    <div className="flex h-full flex-col bg-surface">
       {/* Header */}
-      <div className="border-b backdrop-blur-sm bg-white/10" style={{ borderColor: "#00A9FF" }}>
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-3">
-              <img src="/logo.png" alt="OpenHIMS" className="w-10 h-10" />
-              <div>
-                <h1 className="text-2xl font-bold text-white">OpenHIMS</h1>
-                <p className="text-sm" style={{ color: "#60FFFF" }}>Organizations & Hospitals</p>
-              </div>
-            </Link>
-            
-            <nav className="flex gap-4">
-              <Link 
-                to="/admin/organizations"
-                className="px-4 py-2 rounded-lg font-medium text-white"
-                style={{ backgroundColor: "#5A00C0" }}
-              >
-                Organizations
-              </Link>
-              <Link 
-                to="/admin/resources"
-                className="px-4 py-2 rounded-lg font-medium text-white hover:bg-white/10"
-              >
-                Resources
-              </Link>
-              <Link 
-                to="/admin/groups"
-                className="px-4 py-2 rounded-lg font-medium text-white hover:bg-white/10"
-              >
-                Groups
-              </Link>
-              <Link 
-                to="/admin/roles"
-                className="px-4 py-2 rounded-lg font-medium text-white hover:bg-white/10"
-              >
-                Roles
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8 flex items-center justify-between">
+      <header className="sticky top-0 z-10 border-b border-outline-variant bg-surface-container px-6 py-4">
+        <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-4xl font-bold text-white mb-2">Organizations</h2>
-            <p className="text-lg" style={{ color: "#60FFFF" }}>
+            <h1 className="text-display-small font-normal text-on-surface">Organizations</h1>
+            <p className="text-body-medium text-on-surface-variant">
               Manage hospitals, clinics, labs, and pharmacies
             </p>
           </div>
-          
-          <button
-            onClick={() => setIsAddingOrg(true)}
-            className="px-6 py-3 rounded-lg font-medium text-white shadow-lg hover:scale-105 transition-all"
-            style={{ 
-              backgroundColor: "#00A9FF",
-              boxShadow: "0 4px 20px rgba(0, 169, 255, 0.4)"
-            }}
-          >
-            ➕ Add Organization
-          </button>
+          <Button onClick={() => setShowAddForm(true)} size="lg">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Organization
+          </Button>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="flex-1 overflow-auto p-6">
+        {/* Quick Stats */}
+        <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-label-small text-on-surface-variant">Total</div>
+              <div className="text-display-small font-normal text-on-surface">{stats.total}</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2 text-label-small text-on-surface-variant">
+                <Hospital className="h-4 w-4" />
+                Hospitals
+              </div>
+              <div className="text-display-small font-normal text-on-surface">{stats.hospitals}</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2 text-label-small text-on-surface-variant">
+                <Building2 className="h-4 w-4" />
+                Clinics
+              </div>
+              <div className="text-display-small font-normal text-on-surface">{stats.clinics}</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2 text-label-small text-on-surface-variant">
+                <FlaskConical className="h-4 w-4" />
+                Labs
+              </div>
+              <div className="text-display-small font-normal text-on-surface">{stats.labs}</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2 text-label-small text-on-surface-variant">
+                <Pill className="h-4 w-4" />
+                Pharmacies
+              </div>
+              <div className="text-display-small font-normal text-on-surface">{stats.pharmacies}</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-label-small text-on-surface-variant">Active</div>
+              <div className="text-display-small font-normal text-on-surface">{stats.active}</div>
+            </CardContent>
+          </Card>
         </div>
 
-        {/* Organizations Grid */}
-        {organizations.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="inline-block p-12 rounded-2xl backdrop-blur-sm border" style={{
-              backgroundColor: "rgba(255, 255, 255, 0.05)",
-              borderColor: "#00A9FF"
-            }}>
-              <p className="text-2xl text-white mb-4">🏥 No organizations yet</p>
-              <p className="text-lg mb-6" style={{ color: "#60FFFF" }}>
-                Get started by adding your first hospital or clinic
-              </p>
-              <button
-                onClick={() => setIsAddingOrg(true)}
-                className="px-8 py-3 rounded-lg font-medium text-white shadow-lg hover:scale-105 transition-all"
-                style={{ 
-                  backgroundColor: "#00A9FF",
-                  boxShadow: "0 4px 20px rgba(0, 169, 255, 0.4)"
-                }}
-              >
-                Add Organization
-              </button>
-            </div>
+        {/* Filters & Search */}
+        <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-on-surface-variant" />
+            <Input
+              type="search"
+              placeholder="Search organizations..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {organizations.map((org) => (
-              <OrganizationCard key={org.id} organization={org} />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Add Organization Modal */}
-      {isAddingOrg && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: "rgba(26, 0, 48, 0.9)" }}>
-          <div 
-            className="w-full max-w-2xl p-8 rounded-2xl backdrop-blur-md border"
-            style={{
-              backgroundColor: "rgba(26, 0, 48, 0.95)",
-              borderColor: "#00A9FF",
-              boxShadow: "0 20px 60px rgba(0, 169, 255, 0.3)"
-            }}
-          >
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-white">Add Organization</h3>
-              <button
-                onClick={() => setIsAddingOrg(false)}
-                className="text-white hover:text-red-400 transition-colors text-2xl"
-              >
-                ×
-              </button>
-            </div>
-            
-            <OrganizationForm onClose={() => setIsAddingOrg(false)} />
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function OrganizationCard({ organization }: { organization: Organization }) {
-  const typeColors = {
-    Hospital: { bg: "#5A00C0", icon: "🏥" },
-    Clinic: { bg: "#00A3B5", icon: "🏥" },
-    Lab: { bg: "#00A9FF", icon: "🔬" },
-    Pharmacy: { bg: "#FFA500", icon: "💊" },
-  };
-
-  const config = typeColors[organization.type];
-
-  return (
-    <div
-      className="p-6 rounded-lg backdrop-blur-sm border hover:scale-105 transition-all"
-      style={{
-        backgroundColor: "rgba(255, 255, 255, 0.05)",
-        borderColor: "#00A9FF",
-      }}
-    >
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <span className="text-3xl">{config.icon}</span>
-          <div>
-            <span
-              className="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2"
-              style={{ backgroundColor: config.bg, color: "#ffffff" }}
+          <div className="flex gap-2">
+            <Button
+              variant={filterType === "all" ? "filled" : "outlined"}
+              onClick={() => setFilterType("all")}
             >
-              {organization.type}
-            </span>
-            <h3 className="text-xl font-bold text-white">{organization.name}</h3>
-            <p className="text-sm font-mono" style={{ color: "#60FFFF" }}>
-              {organization.code}
-            </p>
+              All
+            </Button>
+            <Button
+              variant={filterType === "hospital" ? "filled" : "outlined"}
+              onClick={() => setFilterType("hospital")}
+            >
+              <Hospital className="mr-2 h-4 w-4" />
+              Hospitals
+            </Button>
+            <Button
+              variant={filterType === "clinic" ? "filled" : "outlined"}
+              onClick={() => setFilterType("clinic")}
+            >
+              <Building2 className="mr-2 h-4 w-4" />
+              Clinics
+            </Button>
+            <Button
+              variant={filterType === "lab" ? "filled" : "outlined"}
+              onClick={() => setFilterType("lab")}
+            >
+              <FlaskConical className="mr-2 h-4 w-4" />
+              Labs
+            </Button>
+            <Button
+              variant={filterType === "pharmacy" ? "filled" : "outlined"}
+              onClick={() => setFilterType("pharmacy")}
+            >
+              <Pill className="mr-2 h-4 w-4" />
+              Pharmacies
+            </Button>
           </div>
         </div>
-        {organization.is_active && (
-          <span
-            className="px-2 py-1 rounded text-xs font-bold"
-            style={{ backgroundColor: "#60FFFF", color: "#1A0030" }}
-          >
-            ACTIVE
-          </span>
+
+        {/* Add Organization Form */}
+        {showAddForm && (
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>Add New Organization</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Form method="post" onSubmit={() => setShowAddForm(false)}>
+                <input type="hidden" name="intent" value="create" />
+                
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="type">Type</Label>
+                    <Select name="type" required>
+                      <SelectTrigger id="type">
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="hospital">Hospital</SelectItem>
+                        <SelectItem value="clinic">Clinic</SelectItem>
+                        <SelectItem value="lab">Laboratory</SelectItem>
+                        <SelectItem value="pharmacy">Pharmacy</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="code">Code</Label>
+                    <Input
+                      id="code"
+                      name="code"
+                      placeholder="ORG-001"
+                      required
+                      disabled={isSubmitting}
+                    />
+                  </div>
+
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="name">Name</Label>
+                    <Input
+                      id="name"
+                      name="name"
+                      placeholder="Organization name"
+                      required
+                      disabled={isSubmitting}
+                    />
+                  </div>
+
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="address">Address</Label>
+                    <Input
+                      id="address"
+                      name="address"
+                      placeholder="Full address"
+                      required
+                      disabled={isSubmitting}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="contact">Contact</Label>
+                    <Input
+                      id="contact"
+                      name="contact"
+                      placeholder="Phone / Email"
+                      required
+                      disabled={isSubmitting}
+                    />
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="is_active" name="is_active" value="true" defaultChecked />
+                    <Label htmlFor="is_active" className="text-body-medium">
+                      Active
+                    </Label>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex justify-end gap-2">
+                  <Button
+                    type="button"
+                    variant="outlined"
+                    onClick={() => setShowAddForm(false)}
+                    disabled={isSubmitting}
+                  >
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? "Creating..." : "Create Organization"}
+                  </Button>
+                </div>
+              </Form>
+
+              {actionData && !actionData.success && (
+                <div className="mt-4 rounded-md bg-error/10 p-3 text-body-small text-error">
+                  {actionData.error}
+                </div>
+              )}
+            </CardContent>
+          </Card>
         )}
-      </div>
 
-      <div className="space-y-2 mb-4">
-        <p className="text-sm" style={{ color: "#A0FFFF" }}>
-          📍 {organization.address}
-        </p>
-        <p className="text-sm" style={{ color: "#A0FFFF" }}>
-          📞 {organization.contact}
-        </p>
-      </div>
+        {/* Organizations List */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {filteredOrganizations.map((org) => (
+            <Card key={org.id}>
+              <CardContent className="p-4">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-start gap-3">
+                    <div className={`rounded-full p-2 ${getTypeBadgeClass(org.type)}`}>
+                      {getOrgIcon(org.type)}
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-title-medium font-medium text-on-surface">
+                        {org.name}
+                      </h3>
+                      <p className="text-body-small text-on-surface-variant">{org.code}</p>
+                    </div>
+                  </div>
+                  {org.is_active && (
+                    <span className="rounded-full bg-tertiary/10 px-2 py-1 text-label-small text-tertiary">
+                      Active
+                    </span>
+                  )}
+                </div>
 
-      <div className="flex gap-2 pt-4 border-t" style={{ borderColor: "rgba(0, 169, 255, 0.2)" }}>
-        <button
-          className="flex-1 px-3 py-2 rounded text-sm font-medium hover:scale-105 transition-all"
-          style={{ backgroundColor: "#00A9FF", color: "#ffffff" }}
-        >
-          View Details
-        </button>
-        <button
-          className="px-3 py-2 rounded text-sm font-medium hover:scale-105 transition-all"
-          style={{ backgroundColor: "#5A00C0", color: "#ffffff" }}
-        >
-          Edit
-        </button>
-      </div>
+                <div className="mt-4 space-y-2 text-body-small text-on-surface-variant">
+                  <div className="flex items-start gap-2">
+                    <span className="font-medium">Type:</span>
+                    <span className="capitalize">{org.type}</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="font-medium">Address:</span>
+                    <span className="flex-1">{org.address}</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="font-medium">Contact:</span>
+                    <span>{org.contact}</span>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex gap-2">
+                  <Button variant="outlined" size="sm" className="flex-1">
+                    <Pencil className="mr-2 h-3 w-3" />
+                    Edit
+                  </Button>
+                  <Form method="post" className="flex-1">
+                    <input type="hidden" name="intent" value="delete" />
+                    <input type="hidden" name="id" value={org.id} />
+                    <Button
+                      type="submit"
+                      variant="outlined"
+                      size="sm"
+                      className="w-full text-error hover:bg-error/10"
+                      disabled={isSubmitting}
+                    >
+                      <Trash2 className="mr-2 h-3 w-3" />
+                      Delete
+                    </Button>
+                  </Form>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {filteredOrganizations.length === 0 && (
+          <Card>
+            <CardContent className="py-12 text-center">
+              <Building2 className="mx-auto mb-4 h-12 w-12 text-on-surface-variant/50" />
+              <p className="text-body-large text-on-surface-variant">
+                No organizations found
+              </p>
+              <p className="text-body-small text-on-surface-variant">
+                {searchQuery || filterType !== "all"
+                  ? "Try adjusting your filters"
+                  : "Click 'Add Organization' to create one"}
+              </p>
+            </CardContent>
+          </Card>
+        )}
+      </main>
     </div>
-  );
-}
-
-function OrganizationForm({ onClose }: { onClose: () => void }) {
-  return (
-    <Form method="post" className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-white mb-2">
-            Organization Type
-          </label>
-          <select
-            name="type"
-            required
-            className="w-full px-4 py-2 rounded-lg backdrop-blur-sm text-white border"
-            style={{
-              backgroundColor: "rgba(255, 255, 255, 0.1)",
-              borderColor: "#00A9FF"
-            }}
-          >
-            <option value="Hospital">Hospital</option>
-            <option value="Clinic">Clinic</option>
-            <option value="Lab">Laboratory</option>
-            <option value="Pharmacy">Pharmacy</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-white mb-2">
-            Organization Code
-          </label>
-          <input
-            type="text"
-            name="code"
-            required
-            placeholder="ORG-001"
-            className="w-full px-4 py-2 rounded-lg backdrop-blur-sm text-white border"
-            style={{
-              backgroundColor: "rgba(255, 255, 255, 0.1)",
-              borderColor: "#00A9FF"
-            }}
-          />
-        </div>
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-white mb-2">
-          Organization Name
-        </label>
-        <input
-          type="text"
-          name="name"
-          required
-          placeholder="General Hospital"
-          className="w-full px-4 py-2 rounded-lg backdrop-blur-sm text-white border"
-          style={{
-            backgroundColor: "rgba(255, 255, 255, 0.1)",
-            borderColor: "#00A9FF"
-          }}
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-white mb-2">
-          Address
-        </label>
-        <textarea
-          name="address"
-          required
-          rows={2}
-          placeholder="123 Medical Center Drive, City, State, ZIP"
-          className="w-full px-4 py-2 rounded-lg backdrop-blur-sm text-white border"
-          style={{
-            backgroundColor: "rgba(255, 255, 255, 0.1)",
-            borderColor: "#00A9FF"
-          }}
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-white mb-2">
-          Contact
-        </label>
-        <input
-          type="text"
-          name="contact"
-          required
-          placeholder="contact@hospital.com or +1 (555) 123-4567"
-          className="w-full px-4 py-2 rounded-lg backdrop-blur-sm text-white border"
-          style={{
-            backgroundColor: "rgba(255, 255, 255, 0.1)",
-            borderColor: "#00A9FF"
-          }}
-        />
-      </div>
-
-      <div className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          name="is_active"
-          id="is_active"
-          defaultChecked
-          className="w-4 h-4"
-        />
-        <label htmlFor="is_active" className="text-sm text-white">
-          Active Organization
-        </label>
-      </div>
-
-      <div className="flex gap-4 pt-4">
-        <button
-          type="button"
-          onClick={onClose}
-          className="flex-1 px-6 py-3 rounded-lg font-medium border hover:scale-105 transition-all"
-          style={{
-            borderColor: "#00A9FF",
-            color: "#60FFFF"
-          }}
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          className="flex-1 px-6 py-3 rounded-lg font-medium text-white shadow-lg hover:scale-105 transition-all"
-          style={{
-            backgroundColor: "#00A9FF",
-            boxShadow: "0 4px 20px rgba(0, 169, 255, 0.4)"
-          }}
-        >
-          Create Organization
-        </button>
-      </div>
-    </Form>
   );
 }

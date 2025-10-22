@@ -1,5 +1,6 @@
 import { vitePlugin as remix } from "@remix-run/dev";
 import { defineConfig } from "vite";
+import path from "path";
 
 export default defineConfig({
   plugins: [
@@ -12,6 +13,11 @@ export default defineConfig({
       serverModuleFormat: "esm",
     }),
   ],
+  resolve: {
+    alias: {
+      "~": path.resolve(__dirname, "./app"),
+    },
+  },
   server: {
     port: 3000,
     proxy: {
@@ -20,8 +26,5 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
-  },
-  ssr: {
-    noExternal: ['~/lib/api.server'],
   },
 });

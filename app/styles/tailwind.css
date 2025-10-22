@@ -47,99 +47,96 @@
 */
 
 @theme {
-  /* PRIMARY COLORS - From Logo */
+  /* PRIMARY COLORS - Professional Blue Palette */
   
-  /* Deep Teal/Turquoise - Circuit lines, main structural elements */
-  --color-teal-deep: #007B8C;
-  --color-teal: #00A3B5;
-  --color-teal-foreground: #ffffff;
+  /* Primary Blue - Professional, trustworthy */
+  --color-blue-50: #eff6ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-200: #bfdbfe;
+  --color-blue-300: #93c5fd;
+  --color-blue-400: #60a5fa;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
+  --color-blue-800: #1e40af;
+  --color-blue-900: #1e3a8a;
   
-  /* Vibrant Blue/Cyan - Highlights, glows, interactive elements */
-  --color-cyan: #00A9FF;
-  --color-cyan-bright: #00D4FF;
-  --color-cyan-foreground: #ffffff;
+  /* Secondary Gray - Clean, modern */
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
   
-  /* Rich Violet/Purple - Primary brand color, main UI elements */
-  --color-violet: #5A00C0;
-  --color-violet-bright: #7A00FF;
-  --color-violet-foreground: #ffffff;
-  
-  /* Deep Indigo/Navy - Shadows, dark backgrounds */
-  --color-indigo-dark: #1A0030;
-  --color-indigo: #2C004D;
-  --color-indigo-foreground: #ffffff;
-  
-  /* ACCENT COLORS - Highlights & Special Elements */
-  
-  /* Bright Orange/Amber - Alerts, important CTAs */
-  --color-orange: #FF8C00;
-  --color-orange-bright: #FFA500;
-  --color-orange-foreground: #ffffff;
-  
-  /* Magenta/Pink - Special highlights, success states */
-  --color-magenta: #D800D8;
-  --color-magenta-bright: #FF00FF;
-  --color-magenta-foreground: #ffffff;
-  
-  /* Light Blue/Aqua - Glowing effects, medical cross */
-  --color-aqua: #60FFFF;
-  --color-aqua-bright: #A0FFFF;
-  --color-aqua-foreground: #1A0030;
+  /* Accent Colors - Supporting elements */
+  --color-teal-500: #14b8a6;
+  --color-teal-600: #0d9488;
+  --color-green-500: #22c55e;
+  --color-green-600: #16a34a;
+  --color-orange-500: #f97316;
+  --color-orange-600: #ea580c;
+  --color-red-500: #ef4444;
+  --color-red-600: #dc2626;
   
   /* SEMANTIC COLORS - Component Usage */
   
-  /* Primary - Main brand (Violet) */
-  --color-primary: #5A00C0;
+  /* Primary - Main brand (Professional Blue) */
+  --color-primary: #2563eb;
   --color-primary-foreground: #ffffff;
-  --color-primary-hover: #7A00FF;
+  --color-primary-hover: #1d4ed8;
   
   /* Secondary - Supporting actions (Teal) */
-  --color-secondary: #00A3B5;
+  --color-secondary: #0d9488;
   --color-secondary-foreground: #ffffff;
-  --color-secondary-hover: #007B8C;
+  --color-secondary-hover: #0f766e;
   
-  /* Accent - Important highlights (Cyan) */
-  --color-accent: #00A9FF;
+  /* Accent - Important highlights (Blue) */
+  --color-accent: #3b82f6;
   --color-accent-foreground: #ffffff;
-  --color-accent-hover: #00D4FF;
+  --color-accent-hover: #2563eb;
   
-  /* Success - Positive actions (Aqua) */
-  --color-success: #60FFFF;
-  --color-success-foreground: #1A0030;
+  /* Success - Positive actions (Green) */
+  --color-success: #22c55e;
+  --color-success-foreground: #ffffff;
   
   /* Warning - Attention needed (Orange) */
-  --color-warning: #FFA500;
-  --color-warning-foreground: #1A0030;
+  --color-warning: #f97316;
+  --color-warning-foreground: #ffffff;
   
-  /* Destructive - Dangerous actions (Magenta) */
-  --color-destructive: #D800D8;
+  /* Destructive - Dangerous actions (Red) */
+  --color-destructive: #ef4444;
   --color-destructive-foreground: #ffffff;
   
-  /* Info - Informational (Cyan) */
-  --color-info: #00D4FF;
-  --color-info-foreground: #1A0030;
+  /* Info - Informational (Blue) */
+  --color-info: #3b82f6;
+  --color-info-foreground: #ffffff;
   
   /* NEUTRAL COLORS - Text & Backgrounds */
   
   /* Text colors */
-  --color-foreground: #2C2C2C;
-  --color-foreground-muted: #6c757d;
+  --color-foreground: #111827;
+  --color-foreground-muted: #6b7280;
   
-  /* Background colors */
+  /* Background colors - Clean white */
   --color-background: #ffffff;
-  --color-background-dark: #1A0030;
-  --color-background-muted: #f8f9fa;
+  --color-background-dark: #1f2937;
+  --color-background-muted: #f9fafb;
   
   /* UI Elements */
-  --color-border: #dee2e6;
-  --color-input: #e9ecef;
-  --color-ring: #00A9FF;
+  --color-border: #e5e7eb;
+  --color-input: #f9fafb;
+  --color-ring: #3b82f6;
   --color-card: #ffffff;
-  --color-card-foreground: #2C2C2C;
+  --color-card-foreground: #111827;
   
   /* Medical/Healthcare specific */
   --color-medical-cross: #ffffff;
-  --color-healthcare-glow: #A0FFFF;
+  --color-healthcare-glow: #3b82f6;
   
   /* Typography */
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;

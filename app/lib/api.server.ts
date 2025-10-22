@@ -42,11 +42,17 @@ async function serverFetch<T>(
     if (!response.ok) {
       let errorMessage = `API Error: ${response.status} ${response.statusText}`;
       try {
-        const errorData = await response.json();
-        errorMessage = errorData.message || errorData.error || errorMessage;
-      } catch {
         const errorText = await response.text();
-        if (errorText) errorMessage = errorText;
+        if (errorText) {
+          try {
+            const errorData = JSON.parse(errorText);
+            errorMessage = errorData.message || errorData.error || errorMessage;
+          } catch {
+            errorMessage = errorText;
+          }
+        }
+      } catch {
+        // If we can't read the error body, use the status text
       }
       throw new Error(errorMessage);
     }
@@ -158,5 +164,41 @@ export const userPermissionsApi = {
     serverFetch<CheckPermissionResponse>(API_ENDPOINTS.AUTH.CHECK, {
       method: "POST",
       body: JSON.stringify(request),
+    }),
+};
+
+// Organizations API
+export interface Organization {
+  id: string;
+  name: string;
+  code: string;
+  type: "Hospital" | "Clinic" | "Lab" | "Pharmacy";
+  address: string;
+  contact: string;
+  is_active: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export const organizationsApi = {
+  list: () => serverFetch<Organization[]>(API_ENDPOINTS.ORGANIZATIONS),
+  
+  create: (org: Omit<Organization, "id" | "created_at" | "updated_at">) =>
+    serverFetch<Organization>(API_ENDPOINTS.ORGANIZATIONS, {
+      method: "POST",
+      body: JSON.stringify(org),
+    }),
+  
+  get: (id: string) => serverFetch<Organization>(API_ENDPOINTS.ORGANIZATION_BY_ID(id)),
+  
+  update: (id: string, org: Partial<Organization>) =>
+    serverFetch<Organization>(API_ENDPOINTS.ORGANIZATION_BY_ID(id), {
+      method: "PUT",
+      body: JSON.stringify(org),
+    }),
+  
+  delete: (id: string) =>
+    serverFetch<void>(API_ENDPOINTS.ORGANIZATION_BY_ID(id), {
+      method: "DELETE",
     }),
 };
