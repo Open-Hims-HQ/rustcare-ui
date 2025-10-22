@@ -1,0 +1,137 @@
+@import "tailwindcss";
+
+/* 
+  OpenHIMS Logo-Based Color Palette
+  
+  COMPONENT USAGE GUIDE:
+  =====================
+  
+  🎨 BUTTONS & INTERACTIVE ELEMENTS:
+  - Primary Actions: Violet (#5A00C0, #7A00FF) - Main CTAs, important buttons
+  - Secondary Actions: Teal (#00A3B5, #007B8C) - Supporting buttons
+  - Tertiary Actions: Cyan (#00A9FF, #00D4FF) - Links, subtle interactions
+  - Warning Actions: Orange (#FFA500, #FF8C00) - Alerts, important notices
+  - Danger Actions: Magenta (#D800D8, #FF00FF) - Delete, destructive actions
+  
+  📊 STATUS & FEEDBACK:
+  - Success: Aqua (#60FFFF, #A0FFFF) - Completed tasks, positive feedback
+  - Info: Cyan (#00D4FF) - Information messages, tooltips
+  - Warning: Orange (#FFA500) - Caution states, warnings
+  - Error: Magenta (#D800D8) - Errors, failed operations
+  
+  🎭 BACKGROUNDS & CONTAINERS:
+  - Dark Theme: Indigo (#1A0030, #2C004D) - App backgrounds, navigation
+  - Light Theme: White (#ffffff) - Cards, modals, content areas
+  - Muted: Light gray (#f8f9fa) - Disabled states, subtle backgrounds
+  
+  💬 TEXT & TYPOGRAPHY:
+  - Primary Text: Dark Gray (#2C2C2C) - Body text, headings
+  - Secondary Text: Medium Gray (#6c757d) - Descriptions, labels
+  - Accent Text: Cyan (#00A9FF) - Links, highlights
+  - On Dark: White (#ffffff) - Text on dark backgrounds
+  
+  🏥 HEALTHCARE SPECIFIC:
+  - Medical Cross: White (#ffffff) - Medical symbols, icons
+  - Healthcare Glow: Light Aqua (#A0FFFF) - Glowing effects, emphasis
+  - Circuit Lines: Teal (#00A3B5, #007B8C) - Connection lines, borders
+*/
+
+@theme {
+  /* PRIMARY COLORS - From Logo */
+  
+  /* Deep Teal/Turquoise - Circuit lines, main structural elements */
+  --color-teal-deep: #007B8C;
+  --color-teal: #00A3B5;
+  --color-teal-foreground: #ffffff;
+  
+  /* Vibrant Blue/Cyan - Highlights, glows, interactive elements */
+  --color-cyan: #00A9FF;
+  --color-cyan-bright: #00D4FF;
+  --color-cyan-foreground: #ffffff;
+  
+  /* Rich Violet/Purple - Primary brand color, main UI elements */
+  --color-violet: #5A00C0;
+  --color-violet-bright: #7A00FF;
+  --color-violet-foreground: #ffffff;
+  
+  /* Deep Indigo/Navy - Shadows, dark backgrounds */
+  --color-indigo-dark: #1A0030;
+  --color-indigo: #2C004D;
+  --color-indigo-foreground: #ffffff;
+  
+  /* ACCENT COLORS - Highlights & Special Elements */
+  
+  /* Bright Orange/Amber - Alerts, important CTAs */
+  --color-orange: #FF8C00;
+  --color-orange-bright: #FFA500;
+  --color-orange-foreground: #ffffff;
+  
+  /* Magenta/Pink - Special highlights, success states */
+  --color-magenta: #D800D8;
+  --color-magenta-bright: #FF00FF;
+  --color-magenta-foreground: #ffffff;
+  
+  /* Light Blue/Aqua - Glowing effects, medical cross */
+  --color-aqua: #60FFFF;
+  --color-aqua-bright: #A0FFFF;
+  --color-aqua-foreground: #1A0030;
+  
+  /* SEMANTIC COLORS - Component Usage */
+  
+  /* Primary - Main brand (Violet) */
+  --color-primary: #5A00C0;
+  --color-primary-foreground: #ffffff;
+  --color-primary-hover: #7A00FF;
+  
+  /* Secondary - Supporting actions (Teal) */
+  --color-secondary: #00A3B5;
+  --color-secondary-foreground: #ffffff;
+  --color-secondary-hover: #007B8C;
+  
+  /* Accent - Important highlights (Cyan) */
+  --color-accent: #00A9FF;
+  --color-accent-foreground: #ffffff;
+  --color-accent-hover: #00D4FF;
+  
+  /* Success - Positive actions (Aqua) */
+  --color-success: #60FFFF;
+  --color-success-foreground: #1A0030;
+  
+  /* Warning - Attention needed (Orange) */
+  --color-warning: #FFA500;
+  --color-warning-foreground: #1A0030;
+  
+  /* Destructive - Dangerous actions (Magenta) */
+  --color-destructive: #D800D8;
+  --color-destructive-foreground: #ffffff;
+  
+  /* Info - Informational (Cyan) */
+  --color-info: #00D4FF;
+  --color-info-foreground: #1A0030;
+  
+  /* NEUTRAL COLORS - Text & Backgrounds */
+  
+  /* Text colors */
+  --color-foreground: #2C2C2C;
+  --color-foreground-muted: #6c757d;
+  
+  /* Background colors */
+  --color-background: #ffffff;
+  --color-background-dark: #1A0030;
+  --color-background-muted: #f8f9fa;
+  
+  /* UI Elements */
+  --color-border: #dee2e6;
+  --color-input: #e9ecef;
+  --color-ring: #00A9FF;
+  --color-card: #ffffff;
+  --color-card-foreground: #2C2C2C;
+  
+  /* Medical/Healthcare specific */
+  --color-medical-cross: #ffffff;
+  --color-healthcare-glow: #A0FFFF;
+  
+  /* Typography */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", Consolas, monospace;
+}
