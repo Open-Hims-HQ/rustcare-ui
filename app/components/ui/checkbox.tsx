@@ -9,7 +9,18 @@ const Checkbox = React.forwardRef<
   <CheckboxPrimitive.Root
     ref={ref}
     className={cn(
-      "peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground",
+      // Material Design 3 - Checkbox (18x18dp)
+      "peer h-[18px] w-[18px] shrink-0 rounded-[2px]",
+      "border-2 border-on-surface-variant bg-transparent",
+      "transition-all duration-200 ease-out",
+      // Focus state - 40x40dp touch target
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+      // Hover state
+      "hover:border-on-surface hover:bg-on-surface/8",
+      // Checked state
+      "data-[state=checked]:bg-primary data-[state=checked]:border-primary data-[state=checked]:text-on-primary",
+      // Disabled state
+      "disabled:cursor-not-allowed disabled:opacity-38 disabled:border-on-surface/38",
       className
     )}
     {...props}
@@ -18,18 +29,16 @@ const Checkbox = React.forwardRef<
       className={cn("flex items-center justify-center text-current")}
     >
       <svg
-        width="15"
-        height="15"
-        viewBox="0 0 15 15"
+        width="18"
+        height="18"
+        viewBox="0 0 18 18"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="h-4 w-4"
+        className="h-3.5 w-3.5"
       >
         <path
-          d="M11.4669 3.72684C11.7558 3.91574 11.8369 4.30308 11.648 4.59198L7.39799 11.092C7.29783 11.2452 7.13556 11.3467 6.95402 11.3699C6.77247 11.3931 6.58989 11.3355 6.45446 11.2124L3.70446 8.71241C3.44905 8.48022 3.43023 8.08494 3.66242 7.82953C3.89461 7.57412 4.28989 7.55529 4.5453 7.78749L6.75292 9.79441L10.6018 3.90792C10.7907 3.61902 11.178 3.53795 11.4669 3.72684Z"
+          d="M14.25 4.8075L6.75 12.3075L3 8.5575L4.0575 7.5L6.75 10.1925L13.1925 3.75L14.25 4.8075Z"
           fill="currentColor"
-          fillRule="evenodd"
-          clipRule="evenodd"
         />
       </svg>
     </CheckboxPrimitive.Indicator>
