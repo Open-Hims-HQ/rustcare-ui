@@ -1,5 +1,4 @@
-import { create } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
+import { createEnhancedStore, defineStoreConfig } from './createEnhancedStore';
 import type { Resource, PermissionGroup, Role, UserPermissions } from '~/types/permissions';
 
 interface PermissionState {
@@ -83,86 +82,157 @@ const initialState = {
   userPermissionsError: null,
 };
 
-export const usePermissionStore = create<PermissionState>()(
-  devtools(
-    persist(
-      (set) => ({
-        ...initialState,
+export const usePermissionStore = createEnhancedStore<PermissionState>(
+  defineStoreConfig({
+    name: 'PermissionStore',
+    
+    features: {
+      auditLog: true, // Track permission changes
+      persistence: true,
+      devtools: true,
+    },
+    
+    persistence: {
+      keys: ['selectedResource', 'selectedGroup', 'selectedRole'],
+    },
+  }),
+  (set, get) => ({
+    ...initialState,
 
-        // Resources Actions
-        setResources: (resources) => set({ resources }),
-        addResource: (resource) =>
-          set((state) => ({ resources: [...state.resources, resource] })),
-        updateResource: (id, updates) =>
-          set((state) => ({
-            resources: state.resources.map((r) =>
-              r.id === id ? { ...r, ...updates } : r
-            ),
-          })),
-        deleteResource: (id) =>
-          set((state) => ({
-            resources: state.resources.filter((r) => r.id !== id),
-          })),
-        selectResource: (resource) => set({ selectedResource: resource }),
-        setResourcesLoading: (loading) => set({ resourcesLoading: loading }),
-        setResourcesError: (error) => set({ resourcesError: error }),
+    // Resources Actions
+    setResources: (resources) => set({ resources }),
+    addResource: (resource) => {
+      set((state: any) => ({ resources: [...state.resources, resource] }));
+      get().addAuditEntry({
+        action: 'CREATE_RESOURCE',
+        entityType: 'resource',
+        entityId: resource.id,
+        after: resource,
+      });
+    },
+    updateResource: (id, updates) => {
+      const resource = get().resources.find((r: any) => r.id === id);
+      set((state: any) => ({
+        resources: state.resources.map((r: any) =>
+          r.id === id ? { ...r, ...updates } : r
+        ),
+      }));
+      get().addAuditEntry({
+        action: 'UPDATE_RESOURCE',
+        entityType: 'resource',
+        entityId: id,
+        before: resource,
+        after: { ...resource, ...updates },
+      });
+    },
+    deleteResource: (id) => {
+      const resource = get().resources.find((r: any) => r.id === id);
+      set((state: any) => ({
+        resources: state.resources.filter((r: any) => r.id !== id),
+      }));
+      get().addAuditEntry({
+        action: 'DELETE_RESOURCE',
+        entityType: 'resource',
+        entityId: id,
+        before: resource,
+      });
+    },
+    selectResource: (resource) => set({ selectedResource: resource }),
+    setResourcesLoading: (loading) => set({ resourcesLoading: loading }),
+    setResourcesError: (error) => set({ resourcesError: error }),
 
-        // Groups Actions
-        setGroups: (groups) => set({ groups }),
-        addGroup: (group) =>
-          set((state) => ({ groups: [...state.groups, group] })),
-        updateGroup: (id, updates) =>
-          set((state) => ({
-            groups: state.groups.map((g) =>
-              g.id === id ? { ...g, ...updates } : g
-            ),
-          })),
-        deleteGroup: (id) =>
-          set((state) => ({
-            groups: state.groups.filter((g) => g.id !== id),
-          })),
-        selectGroup: (group) => set({ selectedGroup: group }),
-        setGroupsLoading: (loading) => set({ groupsLoading: loading }),
-        setGroupsError: (error) => set({ groupsError: error }),
+    // Groups Actions
+    setGroups: (groups) => set({ groups }),
+    addGroup: (group) => {
+      set((state: any) => ({ groups: [...state.groups, group] }));
+      get().addAuditEntry({
+        action: 'CREATE_GROUP',
+        entityType: 'group',
+        entityId: group.id,
+        after: group,
+      });
+    },
+    updateGroup: (id, updates) => {
+      const group = get().groups.find((g: any) => g.id === id);
+      set((state: any) => ({
+        groups: state.groups.map((g: any) =>
+          g.id === id ? { ...g, ...updates } : g
+        ),
+      }));
+      get().addAuditEntry({
+        action: 'UPDATE_GROUP',
+        entityType: 'group',
+        entityId: id,
+        before: group,
+        after: { ...group, ...updates },
+      });
+    },
+    deleteGroup: (id) => {
+      const group = get().groups.find((g: any) => g.id === id);
+      set((state: any) => ({
+        groups: state.groups.filter((g: any) => g.id !== id),
+      }));
+      get().addAuditEntry({
+        action: 'DELETE_GROUP',
+        entityType: 'group',
+        entityId: id,
+        before: group,
+      });
+    },
+    selectGroup: (group) => set({ selectedGroup: group }),
+    setGroupsLoading: (loading) => set({ groupsLoading: loading }),
+    setGroupsError: (error) => set({ groupsError: error }),
 
-        // Roles Actions
-        setRoles: (roles) => set({ roles }),
-        addRole: (role) =>
-          set((state) => ({ roles: [...state.roles, role] })),
-        updateRole: (id, updates) =>
-          set((state) => ({
-            roles: state.roles.map((r) =>
-              r.id === id ? { ...r, ...updates } : r
-            ),
-          })),
-        deleteRole: (id) =>
-          set((state) => ({
-            roles: state.roles.filter((r) => r.id !== id),
-          })),
-        selectRole: (role) => set({ selectedRole: role }),
-        setRolesLoading: (loading) => set({ rolesLoading: loading }),
-        setRolesError: (error) => set({ rolesError: error }),
+    // Roles Actions
+    setRoles: (roles) => set({ roles }),
+    addRole: (role) => {
+      set((state: any) => ({ roles: [...state.roles, role] }));
+      get().addAuditEntry({
+        action: 'CREATE_ROLE',
+        entityType: 'role',
+        entityId: role.id,
+        after: role,
+      });
+    },
+    updateRole: (id, updates) => {
+      const role = get().roles.find((r: any) => r.id === id);
+      set((state: any) => ({
+        roles: state.roles.map((r: any) =>
+          r.id === id ? { ...r, ...updates } : r
+        ),
+      }));
+      get().addAuditEntry({
+        action: 'UPDATE_ROLE',
+        entityType: 'role',
+        entityId: id,
+        before: role,
+        after: { ...role, ...updates },
+      });
+    },
+    deleteRole: (id) => {
+      const role = get().roles.find((r: any) => r.id === id);
+      set((state: any) => ({
+        roles: state.roles.filter((r: any) => r.id !== id),
+      }));
+      get().addAuditEntry({
+        action: 'DELETE_ROLE',
+        entityType: 'role',
+        entityId: id,
+        before: role,
+      });
+    },
+    selectRole: (role) => set({ selectedRole: role }),
+    setRolesLoading: (loading) => set({ rolesLoading: loading }),
+    setRolesError: (error) => set({ rolesError: error }),
 
-        // User Permissions Actions
-        setUserPermissions: (permissions) => set({ userPermissions: permissions }),
-        setUserPermissionsLoading: (loading) =>
-          set({ userPermissionsLoading: loading }),
-        setUserPermissionsError: (error) =>
-          set({ userPermissionsError: error }),
+    // User Permissions Actions
+    setUserPermissions: (permissions) => set({ userPermissions: permissions }),
+    setUserPermissionsLoading: (loading) =>
+      set({ userPermissionsLoading: loading }),
+    setUserPermissionsError: (error) =>
+      set({ userPermissionsError: error }),
 
-        // Reset
-        reset: () => set(initialState),
-      }),
-      {
-        name: 'permission-storage',
-        partialize: (state) => ({
-          // Only persist selections, not loading/error states
-          selectedResource: state.selectedResource,
-          selectedGroup: state.selectedGroup,
-          selectedRole: state.selectedRole,
-        }),
-      }
-    ),
-    { name: 'PermissionStore' }
-  )
+    // Reset
+    reset: () => set(initialState),
+  })
 );

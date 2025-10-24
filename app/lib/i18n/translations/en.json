@@ -175,6 +175,36 @@
     "district": "District",
     "custom": "Custom"
   },
+  "resources": {
+    "title": "Resources",
+    "subtitle": "Manage screens, APIs, modules, and entities",
+    "add": "Add Resource",
+    "create": "Create New Resource",
+    "edit": "Edit",
+    "delete": "Delete",
+    "search": "Search resources...",
+    "filter": "Filter",
+    "allTypes": "All Types",
+    "noResults": "No resources found",
+    "adjustFilters": "Try adjusting your search or filters",
+    "type": {
+      "screen": "Screen",
+      "api": "API",
+      "module": "Module",
+      "entity": "Entity"
+    },
+    "form": {
+      "resourceType": "Resource Type",
+      "name": "Name",
+      "description": "Description",
+      "path": "Path",
+      "pathPlaceholder": "/admin/patients",
+      "actions": "Actions (comma-separated)",
+      "actionsPlaceholder": "read, write, delete",
+      "containsPhi": "Contains PHI (Protected Health Information)"
+    },
+    "phi": "PHI"
+  },
   "forms": {
     "required": "Required",
     "optional": "Optional",

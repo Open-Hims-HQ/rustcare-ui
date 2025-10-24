@@ -46,7 +46,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
       {/* ARIA live regions for screen reader announcements */}
       <Announcer />
 
@@ -230,12 +230,12 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       </header>
 
       {/* Main Content Area */}
-      <main id="main-content" className="container mx-auto px-4 py-8">
+      <main id="main-content" className="flex-1 container mx-auto px-4 py-8">
         {children}
       </main>
 
       {/* Footer */}
-      <footer className="mt-12 border-t border-slate-200/50 bg-white/50 backdrop-blur-sm">
+      <footer className="border-t border-slate-200/50 bg-white/50 backdrop-blur-sm mt-auto">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between text-sm text-slate-600">
             <p>&copy; 2025 RustCare. All rights reserved.</p>

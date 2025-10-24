@@ -1,7 +1,8 @@
 import { json, type LoaderFunctionArgs, type MetaFunction } from "@remix-run/node";
 import { useLoaderData, Link, Form } from "@remix-run/react";
-import { useState } from "react";
 import { resourcesApi } from "~/lib/api.server";
+import { useTranslation } from "~/hooks/useTranslation";
+import { useResourceStore } from "~/stores/useResourceStore";
 import type { Resource } from "~/types/permissions";
 import { Button } from "~/components/ui/button";
 import {
@@ -34,8 +35,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export default function ResourcesPage() {
   const { resources, error } = useLoaderData<typeof loader>();
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterType, setFilterType] = useState<string>("all");
+  const { t } = useTranslation();
+  
+  // Use Zustand store for UI state
+  const searchTerm = useResourceStore((state) => state.searchTerm);
+  const setSearchTerm = useResourceStore((state) => state.setSearchTerm);
+  const filterType = useResourceStore((state) => state.filterType);
+  const setFilterType = useResourceStore((state) => state.setFilterType);
 
   const filteredResources = resources.filter((resource) => {
     const matchesSearch =
@@ -108,9 +114,9 @@ export default function ResourcesPage() {
 
         {/* Page Header */}
         <div className="mb-8">
-          <h2 className="text-4xl font-bold text-white mb-2">Resources</h2>
+          <h1 className="text-4xl font-bold text-white mb-2">{t("resources.title")}</h1>
           <p className="text-lg" style={{ color: "#60FFFF" }}>
-            Manage screens, APIs, modules, and entities
+            {t("resources.subtitle")}
           </p>
         </div>
 
@@ -119,7 +125,7 @@ export default function ResourcesPage() {
           {/* Search */}
           <input
             type="text"
-            placeholder="Search resources..."
+            placeholder={t("resources.search")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="flex-1 min-w-[300px] px-4 py-2 rounded-lg backdrop-blur-sm text-white placeholder-white/60 border"
@@ -139,11 +145,11 @@ export default function ResourcesPage() {
               borderColor: "#00A9FF"
             }}
           >
-            <option value="all">All Types</option>
-            <option value="Screen">Screen</option>
-            <option value="Api">API</option>
-            <option value="Module">Module</option>
-            <option value="Entity">Entity</option>
+            <option value="all">{t("resources.allTypes")}</option>
+            <option value="Screen">{t("resources.type.screen")}</option>
+            <option value="Api">{t("resources.type.api")}</option>
+            <option value="Module">{t("resources.type.module")}</option>
+            <option value="Entity">{t("resources.type.entity")}</option>
           </select>
 
           {/* Add Button */}
@@ -156,14 +162,14 @@ export default function ResourcesPage() {
                   boxShadow: "0 4px 20px rgba(0, 169, 255, 0.4)"
                 }}
               >
-                ➕ Add Resource
+                ➕ {t("resources.add")}
               </button>
             </DialogTrigger>
             <DialogContent className="backdrop-blur-md" style={{ backgroundColor: "rgba(26, 0, 48, 0.95)", borderColor: "#00A9FF" }}>
               <DialogHeader>
-                <DialogTitle className="text-white">Add New Resource</DialogTitle>
+                <DialogTitle className="text-white">{t("resources.create")}</DialogTitle>
                 <DialogDescription style={{ color: "#60FFFF" }}>
-                  Create a new screen, API, module, or entity
+                  {t("resources.subtitle")}
                 </DialogDescription>
               </DialogHeader>
               <ResourceForm />
@@ -178,8 +184,8 @@ export default function ResourcesPage() {
           ) : null)}
           {filteredResources.length === 0 && (
             <div className="col-span-full text-center py-12">
-              <p className="text-xl text-white/60">No resources found</p>
-              <p style={{ color: "#60FFFF" }}>Try adjusting your search or filters</p>
+              <p className="text-xl text-white/60">{t("resources.noResults")}</p>
+              <p style={{ color: "#60FFFF" }}>{t("resources.adjustFilters")}</p>
             </div>
           )}
         </div>
@@ -189,6 +195,7 @@ export default function ResourcesPage() {
 }
 
 function ResourceCard({ resource }: { resource: Resource }) {
+  const { t } = useTranslation();
   const typeColors = {
     Screen: { bg: "#5A00C0", border: "#7A00FF" },
     Api: { bg: "#00A3B5", border: "#00D4FF" },
@@ -214,7 +221,7 @@ function ResourceCard({ resource }: { resource: Resource }) {
             className="inline-block px-3 py-1 rounded-full text-xs font-bold mb-2"
             style={{ backgroundColor: colors.bg, color: "#ffffff" }}
           >
-            {resource.resource_type}
+            {t(`resources.type.${resource.resource_type.toLowerCase()}`)}
           </span>
           <h3 className="text-xl font-bold text-white">{resource.name}</h3>
         </div>
@@ -223,7 +230,7 @@ function ResourceCard({ resource }: { resource: Resource }) {
             className="px-2 py-1 rounded text-xs font-bold"
             style={{ backgroundColor: "#D800D8", color: "#ffffff" }}
           >
-            PHI
+            {t("resources.phi")}
           </span>
         )}
       </div>
@@ -279,13 +286,13 @@ function ResourceCard({ resource }: { resource: Resource }) {
           className="flex-1 px-3 py-2 rounded text-sm font-medium hover:scale-105 transition-all"
           style={{ backgroundColor: "#00A9FF", color: "#ffffff" }}
         >
-          Edit
+          {t("resources.edit")}
         </button>
         <button
           className="px-3 py-2 rounded text-sm font-medium hover:scale-105 transition-all"
           style={{ backgroundColor: "#D800D8", color: "#ffffff" }}
         >
-          Delete
+          {t("resources.delete")}
         </button>
       </div>
     </div>
@@ -293,11 +300,13 @@ function ResourceCard({ resource }: { resource: Resource }) {
 }
 
 function ResourceForm() {
+  const { t } = useTranslation();
+  
   return (
     <Form method="post" className="space-y-4">
       <div>
         <label className="block text-sm font-medium text-white mb-2">
-          Resource Type
+          {t("resources.form.resourceType")}
         </label>
         <select
           name="resource_type"
@@ -308,16 +317,16 @@ function ResourceForm() {
             borderColor: "#00A9FF"
           }}
         >
-          <option value="Screen">Screen</option>
-          <option value="Api">API</option>
-          <option value="Module">Module</option>
-          <option value="Entity">Entity</option>
+          <option value="Screen">{t("resources.type.screen")}</option>
+          <option value="Api">{t("resources.type.api")}</option>
+          <option value="Module">{t("resources.type.module")}</option>
+          <option value="Entity">{t("resources.type.entity")}</option>
         </select>
       </div>
 
       <div>
         <label className="block text-sm font-medium text-white mb-2">
-          Name
+          {t("resources.form.name")}
         </label>
         <input
           type="text"
@@ -333,7 +342,7 @@ function ResourceForm() {
 
       <div>
         <label className="block text-sm font-medium text-white mb-2">
-          Description
+          {t("resources.form.description")}
         </label>
         <textarea
           name="description"
@@ -348,13 +357,13 @@ function ResourceForm() {
 
       <div>
         <label className="block text-sm font-medium text-white mb-2">
-          Path
+          {t("resources.form.path")}
         </label>
         <input
           type="text"
           name="path"
           required
-          placeholder="/admin/patients"
+          placeholder={t("resources.form.pathPlaceholder")}
           className="w-full px-4 py-2 rounded-lg backdrop-blur-sm text-white border"
           style={{
             backgroundColor: "rgba(255, 255, 255, 0.1)",
@@ -365,12 +374,12 @@ function ResourceForm() {
 
       <div>
         <label className="block text-sm font-medium text-white mb-2">
-          Actions (comma-separated)
+          {t("resources.form.actions")}
         </label>
         <input
           type="text"
           name="actions"
-          placeholder="read, write, delete"
+          placeholder={t("resources.form.actionsPlaceholder")}
           className="w-full px-4 py-2 rounded-lg backdrop-blur-sm text-white border"
           style={{
             backgroundColor: "rgba(255, 255, 255, 0.1)",
@@ -387,7 +396,7 @@ function ResourceForm() {
           className="w-4 h-4"
         />
         <label htmlFor="contains_phi" className="text-sm text-white">
-          Contains PHI (Protected Health Information)
+          {t("resources.form.containsPhi")}
         </label>
       </div>
 
@@ -399,7 +408,7 @@ function ResourceForm() {
           boxShadow: "0 4px 20px rgba(0, 169, 255, 0.4)"
         }}
       >
-        Create Resource
+        {t("resources.create")}
       </button>
     </Form>
   );

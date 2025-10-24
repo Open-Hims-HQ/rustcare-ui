@@ -1,5 +1,4 @@
-import { create } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
+import { createEnhancedStore, defineStoreConfig, MaskingType } from './createEnhancedStore';
 
 interface User {
   id: string;
@@ -35,52 +34,95 @@ const initialState = {
   error: null,
 };
 
-export const useAuthStore = create<AuthState>()(
-  devtools(
-    persist(
-      (set) => ({
-        ...initialState,
+export const useAuthStore = createEnhancedStore<AuthState>(
+  defineStoreConfig({
+    name: 'AuthStore',
+    
+    // Mask sensitive fields
+    fields: {
+      token: {
+        maskingType: MaskingType.DYNAMIC,
+        maskPattern: 'partial',
+      },
+      email: {
+        maskingType: MaskingType.DYNAMIC,
+        maskPattern: 'email',
+      },
+    },
+    
+    features: {
+      auditLog: true, // Track login/logout
+      persistence: true,
+      devtools: true,
+    },
+    
+    persistence: {
+      keys: ['user', 'token', 'isAuthenticated'],
+    },
+    
+    // Inject user context from auth state itself
+    contextProvider: () => {
+      const state = useAuthStore.getState();
+      return state.user ? {
+        userId: state.user.id,
+        roles: state.user.roles,
+        permissions: [], // Would come from permissions store
+        organizationId: state.user.organizationId,
+      } : null;
+    },
+  }),
+  (set, get) => ({
+    ...initialState,
 
-        setUser: (user) =>
-          set({ user, isAuthenticated: !!user }),
+    setUser: (user) => {
+      set({ user, isAuthenticated: !!user });
+      get().addAuditEntry({
+        action: 'SET_USER',
+        entityType: 'user',
+        entityId: user?.id,
+        after: user,
+      });
+    },
 
-        setToken: (token) =>
-          set({ token }),
+    setToken: (token) =>
+      set({ token }),
 
-        login: (user, token) =>
-          set({
-            user,
-            token,
-            isAuthenticated: true,
-            error: null,
-          }),
+    login: (user, token) => {
+      set({
+        user,
+        token,
+        isAuthenticated: true,
+        error: null,
+      });
+      get().addAuditEntry({
+        action: 'LOGIN',
+        entityType: 'user',
+        entityId: user.id,
+        after: { userId: user.id, email: user.email },
+      });
+    },
 
-        logout: () =>
-          set({
-            user: null,
-            token: null,
-            isAuthenticated: false,
-            error: null,
-          }),
+    logout: () => {
+      const userId = get().user?.id;
+      set({
+        user: null,
+        token: null,
+        isAuthenticated: false,
+        error: null,
+      });
+      get().addAuditEntry({
+        action: 'LOGOUT',
+        entityType: 'user',
+        entityId: userId,
+      });
+    },
 
-        setLoading: (loading) =>
-          set({ isLoading: loading }),
+    setLoading: (loading) =>
+      set({ isLoading: loading }),
 
-        setError: (error) =>
-          set({ error }),
+    setError: (error) =>
+      set({ error }),
 
-        reset: () => set(initialState),
-      }),
-      {
-        name: 'auth-storage',
-        partialize: (state) => ({
-          // Persist user and token across sessions
-          user: state.user,
-          token: state.token,
-          isAuthenticated: state.isAuthenticated,
-        }),
-      }
-    ),
-    { name: 'AuthStore' }
-  )
+    reset: () => set(initialState),
+  })
 );

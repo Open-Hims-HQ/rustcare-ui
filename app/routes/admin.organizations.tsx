@@ -1,9 +1,9 @@
 import { json, type LoaderFunctionArgs, type ActionFunctionArgs, type MetaFunction } from "@remix-run/node";
 import { useLoaderData, useActionData, Form, useNavigation } from "@remix-run/react";
-import { useState } from "react";
 import { Building2, Hospital, FlaskConical, Pill, Plus, Search, Pencil, Trash2, MoreVertical } from "lucide-react";
 import { organizationsApi } from "~/lib/api.server";
 import { useTranslation } from "~/hooks/useTranslation";
+import { useOrganizationStore } from "~/stores/useOrganizationStore";
 import type { Organization } from "~/types";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -107,9 +107,13 @@ export default function OrganizationsPage() {
   const navigation = useNavigation();
   const { t } = useTranslation();
   
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filterType, setFilterType] = useState<Organization["type"] | "all">("all");
+  // Use Zustand store for UI state
+  const showAddForm = useOrganizationStore((state) => state.showAddForm);
+  const setShowAddForm = useOrganizationStore((state) => state.setShowAddForm);
+  const searchQuery = useOrganizationStore((state) => state.searchQuery);
+  const setSearchQuery = useOrganizationStore((state) => state.setSearchQuery);
+  const filterType = useOrganizationStore((state) => state.filterType);
+  const setFilterType = useOrganizationStore((state) => state.setFilterType);
 
   const isSubmitting = navigation.state === "submitting";
 
@@ -432,7 +436,7 @@ export default function OrganizationsPage() {
                   </Button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" aria-label="More actions">
                         <MoreVertical className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
