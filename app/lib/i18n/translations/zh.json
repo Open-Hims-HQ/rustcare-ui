@@ -1,0 +1,55 @@
+{
+  "common": {
+    "save": "保存",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "create": "创建",
+    "add": "添加",
+    "remove": "移除",
+    "search": "搜索",
+    "filter": "筛选",
+    "loading": "加载中",
+    "welcome": "欢迎"
+  },
+  "navigation": {
+    "home": "首页",
+    "dashboard": "仪表板",
+    "organizations": "组织",
+    "employees": "员工",
+    "compliance": "合规",
+    "roles": "角色",
+    "settings": "设置"
+  },
+  "language": {
+    "current": "当前语言",
+    "select": "选择语言",
+    "change": "更改语言"
+  },
+  "organizations": {
+    "title": "组织",
+    "add": "添加组织",
+    "name": "名称",
+    "type": "类型",
+    "active": "活跃",
+    "inactive": "非活跃"
+  },
+  "employees": {
+    "title": "员工",
+    "name": "姓名",
+    "email": "电子邮件",
+    "role": "角色"
+  },
+  "forms": {
+    "required": "必填",
+    "optional": "可选"
+  },
+  "errors": {
+    "generic": "发生错误",
+    "notFound": "未找到"
+  },
+  "success": {
+    "saved": "保存成功",
+    "created": "创建成功"
+  }
+}

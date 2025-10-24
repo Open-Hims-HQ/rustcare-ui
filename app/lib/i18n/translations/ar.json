@@ -1,0 +1,55 @@
+{
+  "common": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "create": "إنشاء",
+    "add": "إضافة",
+    "remove": "إزالة",
+    "search": "بحث",
+    "filter": "تصفية",
+    "loading": "جاري التحميل",
+    "welcome": "مرحباً"
+  },
+  "navigation": {
+    "home": "الرئيسية",
+    "dashboard": "لوحة التحكم",
+    "organizations": "المنظمات",
+    "employees": "الموظفون",
+    "compliance": "الامتثال",
+    "roles": "الأدوار",
+    "settings": "الإعدادات"
+  },
+  "language": {
+    "current": "اللغة الحالية",
+    "select": "اختر اللغة",
+    "change": "تغيير اللغة"
+  },
+  "organizations": {
+    "title": "المنظمات",
+    "add": "إضافة منظمة",
+    "name": "الاسم",
+    "type": "النوع",
+    "active": "نشط",
+    "inactive": "غير نشط"
+  },
+  "employees": {
+    "title": "الموظفون",
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "role": "الدور"
+  },
+  "forms": {
+    "required": "مطلوب",
+    "optional": "اختياري"
+  },
+  "errors": {
+    "generic": "حدث خطأ",
+    "notFound": "غير موجود"
+  },
+  "success": {
+    "saved": "تم الحفظ بنجاح",
+    "created": "تم الإنشاء بنجاح"
+  }
+}

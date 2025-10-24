@@ -1,0 +1,55 @@
+{
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "create": "Créer",
+    "add": "Ajouter",
+    "remove": "Retirer",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "loading": "Chargement",
+    "welcome": "Bienvenue"
+  },
+  "navigation": {
+    "home": "Accueil",
+    "dashboard": "Tableau de bord",
+    "organizations": "Organisations",
+    "employees": "Employés",
+    "compliance": "Conformité",
+    "roles": "Rôles",
+    "settings": "Paramètres"
+  },
+  "language": {
+    "current": "Langue actuelle",
+    "select": "Sélectionner la langue",
+    "change": "Changer de langue"
+  },
+  "organizations": {
+    "title": "Organisations",
+    "add": "Ajouter une organisation",
+    "name": "Nom",
+    "type": "Type",
+    "active": "Actif",
+    "inactive": "Inactif"
+  },
+  "employees": {
+    "title": "Employés",
+    "name": "Nom",
+    "email": "E-mail",
+    "role": "Rôle"
+  },
+  "forms": {
+    "required": "Obligatoire",
+    "optional": "Facultatif"
+  },
+  "errors": {
+    "generic": "Une erreur s'est produite",
+    "notFound": "Non trouvé"
+  },
+  "success": {
+    "saved": "Enregistré avec succès",
+    "created": "Créé avec succès"
+  }
+}

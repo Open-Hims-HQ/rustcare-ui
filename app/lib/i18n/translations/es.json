@@ -1,0 +1,55 @@
+{
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "add": "Añadir",
+    "remove": "Quitar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "loading": "Cargando",
+    "welcome": "Bienvenido"
+  },
+  "navigation": {
+    "home": "Inicio",
+    "dashboard": "Panel",
+    "organizations": "Organizaciones",
+    "employees": "Empleados",
+    "compliance": "Cumplimiento",
+    "roles": "Roles",
+    "settings": "Configuración"
+  },
+  "language": {
+    "current": "Idioma actual",
+    "select": "Seleccionar idioma",
+    "change": "Cambiar idioma"
+  },
+  "organizations": {
+    "title": "Organizaciones",
+    "add": "Añadir Organización",
+    "name": "Nombre",
+    "type": "Tipo",
+    "active": "Activo",
+    "inactive": "Inactivo"
+  },
+  "employees": {
+    "title": "Empleados",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "role": "Rol"
+  },
+  "forms": {
+    "required": "Requerido",
+    "optional": "Opcional"
+  },
+  "errors": {
+    "generic": "Ocurrió un error",
+    "notFound": "No encontrado"
+  },
+  "success": {
+    "saved": "Guardado exitosamente",
+    "created": "Creado exitosamente"
+  }
+}

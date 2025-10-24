@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Globe, Check } from "lucide-react";
+import { Globe, Check, Search, X } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,32 +9,20 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { Button } from "~/components/ui/button";
-
-export type Language = {
-  code: string;
-  name: string;
-  nativeName: string;
-  flag: string;
-};
-
-export const SUPPORTED_LANGUAGES: Language[] = [
-  { code: "en", name: "English", nativeName: "English", flag: "🇺🇸" },
-  { code: "es", name: "Spanish", nativeName: "Español", flag: "🇪🇸" },
-  { code: "fr", name: "French", nativeName: "Français", flag: "🇫🇷" },
-  { code: "de", name: "German", nativeName: "Deutsch", flag: "🇩🇪" },
-  { code: "zh", name: "Chinese", nativeName: "中文", flag: "🇨🇳" },
-  { code: "ja", name: "Japanese", nativeName: "日本語", flag: "🇯🇵" },
-  { code: "ar", name: "Arabic", nativeName: "العربية", flag: "🇸🇦" },
-  { code: "pt", name: "Portuguese", nativeName: "Português", flag: "🇵🇹" },
-  { code: "ru", name: "Russian", nativeName: "Русский", flag: "🇷🇺" },
-  { code: "hi", name: "Hindi", nativeName: "हिन्दी", flag: "🇮🇳" },
-];
+import { Input } from "~/components/ui/input";
+import { Separator } from "~/components/ui/separator";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { AccessibleIcon } from "@radix-ui/react-accessible-icon";
+import { WORLD_LANGUAGES, getLanguagesByRegion, getAllRegions, type Language } from "~/lib/i18n/languages";
+import { useTranslation } from "~/hooks/useTranslation";
 
 interface LanguageSwitcherProps {
   currentLanguage?: string;
   onLanguageChange?: (languageCode: string) => void;
   variant?: "default" | "ghost" | "outline";
   showLabel?: boolean;
+  /** Show only popular languages (top 20) */
+  popularOnly?: boolean;
 }
 
 export function LanguageSwitcher({
@@ -42,60 +30,181 @@ export function LanguageSwitcher({
   onLanguageChange,
   variant = "ghost",
   showLabel = false,
+  popularOnly = false,
 }: LanguageSwitcherProps) {
   const [selectedLang, setSelectedLang] = useState(currentLanguage);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const { t, setLanguage: setGlobalLanguage } = useTranslation();
 
   const handleLanguageChange = (languageCode: string) => {
     setSelectedLang(languageCode);
+    setGlobalLanguage(languageCode);
     onLanguageChange?.(languageCode);
-    // TODO: Implement i18n integration here
+    setIsOpen(false);
+    setSearchQuery("");
     console.log("Language changed to:", languageCode);
   };
 
-  const currentLangData = SUPPORTED_LANGUAGES.find((lang) => lang.code === selectedLang);
+  const currentLangData = WORLD_LANGUAGES.find((lang) => lang.code === selectedLang);
+  
+  // Filter languages by search query
+  const filterLanguages = (languages: Language[]) => {
+    if (!searchQuery.trim()) return languages;
+    
+    const query = searchQuery.toLowerCase();
+    return languages.filter(
+      (lang) =>
+        lang.name.toLowerCase().includes(query) ||
+        lang.nativeName.toLowerCase().includes(query) ||
+        lang.code.toLowerCase().includes(query)
+    );
+  };
+  
+  // Filter languages if popularOnly is true (first 20 languages)
+  const displayLanguages = popularOnly ? WORLD_LANGUAGES.slice(0, 20) : WORLD_LANGUAGES;
+  const filteredLanguages = filterLanguages(displayLanguages);
+  
+  // Group languages by region for better UX
+  const regions = getAllRegions();
+  const filteredRegions = regions.filter(region => {
+    const languagesInRegion = filterLanguages(getLanguagesByRegion(region));
+    return languagesInRegion.length > 0;
+  });
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
         <Button
           variant={variant}
           size="sm"
           className="gap-2"
-          aria-label={`Current language: ${currentLangData?.name}. Click to change language`}
+          aria-label={t("accessibility.currentLanguage", { language: currentLangData?.name || currentLanguage })}
         >
-          <Globe className="h-4 w-4" aria-hidden="true" />
+          <AccessibleIcon label={t("language.select")}>
+            <Globe className="h-4 w-4" />
+          </AccessibleIcon>
           {showLabel && (
             <span className="hidden md:inline-block">
               {currentLangData?.flag} {currentLangData?.nativeName}
             </span>
           )}
           {!showLabel && (
-            <span className="sr-only">
+            <VisuallyHidden>
               {currentLangData?.name}
-            </span>
+            </VisuallyHidden>
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel>Select Language</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        {SUPPORTED_LANGUAGES.map((language) => (
-          <DropdownMenuItem
-            key={language.code}
-            onClick={() => handleLanguageChange(language.code)}
-            className="flex items-center justify-between cursor-pointer"
-            aria-label={`Switch to ${language.name}`}
-          >
-            <span className="flex items-center gap-2">
-              <span aria-hidden="true">{language.flag}</span>
-              <span>{language.nativeName}</span>
-              <span className="text-xs text-slate-500">({language.name})</span>
-            </span>
-            {selectedLang === language.code && (
-              <Check className="h-4 w-4 text-blue-600" aria-label="Currently selected" />
+      <DropdownMenuContent 
+        align="end" 
+        className="w-80 max-h-[500px] overflow-hidden flex flex-col"
+        onCloseAutoFocus={(e) => {
+          // Prevent focus from going back to trigger when closing
+          e.preventDefault();
+        }}
+      >
+        <DropdownMenuLabel className="pb-2">
+          {t("language.select")} {popularOnly && `(${t("language.popular")})`}
+        </DropdownMenuLabel>
+        
+        {/* Search Input */}
+        <div className="px-2 pb-2">
+          <div className="relative">
+            <AccessibleIcon label={t("common.search")}>
+              <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
+            </AccessibleIcon>
+            <Input
+              type="text"
+              placeholder={t("language.search")}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-8 pr-8 h-9"
+              aria-label={t("language.searchLabel")}
+              autoFocus
+            />
+            {searchQuery && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-0"
+                onClick={() => setSearchQuery("")}
+                aria-label={t("common.clear")}
+              >
+                <X className="h-4 w-4" />
+              </Button>
             )}
-          </DropdownMenuItem>
-        ))}
+          </div>
+        </div>
+        
+        <Separator />
+        
+        {/* Scrollable Language List */}
+        <div className="overflow-y-auto max-h-[350px]" role="listbox" aria-label={t("language.available")}>
+          {filteredLanguages.length === 0 ? (
+            <div className="px-2 py-4 text-center text-sm text-slate-500">
+              {t("language.noResults")}
+            </div>
+          ) : popularOnly ? (
+            // Show flat list for popular languages
+            filteredLanguages.map((language) => (
+              <DropdownMenuItem
+                key={language.code}
+                onClick={() => handleLanguageChange(language.code)}
+                className="flex items-center justify-between cursor-pointer px-3 py-2"
+                aria-label={t("accessibility.switchLanguage", { language: language.name })}
+                role="option"
+                aria-selected={selectedLang === language.code}
+              >
+                <span className="flex items-center gap-2">
+                  <span aria-hidden="true" className="text-lg">{language.flag}</span>
+                  <span>{language.nativeName}</span>
+                  {language.name !== language.nativeName && (
+                    <span className="text-xs text-slate-500">({language.name})</span>
+                  )}
+                </span>
+                {selectedLang === language.code && (
+                  <AccessibleIcon label={t("accessibility.selected")}>
+                    <Check className="h-4 w-4 text-blue-600" />
+                  </AccessibleIcon>
+                )}
+              </DropdownMenuItem>
+            ))
+          ) : (
+            // Show grouped by region for all languages
+            filteredRegions.map((region, idx) => {
+              const languagesInRegion = filterLanguages(getLanguagesByRegion(region));
+              return (
+                <div key={region} role="group" aria-label={region}>
+                  {idx > 0 && <Separator decorative className="my-1" />}
+                  <DropdownMenuLabel className="text-xs text-slate-500 font-semibold px-3 py-1.5">
+                    {region}
+                  </DropdownMenuLabel>
+                  {languagesInRegion.map((language) => (
+                    <DropdownMenuItem
+                      key={language.code}
+                      onClick={() => handleLanguageChange(language.code)}
+                      className="flex items-center justify-between cursor-pointer pl-6 pr-3 py-2"
+                      aria-label={t("accessibility.switchLanguage", { language: language.name })}
+                      role="option"
+                      aria-selected={selectedLang === language.code}
+                    >
+                      <span className="flex items-center gap-2">
+                        <span aria-hidden="true" className="text-base">{language.flag}</span>
+                        <span className="text-sm">{language.nativeName}</span>
+                      </span>
+                      {selectedLang === language.code && (
+                        <AccessibleIcon label={t("accessibility.selected")}>
+                          <Check className="h-4 w-4 text-blue-600" />
+                        </AccessibleIcon>
+                      )}
+                    </DropdownMenuItem>
+                  ))}
+                </div>
+              );
+            })
+          )}
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );
