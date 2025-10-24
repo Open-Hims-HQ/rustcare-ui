@@ -1,4 +1,4 @@
-import { json, type LoaderFunctionArgs } from "@remix-run/node";
+import { json, type LoaderFunctionArgs, type MetaFunction } from "@remix-run/node";
 import { useLoaderData, Link, Form } from "@remix-run/react";
 import { useState } from "react";
 import { resourcesApi } from "~/lib/api.server";
@@ -12,6 +12,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Resources - RustCare Admin" },
+    { name: "description", content: "Manage system resources and access controls" },
+  ];
+};
 
 export async function loader({ request }: LoaderFunctionArgs) {
   try {
@@ -32,10 +39,10 @@ export default function ResourcesPage() {
 
   const filteredResources = resources.filter((resource) => {
     const matchesSearch =
-      resource.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      resource.description.toLowerCase().includes(searchTerm.toLowerCase());
+      resource?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      resource?.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType =
-      filterType === "all" || resource.resource_type === filterType;
+      filterType === "all" || resource?.resource_type === filterType;
     return matchesSearch && matchesType;
   });
 
@@ -166,10 +173,9 @@ export default function ResourcesPage() {
 
         {/* Resources Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredResources.map((resource) => (
+          {filteredResources.map((resource) => resource ? (
             <ResourceCard key={resource.id} resource={resource} />
-          ))}
-          
+          ) : null)}
           {filteredResources.length === 0 && (
             <div className="col-span-full text-center py-12">
               <p className="text-xl text-white/60">No resources found</p>

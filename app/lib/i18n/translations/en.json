@@ -80,11 +80,17 @@
   },
   "organizations": {
     "title": "Organizations",
+    "subtitle": "Manage hospitals, clinics, labs, and pharmacies",
     "add": "Add Organization",
     "create": "Create Organization",
     "edit": "Edit Organization",
     "delete": "Delete Organization",
     "search": "Search organizations...",
+    "filter": "Filter by type",
+    "all": "All Types",
+    "stats": {
+      "total": "Total"
+    },
     "type": "Organization Type",
     "code": "Organization Code",
     "name": "Organization Name",
@@ -92,10 +98,10 @@
     "contact": "Contact Information",
     "active": "Active",
     "inactive": "Inactive",
-    "hospital": "Hospital",
-    "clinic": "Clinic",
-    "laboratory": "Laboratory",
-    "pharmacy": "Pharmacy",
+    "hospital": "Hospitals",
+    "clinic": "Clinics",
+    "laboratory": "Laboratories",
+    "pharmacy": "Pharmacies",
     "total": "Total Organizations",
     "viewDetails": "View Details",
     "manageStaff": "Manage Staff"

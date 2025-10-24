@@ -1,10 +1,18 @@
 import { useState, useEffect } from "react";
+import type { MetaFunction } from "@remix-run/node";
 import { Card } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Dialog } from "~/components/ui/dialog";
 import { API_BASE_URL } from "~/constants/api";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Roles & Permissions - RustCare Admin" },
+    { name: "description", content: "Manage user roles, permissions, and access control" },
+  ];
+};
 
 interface Role {
   id: string;

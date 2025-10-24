@@ -1,4 +1,4 @@
-import { json, type LoaderFunctionArgs } from "@remix-run/node";
+import { json, type LoaderFunctionArgs, type MetaFunction } from "@remix-run/node";
 import { useLoaderData, Link } from "@remix-run/react";
 import {
   Building2,
@@ -24,6 +24,13 @@ import {
 } from "~/components/ui/navigation-menu";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Dashboard - RustCare Admin" },
+    { name: "description", content: "RustCare Healthcare Management System - Administrative Dashboard Overview" },
+  ];
+};
 
 // Loader: Fetch dashboard stats
 export async function loader({ request }: LoaderFunctionArgs) {

@@ -66,32 +66,21 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   const { csrfToken } = useLoaderData<typeof loader>();
-  const [language, setLanguage] = useState("en");
   const [direction, setDirection] = useState<"ltr" | "rtl">("ltr");
 
   // Load language preference from localStorage on mount
+  const [initialLanguage, setInitialLanguage] = useState("en");
+  
   useEffect(() => {
     if (typeof window !== "undefined") {
       const savedLanguage = localStorage.getItem("preferredLanguage") || "en";
-      setLanguage(savedLanguage);
+      setInitialLanguage(savedLanguage);
       
       // Set text direction based on language
       const lang = getLanguage(savedLanguage);
       setDirection(lang?.rtl ? "rtl" : "ltr");
     }
   }, []);
-
-  // Update direction when language changes
-  useEffect(() => {
-    const lang = getLanguage(language);
-    setDirection(lang?.rtl ? "rtl" : "ltr");
-    
-    // Update HTML dir attribute for proper RTL support
-    if (typeof document !== "undefined") {
-      document.documentElement.dir = direction;
-      document.documentElement.lang = language;
-    }
-  }, [language, direction]);
   
   return (
     <>
@@ -101,10 +90,10 @@ export default function App() {
       </head>
       <DirectionProvider dir={direction}>
         <TranslationProvider 
-          defaultLanguage={language} 
+          defaultLanguage={initialLanguage} 
           preloadLanguages={["en", "es", "fr", "zh", "ar"]}
         >
-          <Outlet context={{ language, setLanguage }} />
+          <Outlet />
         </TranslationProvider>
       </DirectionProvider>
     </>

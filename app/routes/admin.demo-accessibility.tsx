@@ -1,4 +1,5 @@
 import { useState } from "react"
+import type { MetaFunction } from "@remix-run/node"
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
@@ -10,6 +11,13 @@ import {
   CardTitle,
 } from "~/components/ui/card"
 import { useAnnouncer } from "~/hooks/useAnnouncer"
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Accessibility Demo - RustCare Admin" },
+    { name: "description", content: "Demonstration of WCAG AA compliant components and accessibility features" },
+  ];
+};
 
 /**
  * Demonstration page showing WCAG AA compliant components with:

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import type { MetaFunction } from "@remix-run/node";
 import { Card } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -14,6 +15,13 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { API_BASE_URL } from "~/constants/api";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Employees - RustCare Admin" },
+    { name: "description", content: "Manage healthcare employees, roles, and assignments" },
+  ];
+};
 
 interface Role {
   id: string;

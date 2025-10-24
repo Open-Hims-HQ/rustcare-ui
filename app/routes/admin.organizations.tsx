@@ -1,8 +1,10 @@
-import { json, type LoaderFunctionArgs, type ActionFunctionArgs } from "@remix-run/node";
+import { json, type LoaderFunctionArgs, type ActionFunctionArgs, type MetaFunction } from "@remix-run/node";
 import { useLoaderData, useActionData, Form, useNavigation } from "@remix-run/react";
 import { useState } from "react";
 import { Building2, Hospital, FlaskConical, Pill, Plus, Search, Pencil, Trash2, MoreVertical } from "lucide-react";
 import { organizationsApi } from "~/lib/api.server";
+import { useTranslation } from "~/hooks/useTranslation";
+import type { Organization } from "~/types";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
@@ -24,18 +26,12 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 
-// Organization type definition
-export interface Organization {
-  id: string;
-  name: string;
-  code: string;
-  type: "Hospital" | "Clinic" | "Lab" | "Pharmacy";
-  address: string;
-  contact: string;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
-}
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Organizations - RustCare Admin" },
+    { name: "description", content: "Manage healthcare organizations, hospitals, clinics, laboratories, and pharmacies" },
+  ];
+};
 
 // Loader: Fetch all organizations
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -109,6 +105,7 @@ export default function OrganizationsPage() {
   const { organizations } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
+  const { t } = useTranslation();
   
   const [showAddForm, setShowAddForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -140,22 +137,22 @@ export default function OrganizationsPage() {
       <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-              Organizations
+              {t("organizations.title")}
             </h1>
             <p className="text-slate-600 mt-1">
-              Manage hospitals, clinics, labs, and pharmacies
+              {t("organizations.subtitle")}
             </p>
           </div>
           <Button onClick={() => setShowAddForm(true)} size="lg">
             <Plus className="mr-2 h-4 w-4" />
-            Add Organization
+            {t("organizations.add")}
           </Button>
         </div>
         {/* Quick Stats */}
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
           <Card className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-4">
-              <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">Total</div>
+              <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">{t("organizations.stats.total")}</div>
               <div className="text-2xl font-bold text-slate-900 mt-1">{stats.total}</div>
             </CardContent>
           </Card>
@@ -163,7 +160,7 @@ export default function OrganizationsPage() {
             <CardContent className="p-4">
               <div className="flex items-center gap-2 text-xs font-medium text-slate-500 uppercase tracking-wider">
                 <Hospital className="h-4 w-4" />
-                Hospitals
+                {t("organizations.hospital")}
               </div>
               <div className="text-2xl font-bold text-slate-900 mt-1">{stats.hospitals}</div>
             </CardContent>
@@ -172,7 +169,7 @@ export default function OrganizationsPage() {
             <CardContent className="p-4">
               <div className="flex items-center gap-2 text-xs font-medium text-slate-500 uppercase tracking-wider">
                 <Building2 className="h-4 w-4" />
-                Clinics
+                {t("organizations.clinic")}
               </div>
               <div className="text-2xl font-bold text-slate-900 mt-1">{stats.clinics}</div>
             </CardContent>
@@ -181,7 +178,7 @@ export default function OrganizationsPage() {
             <CardContent className="p-4">
               <div className="flex items-center gap-2 text-xs font-medium text-slate-500 uppercase tracking-wider">
                 <FlaskConical className="h-4 w-4" />
-                Labs
+                {t("organizations.laboratory")}
               </div>
               <div className="text-2xl font-bold text-slate-900 mt-1">{stats.labs}</div>
             </CardContent>
@@ -190,7 +187,7 @@ export default function OrganizationsPage() {
             <CardContent className="p-4">
               <div className="flex items-center gap-2 text-xs font-medium text-slate-500 uppercase tracking-wider">
                 <Pill className="h-4 w-4" />
-                Pharmacies
+                {t("organizations.pharmacy")}
               </div>
               <div className="text-2xl font-bold text-slate-900 mt-1">{stats.pharmacies}</div>
             </CardContent>

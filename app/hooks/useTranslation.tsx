@@ -5,6 +5,7 @@ import {
   preloadMultipleLanguages, 
   type TranslationDictionary 
 } from "~/lib/i18n/translator";
+import { getLanguage } from "~/lib/i18n/languages";
 
 interface TranslationContextValue {
   /** Current language code */
@@ -124,9 +125,17 @@ export function TranslationProvider({
 
   const setLanguage = useCallback((languageCode: string) => {
     setCurrentLanguage(languageCode);
+    
     // Store preference in localStorage
     if (typeof window !== "undefined") {
       localStorage.setItem("preferredLanguage", languageCode);
+      
+      // Update HTML attributes for proper language/direction support
+      const lang = getLanguage(languageCode);
+      if (lang) {
+        document.documentElement.lang = languageCode;
+        document.documentElement.dir = lang.rtl ? "rtl" : "ltr";
+      }
     }
   }, []);
 

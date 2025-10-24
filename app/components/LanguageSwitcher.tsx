@@ -82,12 +82,16 @@ export function LanguageSwitcher({
           className="gap-2"
           aria-label={t("accessibility.currentLanguage", { language: currentLangData?.name || activeLanguage || "English" })}
         >
-          <AccessibleIcon label={t("language.select")}>
-            <Globe className="h-4 w-4" />
-          </AccessibleIcon>
+          <span className="text-xs font-medium uppercase" aria-hidden="true">
+            {activeLanguage}
+          </span>
+          <Globe className="h-4 w-4" />
+          <span className="text-base" aria-hidden="true">
+            {currentLangData?.flag}
+          </span>
           {showLabel && (
             <span className="hidden md:inline-block">
-              {currentLangData?.flag} {currentLangData?.nativeName}
+              {currentLangData?.nativeName}
             </span>
           )}
           {!showLabel && (
