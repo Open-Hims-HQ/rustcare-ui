@@ -1,7 +1,7 @@
 import { json, type LoaderFunctionArgs, type ActionFunctionArgs } from "@remix-run/node";
 import { useLoaderData, useActionData, Form, useNavigation } from "@remix-run/react";
 import { useState } from "react";
-import { Building2, Hospital, FlaskConical, Pill, Plus, Search, Pencil, Trash2 } from "lucide-react";
+import { Building2, Hospital, FlaskConical, Pill, Plus, Search, Pencil, Trash2, MoreVertical } from "lucide-react";
 import { organizationsApi } from "~/lib/api.server";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -15,6 +15,14 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Checkbox } from "~/components/ui/checkbox";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 
 // Organization type definition
 export interface Organization {
@@ -127,10 +135,9 @@ export default function OrganizationsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
-      <div className="container mx-auto px-6 py-8 space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
               Organizations
@@ -392,20 +399,58 @@ export default function OrganizationsPage() {
                     <Pencil className="mr-2 h-3 w-3" />
                     Edit
                   </Button>
-                  <Form method="post" className="flex-1">
-                    <input type="hidden" name="intent" value="delete" />
-                    <input type="hidden" name="id" value={org.id} />
-                    <Button
-                      type="submit"
-                      variant="outline"
-                      size="sm"
-                      className="w-full text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-300"
-                      disabled={isSubmitting}
-                    >
-                      <Trash2 className="mr-2 h-3 w-3" />
-                      Delete
-                    </Button>
-                  </Form>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="sm">
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                      <DropdownMenuLabel>Quick Actions</DropdownMenuLabel>
+                      <DropdownMenuItem>
+                        <Building2 className="mr-2 h-4 w-4" />
+                        View Details
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => navigator.clipboard.writeText(org.code)}>
+                        <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        Copy Code
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem>
+                        <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        Manage Staff
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Compliance
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <Form method="post">
+                        <input type="hidden" name="intent" value="delete" />
+                        <input type="hidden" name="id" value={org.id} />
+                        <DropdownMenuItem
+                          className="text-red-600 focus:text-red-700 focus:bg-red-50"
+                          onSelect={(e) => {
+                            e.preventDefault();
+                            if (confirm(`Are you sure you want to delete ${org.name}?`)) {
+                              const target = e.target as HTMLElement;
+                              const form = target.closest('form');
+                              form?.requestSubmit();
+                            }
+                          }}
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Delete Organization
+                        </DropdownMenuItem>
+                      </Form>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </CardContent>
             </Card>
@@ -427,7 +472,6 @@ export default function OrganizationsPage() {
             </CardContent>
           </Card>
         )}
-      </div>
     </div>
   );
 }
