@@ -20,10 +20,13 @@ export default defineConfig({
   },
   server: {
     port: 3000,
+    host: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'https://api.openhims.health',
         changeOrigin: true,
+        secure: false, // Allow self-signed certificates in development
+        rewrite: (path) => path,
       },
     },
   },

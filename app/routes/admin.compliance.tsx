@@ -1,0 +1,719 @@
+import type { MetaFunction } from "@remix-run/node";
+import { useState, useEffect } from "react";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "~/components/ui/dialog";
+import { Checkbox } from "~/components/ui/checkbox";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Compliance Management - RustCare Admin" },
+    { name: "description", content: "Manage compliance frameworks and rules" },
+  ];
+};
+
+interface ComplianceFramework {
+  id: string;
+  name: string;
+  code: string;
+  version: string;
+  description?: string;
+  jurisdiction: string;
+  effective_date: string;
+  expiry_date?: string;
+  authority: string;
+  website?: string;
+  auto_assignment_rules: Record<string, any>;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+interface ComplianceRule {
+  id: string;
+  framework_id: string;
+  rule_code: string;
+  title: string;
+  description?: string;
+  rule_type: string;
+  category: string;
+  severity: string;
+  validation_logic: Record<string, any>;
+  remediation_guidance?: string;
+  is_mandatory: boolean;
+  is_active: boolean;
+}
+
+interface AutoAssignmentRequest {
+  entity_type: string;
+  entity_id: string;
+  geographic_region?: string;
+  postal_code?: string;
+  organization_type?: string;
+}
+
+export default function AdminCompliance() {
+  const [frameworks, setFrameworks] = useState<ComplianceFramework[]>([]);
+  const [rules, setRules] = useState<ComplianceRule[]>([]);
+  const [selectedFramework, setSelectedFramework] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isAddFrameworkOpen, setIsAddFrameworkOpen] = useState(false);
+  const [isAddRuleOpen, setIsAddRuleOpen] = useState(false);
+  const [isAutoAssignOpen, setIsAutoAssignOpen] = useState(false);
+
+  // Form states
+  const [newFramework, setNewFramework] = useState({
+    name: "",
+    code: "",
+    version: "1.0",
+    description: "",
+    jurisdiction: "",
+    authority: "",
+    website: "",
+    effective_date: "",
+    expiry_date: "",
+  });
+
+  const [newRule, setNewRule] = useState({
+    framework_id: "",
+    rule_code: "",
+    title: "",
+    description: "",
+    rule_type: "data_protection",
+    category: "privacy",
+    severity: "medium",
+    is_mandatory: true,
+    remediation_guidance: "",
+  });
+
+  const [autoAssignRequest, setAutoAssignRequest] = useState({
+    entity_type: "organization",
+    entity_id: "",
+    postal_code: "",
+    organization_type: "clinic",
+  });
+
+  useEffect(() => {
+    fetchFrameworks();
+    fetchRules();
+  }, []);
+
+  useEffect(() => {
+    if (selectedFramework) {
+      fetchFrameworkRules(selectedFramework);
+    }
+  }, [selectedFramework]);
+
+  const fetchFrameworks = async () => {
+    try {
+      const response = await fetch("/api/v1/compliance/frameworks");
+      if (response.ok) {
+        const data = await response.json();
+        setFrameworks(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch frameworks:", error);
+    }
+  };
+
+  const fetchRules = async () => {
+    try {
+      const response = await fetch("/api/v1/compliance/rules");
+      if (response.ok) {
+        const data = await response.json();
+        setRules(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch rules:", error);
+    }
+  };
+
+  const fetchFrameworkRules = async (frameworkId: string) => {
+    try {
+      const response = await fetch(`/api/v1/compliance/frameworks/${frameworkId}/rules`);
+      if (response.ok) {
+        const data = await response.json();
+        setRules(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch framework rules:", error);
+    }
+  };
+
+  const handleAddFramework = async () => {
+    try {
+      const response = await fetch("/api/v1/compliance/frameworks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...newFramework,
+          auto_assignment_rules: {
+            jurisdiction: newFramework.jurisdiction,
+            auto_assign: true,
+          },
+        }),
+      });
+
+      if (response.ok) {
+        setIsAddFrameworkOpen(false);
+        setNewFramework({
+          name: "",
+          code: "",
+          version: "1.0",
+          description: "",
+          jurisdiction: "",
+          authority: "",
+          website: "",
+          effective_date: "",
+          expiry_date: "",
+        });
+        fetchFrameworks();
+      }
+    } catch (error) {
+      console.error("Failed to create framework:", error);
+    }
+  };
+
+  const handleAddRule = async () => {
+    try {
+      const response = await fetch("/api/v1/compliance/rules", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...newRule,
+          validation_logic: {
+            type: newRule.rule_type,
+            category: newRule.category,
+            severity: newRule.severity,
+          },
+        }),
+      });
+
+      if (response.ok) {
+        setIsAddRuleOpen(false);
+        setNewRule({
+          framework_id: "",
+          rule_code: "",
+          title: "",
+          description: "",
+          rule_type: "data_protection",
+          category: "privacy",
+          severity: "medium",
+          is_mandatory: true,
+          remediation_guidance: "",
+        });
+        if (selectedFramework) {
+          fetchFrameworkRules(selectedFramework);
+        } else {
+          fetchRules();
+        }
+      }
+    } catch (error) {
+      console.error("Failed to create rule:", error);
+    }
+  };
+
+  const handleAutoAssign = async () => {
+    try {
+      const response = await fetch("/api/v1/compliance/assignment/auto", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(autoAssignRequest),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        alert(`Auto-assigned ${result.assigned_frameworks?.length || 0} compliance frameworks`);
+        setIsAutoAssignOpen(false);
+      }
+    } catch (error) {
+      console.error("Failed to auto-assign compliance:", error);
+    }
+  };
+
+  const filteredFrameworks = frameworks.filter(framework =>
+    searchTerm === "" ||
+    framework.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    framework.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    framework.jurisdiction.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const displayedRules = selectedFramework 
+    ? rules.filter(rule => rule.framework_id === selectedFramework)
+    : rules;
+
+  const getSeverityColor = (severity: string) => {
+    switch (severity) {
+      case "high":
+        return "text-red-600 bg-red-50";
+      case "medium":
+        return "text-yellow-600 bg-yellow-50";
+      case "low":
+        return "text-green-600 bg-green-50";
+      default:
+        return "text-gray-600 bg-gray-50";
+    }
+  };
+
+  return (
+    <div className="container mx-auto p-6 space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Compliance Management</h1>
+          <p className="text-muted-foreground">
+            Manage compliance frameworks, rules, and auto-assignment policies
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Dialog open={isAutoAssignOpen} onOpenChange={setIsAutoAssignOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline">Auto-Assign Test</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Test Auto-Assignment</DialogTitle>
+                <DialogDescription>
+                  Test automatic compliance framework assignment based on location and organization type
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="entity-type">Entity Type</Label>
+                    <Select
+                      value={autoAssignRequest.entity_type}
+                      onValueChange={(value) => setAutoAssignRequest({ ...autoAssignRequest, entity_type: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="organization">Organization</SelectItem>
+                        <SelectItem value="user">User</SelectItem>
+                        <SelectItem value="patient">Patient</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="org-type">Organization Type</Label>
+                    <Select
+                      value={autoAssignRequest.organization_type}
+                      onValueChange={(value) => setAutoAssignRequest({ ...autoAssignRequest, organization_type: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="clinic">Clinic</SelectItem>
+                        <SelectItem value="hospital">Hospital</SelectItem>
+                        <SelectItem value="practice">Practice</SelectItem>
+                        <SelectItem value="pharmacy">Pharmacy</SelectItem>
+                        <SelectItem value="laboratory">Laboratory</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="postal">Postal Code</Label>
+                  <Input
+                    id="postal"
+                    placeholder="e.g., 10001, M5V 3L9"
+                    value={autoAssignRequest.postal_code}
+                    onChange={(e) => setAutoAssignRequest({ ...autoAssignRequest, postal_code: e.target.value })}
+                  />
+                </div>
+
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => setIsAutoAssignOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button onClick={handleAutoAssign}>Test Assignment</Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={isAddRuleOpen} onOpenChange={setIsAddRuleOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline">Add Rule</Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Add Compliance Rule</DialogTitle>
+                <DialogDescription>
+                  Create a new compliance rule for a framework
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="framework">Framework</Label>
+                    <Select
+                      value={newRule.framework_id}
+                      onValueChange={(value) => setNewRule({ ...newRule, framework_id: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select framework" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {frameworks.map(framework => (
+                          <SelectItem key={framework.id} value={framework.id}>
+                            {framework.name} ({framework.code})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="rule-code">Rule Code</Label>
+                    <Input
+                      id="rule-code"
+                      placeholder="e.g., HIPAA-164.306"
+                      value={newRule.rule_code}
+                      onChange={(e) => setNewRule({ ...newRule, rule_code: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="title">Rule Title</Label>
+                  <Input
+                    id="title"
+                    placeholder="e.g., Administrative Safeguards"
+                    value={newRule.title}
+                    onChange={(e) => setNewRule({ ...newRule, title: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="description">Description</Label>
+                  <Input
+                    id="description"
+                    placeholder="Detailed description of the rule"
+                    value={newRule.description}
+                    onChange={(e) => setNewRule({ ...newRule, description: e.target.value })}
+                  />
+                </div>
+
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="rule-type">Rule Type</Label>
+                    <Select
+                      value={newRule.rule_type}
+                      onValueChange={(value) => setNewRule({ ...newRule, rule_type: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="data_protection">Data Protection</SelectItem>
+                        <SelectItem value="access_control">Access Control</SelectItem>
+                        <SelectItem value="audit_trail">Audit Trail</SelectItem>
+                        <SelectItem value="encryption">Encryption</SelectItem>
+                        <SelectItem value="backup">Backup & Recovery</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="category">Category</Label>
+                    <Select
+                      value={newRule.category}
+                      onValueChange={(value) => setNewRule({ ...newRule, category: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="privacy">Privacy</SelectItem>
+                        <SelectItem value="security">Security</SelectItem>
+                        <SelectItem value="operational">Operational</SelectItem>
+                        <SelectItem value="technical">Technical</SelectItem>
+                        <SelectItem value="administrative">Administrative</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="severity">Severity</Label>
+                    <Select
+                      value={newRule.severity}
+                      onValueChange={(value) => setNewRule({ ...newRule, severity: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="low">Low</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="high">High</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="mandatory"
+                    checked={newRule.is_mandatory}
+                    onCheckedChange={(checked) => setNewRule({ ...newRule, is_mandatory: checked as boolean })}
+                  />
+                  <Label htmlFor="mandatory">Mandatory Rule</Label>
+                </div>
+
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => setIsAddRuleOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button onClick={handleAddRule}>Create Rule</Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={isAddFrameworkOpen} onOpenChange={setIsAddFrameworkOpen}>
+            <DialogTrigger asChild>
+              <Button>Add Framework</Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Add Compliance Framework</DialogTitle>
+                <DialogDescription>
+                  Create a new compliance framework (e.g., HIPAA, GDPR, SOX)
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Framework Name</Label>
+                    <Input
+                      id="name"
+                      placeholder="e.g., HIPAA Privacy Rule"
+                      value={newFramework.name}
+                      onChange={(e) => setNewFramework({ ...newFramework, name: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="code">Framework Code</Label>
+                    <Input
+                      id="code"
+                      placeholder="e.g., HIPAA"
+                      value={newFramework.code}
+                      onChange={(e) => setNewFramework({ ...newFramework, code: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="version">Version</Label>
+                    <Input
+                      id="version"
+                      placeholder="e.g., 1.0, 2024.1"
+                      value={newFramework.version}
+                      onChange={(e) => setNewFramework({ ...newFramework, version: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="jurisdiction">Jurisdiction</Label>
+                    <Input
+                      id="jurisdiction"
+                      placeholder="e.g., United States, European Union"
+                      value={newFramework.jurisdiction}
+                      onChange={(e) => setNewFramework({ ...newFramework, jurisdiction: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="authority">Regulatory Authority</Label>
+                  <Input
+                    id="authority"
+                    placeholder="e.g., HHS, ICO, SEC"
+                    value={newFramework.authority}
+                    onChange={(e) => setNewFramework({ ...newFramework, authority: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="description">Description</Label>
+                  <Input
+                    id="description"
+                    placeholder="Brief description of the framework"
+                    value={newFramework.description}
+                    onChange={(e) => setNewFramework({ ...newFramework, description: e.target.value })}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="effective">Effective Date</Label>
+                    <Input
+                      id="effective"
+                      type="date"
+                      value={newFramework.effective_date}
+                      onChange={(e) => setNewFramework({ ...newFramework, effective_date: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="expiry">Expiry Date (Optional)</Label>
+                    <Input
+                      id="expiry"
+                      type="date"
+                      value={newFramework.expiry_date}
+                      onChange={(e) => setNewFramework({ ...newFramework, expiry_date: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" onClick={() => setIsAddFrameworkOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button onClick={handleAddFramework}>Create Framework</Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
+
+      <div className="flex gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="search">Search Frameworks</Label>
+          <Input
+            id="search"
+            placeholder="Search by name, code, or jurisdiction..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-80"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="framework-filter">Filter Rules by Framework</Label>
+          <Select value={selectedFramework || ""} onValueChange={(value) => setSelectedFramework(value || null)}>
+            <SelectTrigger className="w-64">
+              <SelectValue placeholder="All frameworks" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">All frameworks</SelectItem>
+              {frameworks.map(framework => (
+                <SelectItem key={framework.id} value={framework.id}>
+                  {framework.name} ({framework.code})
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold">Compliance Frameworks</h2>
+          {filteredFrameworks.length === 0 ? (
+            <Card>
+              <CardContent className="p-6 text-center">
+                <p className="text-muted-foreground">
+                  No frameworks found. Add your first compliance framework to get started.
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="space-y-2">
+              {filteredFrameworks.map(framework => (
+                <Card key={framework.id} className={selectedFramework === framework.id ? "ring-2 ring-blue-500" : ""}>
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <CardTitle className="text-sm font-medium">{framework.name}</CardTitle>
+                        <CardDescription className="text-xs">
+                          {framework.code} v{framework.version} • {framework.jurisdiction} • {framework.authority}
+                        </CardDescription>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant={selectedFramework === framework.id ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setSelectedFramework(framework.id)}
+                        >
+                          View Rules
+                        </Button>
+                        <Button variant="outline" size="sm">Edit</Button>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  {framework.description && (
+                    <CardContent className="pt-0">
+                      <p className="text-xs text-muted-foreground">{framework.description}</p>
+                    </CardContent>
+                  )}
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-4">
+          <h2 className="text-xl font-semibold">
+            Compliance Rules
+            {selectedFramework && (
+              <span className="text-sm font-normal text-muted-foreground ml-2">
+                ({frameworks.find(f => f.id === selectedFramework)?.name})
+              </span>
+            )}
+          </h2>
+          {displayedRules.length === 0 ? (
+            <Card>
+              <CardContent className="p-6 text-center">
+                <p className="text-muted-foreground">
+                  No rules found. {selectedFramework ? "Add rules to this framework" : "Select a framework to view rules"}.
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="space-y-2">
+              {displayedRules.map(rule => (
+                <Card key={rule.id}>
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <CardTitle className="text-sm font-medium">{rule.title}</CardTitle>
+                        <CardDescription className="text-xs">
+                          {rule.rule_code} • {rule.category} • {rule.rule_type}
+                        </CardDescription>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className={`px-2 py-1 rounded text-xs ${getSeverityColor(rule.severity)}`}>
+                          {rule.severity}
+                        </span>
+                        {rule.is_mandatory && (
+                          <span className="px-2 py-1 rounded text-xs bg-red-100 text-red-800">
+                            Mandatory
+                          </span>
+                        )}
+                        <Button variant="outline" size="sm">Edit</Button>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  {rule.description && (
+                    <CardContent className="pt-0">
+                      <p className="text-xs text-muted-foreground">{rule.description}</p>
+                    </CardContent>
+                  )}
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

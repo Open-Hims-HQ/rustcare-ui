@@ -28,14 +28,23 @@ async function serverFetch<T>(
   const timeoutId = setTimeout(() => controller.abort(), timeout);
 
   try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    // In development, allow self-signed certificates
+    const fetchOptions2: RequestInit = {
       ...fetchOptions,
       signal: controller.signal,
       headers: {
         'Content-Type': 'application/json',
         ...fetchOptions.headers,
       },
-    });
+    };
+
+    // @ts-ignore - Node.js specific option for self-signed certs
+    if (process.env.NODE_ENV === 'development' || process.env.NODE_TLS_REJECT_UNAUTHORIZED === '0') {
+      // For development with self-signed certificates
+      process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+    }
+
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, fetchOptions2);
 
     clearTimeout(timeoutId);
 
@@ -180,25 +189,44 @@ export interface Organization {
   updated_at?: string;
 }
 
+// API Response wrapper
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  message?: string;
+}
+
 export const organizationsApi = {
-  list: () => serverFetch<Organization[]>(API_ENDPOINTS.ORGANIZATIONS),
+  list: async () => {
+    const response = await serverFetch<ApiResponse<Organization[]>>(API_ENDPOINTS.ORGANIZATIONS);
+    return response.data || [];
+  },
   
-  create: (org: Omit<Organization, "id" | "created_at" | "updated_at">) =>
-    serverFetch<Organization>(API_ENDPOINTS.ORGANIZATIONS, {
+  create: async (org: Omit<Organization, "id" | "created_at" | "updated_at">) => {
+    const response = await serverFetch<ApiResponse<Organization>>(API_ENDPOINTS.ORGANIZATIONS, {
       method: "POST",
       body: JSON.stringify(org),
-    }),
+    });
+    return response.data;
+  },
   
-  get: (id: string) => serverFetch<Organization>(API_ENDPOINTS.ORGANIZATION_BY_ID(id)),
+  get: async (id: string) => {
+    const response = await serverFetch<ApiResponse<Organization>>(API_ENDPOINTS.ORGANIZATION_BY_ID(id));
+    return response.data;
+  },
   
-  update: (id: string, org: Partial<Organization>) =>
-    serverFetch<Organization>(API_ENDPOINTS.ORGANIZATION_BY_ID(id), {
+  update: async (id: string, org: Partial<Organization>) => {
+    const response = await serverFetch<ApiResponse<Organization>>(API_ENDPOINTS.ORGANIZATION_BY_ID(id), {
       method: "PUT",
       body: JSON.stringify(org),
-    }),
+    });
+    return response.data;
+  },
   
-  delete: (id: string) =>
-    serverFetch<void>(API_ENDPOINTS.ORGANIZATION_BY_ID(id), {
+  delete: async (id: string) => {
+    const response = await serverFetch<ApiResponse<void>>(API_ENDPOINTS.ORGANIZATION_BY_ID(id), {
       method: "DELETE",
-    }),
+    });
+    return response.data;
+  },
 };

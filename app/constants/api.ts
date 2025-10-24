@@ -6,7 +6,7 @@
 // Base API URL - can be overridden via environment variable
 export const API_BASE_URL = typeof process !== 'undefined' && process.env?.API_BASE_URL 
   ? process.env.API_BASE_URL 
-  : 'http://localhost:7077/api/v1';
+  : 'https://api.openhims.health/api/v1';
 
 // API Endpoints
 export const API_ENDPOINTS = {
