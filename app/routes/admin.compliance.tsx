@@ -254,25 +254,28 @@ export default function AdminCompliance() {
   const getSeverityColor = (severity: string) => {
     switch (severity) {
       case "high":
-        return "text-red-600 bg-red-50";
+        return "text-red-700 bg-red-50 border-red-200";
       case "medium":
-        return "text-yellow-600 bg-yellow-50";
+        return "text-yellow-700 bg-yellow-50 border-yellow-200";
       case "low":
-        return "text-green-600 bg-green-50";
+        return "text-green-700 bg-green-50 border-green-200";
       default:
-        return "text-gray-600 bg-gray-50";
+        return "text-slate-700 bg-slate-50 border-slate-200";
     }
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Compliance Management</h1>
-          <p className="text-muted-foreground">
-            Manage compliance frameworks, rules, and auto-assignment policies
-          </p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
+      <div className="container mx-auto px-6 py-8 space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+              Compliance Management
+            </h1>
+            <p className="text-slate-600 mt-1">
+              Manage compliance frameworks, rules, and auto-assignment policies
+            </p>
+          </div>
         <div className="flex gap-2">
           <Dialog open={isAutoAssignOpen} onOpenChange={setIsAutoAssignOpen}>
             <DialogTrigger asChild>
@@ -584,134 +587,142 @@ export default function AdminCompliance() {
             </DialogContent>
           </Dialog>
         </div>
-      </div>
-
-      <div className="flex gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="search">Search Frameworks</Label>
-          <Input
-            id="search"
-            placeholder="Search by name, code, or jurisdiction..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-80"
-          />
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="framework-filter">Filter Rules by Framework</Label>
-          <Select value={selectedFramework || ""} onValueChange={(value) => setSelectedFramework(value || null)}>
-            <SelectTrigger className="w-64">
-              <SelectValue placeholder="All frameworks" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">All frameworks</SelectItem>
-              {frameworks.map(framework => (
-                <SelectItem key={framework.id} value={framework.id}>
-                  {framework.name} ({framework.code})
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold">Compliance Frameworks</h2>
-          {filteredFrameworks.length === 0 ? (
-            <Card>
-              <CardContent className="p-6 text-center">
-                <p className="text-muted-foreground">
-                  No frameworks found. Add your first compliance framework to get started.
-                </p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-2">
-              {filteredFrameworks.map(framework => (
-                <Card key={framework.id} className={selectedFramework === framework.id ? "ring-2 ring-blue-500" : ""}>
-                  <CardHeader className="pb-2">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <CardTitle className="text-sm font-medium">{framework.name}</CardTitle>
-                        <CardDescription className="text-xs">
-                          {framework.code} v{framework.version} • {framework.jurisdiction} • {framework.authority}
-                        </CardDescription>
+        {/* Search and Filters */}
+        <div className="flex gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="search" className="text-slate-700 font-medium">Search Frameworks</Label>
+            <Input
+              id="search"
+              placeholder="Search by name, code, or jurisdiction..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-80"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="framework-filter" className="text-slate-700 font-medium">Filter Rules by Framework</Label>
+            <Select value={selectedFramework || "all"} onValueChange={(value) => setSelectedFramework(value === "all" ? null : value)}>
+              <SelectTrigger className="w-64">
+                <SelectValue placeholder="All frameworks" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All frameworks</SelectItem>
+                {frameworks.map(framework => (
+                  <SelectItem key={framework.id} value={framework.id}>
+                    {framework.name} ({framework.code})
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {/* Frameworks and Rules Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold text-slate-800">Compliance Frameworks</h2>
+            {filteredFrameworks.length === 0 ? (
+              <Card className="bg-white/80 backdrop-blur-sm border-slate-200">
+                <CardContent className="p-6 text-center">
+                  <p className="text-slate-600">
+                    No frameworks found. Add your first compliance framework to get started.
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-2">
+                {filteredFrameworks.map(framework => (
+                  <Card 
+                    key={framework.id} 
+                    className={`bg-white/90 backdrop-blur-sm border-slate-200 shadow-sm hover:shadow-md transition-all ${
+                      selectedFramework === framework.id ? "ring-2 ring-blue-500 border-blue-300" : ""
+                    }`}
+                  >
+                    <CardHeader className="pb-2">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <CardTitle className="text-sm font-semibold text-slate-900">{framework.name}</CardTitle>
+                          <CardDescription className="text-xs text-slate-600">
+                            {framework.code} v{framework.version} • {framework.jurisdiction} • {framework.authority}
+                          </CardDescription>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            variant={selectedFramework === framework.id ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setSelectedFramework(framework.id)}
+                          >
+                            View Rules
+                          </Button>
+                          <Button variant="outline" size="sm">Edit</Button>
+                        </div>
                       </div>
-                      <div className="flex gap-2">
-                        <Button
-                          variant={selectedFramework === framework.id ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => setSelectedFramework(framework.id)}
-                        >
-                          View Rules
-                        </Button>
-                        <Button variant="outline" size="sm">Edit</Button>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  {framework.description && (
-                    <CardContent className="pt-0">
-                      <p className="text-xs text-muted-foreground">{framework.description}</p>
-                    </CardContent>
-                  )}
-                </Card>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold">
-            Compliance Rules
-            {selectedFramework && (
-              <span className="text-sm font-normal text-muted-foreground ml-2">
-                ({frameworks.find(f => f.id === selectedFramework)?.name})
-              </span>
+                    </CardHeader>
+                    {framework.description && (
+                      <CardContent className="pt-0">
+                        <p className="text-xs text-slate-600">{framework.description}</p>
+                      </CardContent>
+                    )}
+                  </Card>
+                ))}
+              </div>
             )}
-          </h2>
-          {displayedRules.length === 0 ? (
-            <Card>
-              <CardContent className="p-6 text-center">
-                <p className="text-muted-foreground">
-                  No rules found. {selectedFramework ? "Add rules to this framework" : "Select a framework to view rules"}.
-                </p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-2">
-              {displayedRules.map(rule => (
-                <Card key={rule.id}>
-                  <CardHeader className="pb-2">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <CardTitle className="text-sm font-medium">{rule.title}</CardTitle>
-                        <CardDescription className="text-xs">
-                          {rule.rule_code} • {rule.category} • {rule.rule_type}
-                        </CardDescription>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className={`px-2 py-1 rounded text-xs ${getSeverityColor(rule.severity)}`}>
-                          {rule.severity}
-                        </span>
-                        {rule.is_mandatory && (
-                          <span className="px-2 py-1 rounded text-xs bg-red-100 text-red-800">
-                            Mandatory
+          </div>
+
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold text-slate-800">
+              Compliance Rules
+              {selectedFramework && (
+                <span className="text-sm font-normal text-slate-500 ml-2">
+                  ({frameworks.find(f => f.id === selectedFramework)?.name})
+                </span>
+              )}
+            </h2>
+            {displayedRules.length === 0 ? (
+              <Card className="bg-white/80 backdrop-blur-sm border-slate-200">
+                <CardContent className="p-6 text-center">
+                  <p className="text-slate-600">
+                    No rules found. {selectedFramework ? "Add rules to this framework" : "Select a framework to view rules"}.
+                  </p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-2">
+                {displayedRules.map(rule => (
+                  <Card key={rule.id} className="bg-white/90 backdrop-blur-sm border-slate-200 shadow-sm hover:shadow-md transition-all">
+                    <CardHeader className="pb-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <CardTitle className="text-sm font-semibold text-slate-900">{rule.title}</CardTitle>
+                          <CardDescription className="text-xs text-slate-600">
+                            {rule.rule_code} • {rule.category} • {rule.rule_type}
+                          </CardDescription>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className={`px-2 py-1 rounded-md text-xs font-medium border ${getSeverityColor(rule.severity)}`}>
+                            {rule.severity}
                           </span>
-                        )}
-                        <Button variant="outline" size="sm">Edit</Button>
+                          {rule.is_mandatory && (
+                            <span className="px-2 py-1 rounded-md text-xs font-medium bg-red-100 text-red-800 border border-red-200">
+                              Mandatory
+                            </span>
+                          )}
+                          <Button variant="outline" size="sm">Edit</Button>
+                        </div>
                       </div>
-                    </div>
-                  </CardHeader>
-                  {rule.description && (
-                    <CardContent className="pt-0">
-                      <p className="text-xs text-muted-foreground">{rule.description}</p>
-                    </CardContent>
-                  )}
-                </Card>
-              ))}
-            </div>
-          )}
+                    </CardHeader>
+                    {rule.description && (
+                      <CardContent className="pt-0">
+                        <p className="text-xs text-slate-600">{rule.description}</p>
+                      </CardContent>
+                    )}
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

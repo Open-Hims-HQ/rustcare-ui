@@ -153,212 +153,219 @@ export default function AdminEmployees() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-lg">Loading employees...</p>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-lg text-slate-700">Loading employees...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-7xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Employee Management
-        </h1>
-        <p className="text-gray-600">
-          Manage employees and assign roles with Zanzibar authorization
-        </p>
-      </div>
-
-      {/* Employees Table */}
-      <Card className="overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Email
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Position
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Department
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Roles
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {employees.map((employee) => (
-                <tr key={employee.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">
-                      {employee.first_name} {employee.last_name}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-600">{employee.email}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-600">
-                      {employee.position || "-"}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-600">
-                      {employee.department || "-"}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex flex-wrap gap-1">
-                      {employee.roles.length > 0 ? (
-                        employee.roles.map((roleId) => (
-                          <span
-                            key={roleId}
-                            className="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded"
-                          >
-                            {getRoleName(roleId)}
-                          </span>
-                        ))
-                      ) : (
-                        <span className="text-sm text-gray-400">No roles</span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <Button
-                      onClick={() => openAssignDialog(employee)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1"
-                    >
-                      Assign Role
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
+      <div className="container mx-auto px-6 py-8 space-y-6 max-w-7xl">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+            Employee Management
+          </h1>
+          <p className="text-slate-600 mt-1">
+            Manage employees and assign roles with Zanzibar authorization
+          </p>
         </div>
 
-        {employees.length === 0 && (
-          <div className="p-12 text-center">
-            <p className="text-gray-600 mb-2">No employees found</p>
-            <p className="text-sm text-gray-500">
-              Add employees to your organization to manage their roles
-            </p>
+        {/* Employees Table */}
+        <Card className="bg-white/90 backdrop-blur-sm border-slate-200 shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gradient-to-r from-slate-50 to-blue-50 border-b border-slate-200">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                    Name
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                    Email
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                    Position
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                    Department
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                    Roles
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-slate-100">
+                {employees.map((employee) => (
+                  <tr key={employee.id} className="hover:bg-blue-50/50 transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-slate-900">
+                        {employee.first_name} {employee.last_name}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-slate-600">{employee.email}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-slate-600">
+                        {employee.position || "-"}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-slate-600">
+                        {employee.department || "-"}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-wrap gap-1">
+                        {employee.roles.length > 0 ? (
+                          employee.roles.map((roleId) => (
+                            <span
+                              key={roleId}
+                              className="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-md font-medium border border-blue-200"
+                            >
+                              {getRoleName(roleId)}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-sm text-slate-400">No roles</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <Button
+                        onClick={() => openAssignDialog(employee)}
+                        size="sm"
+                      >
+                        Assign Role
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        )}
-      </Card>
 
-      {/* Assign Role Dialog */}
-      <Dialog open={showAssignDialog} onOpenChange={setShowAssignDialog}>
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <Card className="w-full max-w-lg p-6">
-            <h2 className="text-2xl font-bold mb-6">Assign Role</h2>
+          {employees.length === 0 && (
+            <div className="p-12 text-center">
+              <p className="text-lg font-medium text-slate-700 mb-1">No employees found</p>
+              <p className="text-sm text-slate-500">
+                Add employees to your organization to manage their roles
+              </p>
+            </div>
+          )}
+        </Card>
 
-            {selectedEmployee && (
-              <div className="mb-6 p-4 bg-gray-50 rounded">
-                <p className="text-sm text-gray-600">Assigning role to:</p>
-                <p className="font-semibold text-gray-900">
-                  {selectedEmployee.first_name} {selectedEmployee.last_name}
-                </p>
-                <p className="text-sm text-gray-600">{selectedEmployee.email}</p>
-              </div>
-            )}
+        {/* Assign Role Dialog */}
+        <Dialog open={showAssignDialog} onOpenChange={setShowAssignDialog}>
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <Card className="w-full max-w-lg p-6 bg-white/95 backdrop-blur-sm border-slate-200 shadow-xl">
+              <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                Assign Role
+              </h2>
 
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="role">Role *</Label>
-                <select
-                  id="role"
-                  value={selectedRoleId}
-                  onChange={(e) => setSelectedRoleId(e.target.value)}
-                  className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Select a role...</option>
-                  {roles.map((role) => (
-                    <option key={role.id} value={role.id}>
-                      {role.name}
-                      {role.description && ` - ${role.description}`}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={hasExpiration}
-                    onChange={(e) => setHasExpiration(e.target.checked)}
-                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  />
-                  <span className="text-sm text-gray-700">
-                    Set expiration date (time-based access)
-                  </span>
-                </label>
-              </div>
-
-              {hasExpiration && (
-                <div>
-                  <Label htmlFor="expiration">Expiration Date</Label>
-                  <Input
-                    id="expiration"
-                    type="datetime-local"
-                    value={expirationDate}
-                    onChange={(e) => setExpirationDate(e.target.value)}
-                    className="mt-1"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Role access will automatically expire on this date
+              {selectedEmployee && (
+                <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-slate-50 rounded-lg border border-blue-100">
+                  <p className="text-sm text-slate-600">Assigning role to:</p>
+                  <p className="font-semibold text-slate-900">
+                    {selectedEmployee.first_name} {selectedEmployee.last_name}
                   </p>
+                  <p className="text-sm text-slate-600">{selectedEmployee.email}</p>
                 </div>
               )}
 
-              <div className="p-4 bg-blue-50 rounded border border-blue-200">
-                <p className="text-sm font-semibold text-blue-900 mb-1">
-                  Zanzibar Authorization
-                </p>
-                <p className="text-xs text-blue-700">
-                  This assignment will create a Zanzibar tuple for fine-grained
-                  access control:
-                  <br />
-                  <code className="mt-1 block bg-white px-2 py-1 rounded">
-                    user:{selectedEmployee?.user_id}#member@role:
-                    {selectedRoleId || "[role_id]"}
-                  </code>
-                </p>
-              </div>
-            </div>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="role" className="text-slate-700 font-medium">Role *</Label>
+                  <select
+                    id="role"
+                    value={selectedRoleId}
+                    onChange={(e) => setSelectedRoleId(e.target.value)}
+                    className="mt-1 w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  >
+                    <option value="">Select a role...</option>
+                    {roles.map((role) => (
+                      <option key={role.id} value={role.id}>
+                        {role.name}
+                        {role.description && ` - ${role.description}`}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-            <div className="flex justify-end gap-3 mt-6">
-              <Button
-                onClick={() => {
-                  setShowAssignDialog(false);
-                  resetAssignmentForm();
-                }}
-                className="bg-gray-200 hover:bg-gray-300 text-gray-800"
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={handleAssignRole}
-                disabled={!selectedRoleId}
-                className="bg-blue-600 hover:bg-blue-700 text-white disabled:bg-gray-300 disabled:cursor-not-allowed"
-              >
-                Assign Role
-              </Button>
-            </div>
-          </Card>
-        </div>
-      </Dialog>
+                <div>
+                  <label className="flex items-center gap-2 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={hasExpiration}
+                      onChange={(e) => setHasExpiration(e.target.checked)}
+                      className="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
+                    />
+                    <span className="text-sm text-slate-700 group-hover:text-slate-900 transition-colors">
+                      Set expiration date (time-based access)
+                    </span>
+                  </label>
+                </div>
+
+                {hasExpiration && (
+                  <div>
+                    <Label htmlFor="expiration" className="text-slate-700 font-medium">Expiration Date</Label>
+                    <Input
+                      id="expiration"
+                      type="datetime-local"
+                      value={expirationDate}
+                      onChange={(e) => setExpirationDate(e.target.value)}
+                      className="mt-1"
+                    />
+                    <p className="text-xs text-slate-500 mt-1">
+                      Role access will automatically expire on this date
+                    </p>
+                  </div>
+                )}
+
+                <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+                  <p className="text-sm font-semibold text-blue-900 mb-1 flex items-center gap-2">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Zanzibar Authorization
+                  </p>
+                  <p className="text-xs text-blue-700">
+                    This assignment will create a Zanzibar tuple for fine-grained access control:
+                    <br />
+                    <code className="mt-2 block bg-white/80 px-3 py-2 rounded border border-blue-200 text-blue-900 font-mono text-xs">
+                      user:{selectedEmployee?.user_id}#member@role:{selectedRoleId || "[role_id]"}
+                    </code>
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3 mt-6">
+                <Button
+                  onClick={() => {
+                    setShowAssignDialog(false);
+                    resetAssignmentForm();
+                  }}
+                  variant="outline"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleAssignRole}
+                  disabled={!selectedRoleId}
+                >
+                  Assign Role
+                </Button>
+              </div>
+            </Card>
+          </div>
+        </Dialog>
+      </div>
     </div>
   );
 }

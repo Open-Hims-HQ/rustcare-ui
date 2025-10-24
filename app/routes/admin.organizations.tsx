@@ -21,7 +21,7 @@ export interface Organization {
   id: string;
   name: string;
   code: string;
-  type: "hospital" | "clinic" | "lab" | "pharmacy";
+  type: "Hospital" | "Clinic" | "Lab" | "Pharmacy";
   address: string;
   contact: string;
   is_active: boolean;
@@ -72,13 +72,13 @@ export async function action({ request }: ActionFunctionArgs) {
 // Organization icon helper
 function getOrgIcon(type: Organization["type"]) {
   switch (type) {
-    case "hospital":
+    case "Hospital":
       return <Hospital className="h-5 w-5" />;
-    case "clinic":
+    case "Clinic":
       return <Building2 className="h-5 w-5" />;
-    case "lab":
+    case "Lab":
       return <FlaskConical className="h-5 w-5" />;
-    case "pharmacy":
+    case "Pharmacy":
       return <Pill className="h-5 w-5" />;
   }
 }
@@ -86,14 +86,14 @@ function getOrgIcon(type: Organization["type"]) {
 // Organization type badge colors
 function getTypeBadgeClass(type: Organization["type"]) {
   switch (type) {
-    case "hospital":
-      return "bg-error/10 text-error";
-    case "clinic":
-      return "bg-primary/10 text-primary";
-    case "lab":
-      return "bg-tertiary/10 text-tertiary";
-    case "pharmacy":
-      return "bg-secondary/10 text-secondary";
+    case "Hospital":
+      return "bg-red-50 text-red-700 border-red-200";
+    case "Clinic":
+      return "bg-blue-50 text-blue-700 border-blue-200";
+    case "Lab":
+      return "bg-purple-50 text-purple-700 border-purple-200";
+    case "Pharmacy":
+      return "bg-green-50 text-green-700 border-green-200";
   }
 }
 
@@ -119,21 +119,23 @@ export default function OrganizationsPage() {
   // Stats
   const stats = {
     total: organizations.length,
-    hospitals: organizations.filter(o => o.type === "hospital").length,
-    clinics: organizations.filter(o => o.type === "clinic").length,
-    labs: organizations.filter(o => o.type === "lab").length,
-    pharmacies: organizations.filter(o => o.type === "pharmacy").length,
+    hospitals: organizations.filter(o => o.type === "Hospital").length,
+    clinics: organizations.filter(o => o.type === "Clinic").length,
+    labs: organizations.filter(o => o.type === "Lab").length,
+    pharmacies: organizations.filter(o => o.type === "Pharmacy").length,
     active: organizations.filter(o => o.is_active).length,
   };
 
   return (
-    <div className="flex h-full flex-col bg-surface">
-      {/* Header */}
-      <header className="sticky top-0 z-10 border-b border-outline-variant bg-surface-container px-6 py-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
+      <div className="container mx-auto px-6 py-8 space-y-6">
+        {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-display-small font-normal text-on-surface">Organizations</h1>
-            <p className="text-body-medium text-on-surface-variant">
+            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+              Organizations
+            </h1>
+            <p className="text-slate-600 mt-1">
               Manage hospitals, clinics, labs, and pharmacies
             </p>
           </div>
@@ -142,58 +144,54 @@ export default function OrganizationsPage() {
             Add Organization
           </Button>
         </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="flex-1 overflow-auto p-6">
         {/* Quick Stats */}
-        <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
-          <Card>
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+          <Card className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-4">
-              <div className="text-label-small text-on-surface-variant">Total</div>
-              <div className="text-display-small font-normal text-on-surface">{stats.total}</div>
+              <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">Total</div>
+              <div className="text-2xl font-bold text-slate-900 mt-1">{stats.total}</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-4">
-              <div className="flex items-center gap-2 text-label-small text-on-surface-variant">
+              <div className="flex items-center gap-2 text-xs font-medium text-slate-500 uppercase tracking-wider">
                 <Hospital className="h-4 w-4" />
                 Hospitals
               </div>
-              <div className="text-display-small font-normal text-on-surface">{stats.hospitals}</div>
+              <div className="text-2xl font-bold text-slate-900 mt-1">{stats.hospitals}</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-4">
-              <div className="flex items-center gap-2 text-label-small text-on-surface-variant">
+              <div className="flex items-center gap-2 text-xs font-medium text-slate-500 uppercase tracking-wider">
                 <Building2 className="h-4 w-4" />
                 Clinics
               </div>
-              <div className="text-display-small font-normal text-on-surface">{stats.clinics}</div>
+              <div className="text-2xl font-bold text-slate-900 mt-1">{stats.clinics}</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-4">
-              <div className="flex items-center gap-2 text-label-small text-on-surface-variant">
+              <div className="flex items-center gap-2 text-xs font-medium text-slate-500 uppercase tracking-wider">
                 <FlaskConical className="h-4 w-4" />
                 Labs
               </div>
-              <div className="text-display-small font-normal text-on-surface">{stats.labs}</div>
+              <div className="text-2xl font-bold text-slate-900 mt-1">{stats.labs}</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-4">
-              <div className="flex items-center gap-2 text-label-small text-on-surface-variant">
+              <div className="flex items-center gap-2 text-xs font-medium text-slate-500 uppercase tracking-wider">
                 <Pill className="h-4 w-4" />
                 Pharmacies
               </div>
-              <div className="text-display-small font-normal text-on-surface">{stats.pharmacies}</div>
+              <div className="text-2xl font-bold text-slate-900 mt-1">{stats.pharmacies}</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-4">
-              <div className="text-label-small text-on-surface-variant">Active</div>
-              <div className="text-display-small font-normal text-on-surface">{stats.active}</div>
+              <div className="text-xs font-medium text-slate-500 uppercase tracking-wider">Active</div>
+              <div className="text-2xl font-bold text-slate-900 mt-1">{stats.active}</div>
             </CardContent>
           </Card>
         </div>
@@ -212,35 +210,35 @@ export default function OrganizationsPage() {
           </div>
           <div className="flex gap-2">
             <Button
-              variant={filterType === "all" ? "filled" : "outlined"}
+              variant={filterType === "all" ? "default" : "outline"}
               onClick={() => setFilterType("all")}
             >
               All
             </Button>
             <Button
-              variant={filterType === "hospital" ? "filled" : "outlined"}
-              onClick={() => setFilterType("hospital")}
+              variant={filterType === "Hospital" ? "default" : "outline"}
+              onClick={() => setFilterType("Hospital")}
             >
               <Hospital className="mr-2 h-4 w-4" />
               Hospitals
             </Button>
             <Button
-              variant={filterType === "clinic" ? "filled" : "outlined"}
-              onClick={() => setFilterType("clinic")}
+              variant={filterType === "Clinic" ? "default" : "outline"}
+              onClick={() => setFilterType("Clinic")}
             >
               <Building2 className="mr-2 h-4 w-4" />
               Clinics
             </Button>
             <Button
-              variant={filterType === "lab" ? "filled" : "outlined"}
-              onClick={() => setFilterType("lab")}
+              variant={filterType === "Lab" ? "default" : "outline"}
+              onClick={() => setFilterType("Lab")}
             >
               <FlaskConical className="mr-2 h-4 w-4" />
               Labs
             </Button>
             <Button
-              variant={filterType === "pharmacy" ? "filled" : "outlined"}
-              onClick={() => setFilterType("pharmacy")}
+              variant={filterType === "Pharmacy" ? "default" : "outline"}
+              onClick={() => setFilterType("Pharmacy")}
             >
               <Pill className="mr-2 h-4 w-4" />
               Pharmacies
@@ -266,10 +264,10 @@ export default function OrganizationsPage() {
                         <SelectValue placeholder="Select type" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="hospital">Hospital</SelectItem>
-                        <SelectItem value="clinic">Clinic</SelectItem>
-                        <SelectItem value="lab">Laboratory</SelectItem>
-                        <SelectItem value="pharmacy">Pharmacy</SelectItem>
+                        <SelectItem value="Hospital">Hospital</SelectItem>
+                        <SelectItem value="Clinic">Clinic</SelectItem>
+                        <SelectItem value="Lab">Laboratory</SelectItem>
+                        <SelectItem value="Pharmacy">Pharmacy</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -329,7 +327,7 @@ export default function OrganizationsPage() {
                 <div className="mt-6 flex justify-end gap-2">
                   <Button
                     type="button"
-                    variant="outlined"
+                    variant="outline"
                     onClick={() => setShowAddForm(false)}
                     disabled={isSubmitting}
                   >
@@ -341,8 +339,8 @@ export default function OrganizationsPage() {
                 </div>
               </Form>
 
-              {actionData && !actionData.success && (
-                <div className="mt-4 rounded-md bg-error/10 p-3 text-body-small text-error">
+              {actionData && !actionData.success && 'error' in actionData && (
+                <div className="mt-4 rounded-md bg-red-50 border border-red-200 p-3 text-sm text-red-800">
                   {actionData.error}
                 </div>
               )}
@@ -353,44 +351,44 @@ export default function OrganizationsPage() {
         {/* Organizations List */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredOrganizations.map((org) => (
-            <Card key={org.id}>
+            <Card key={org.id} className="bg-white/90 backdrop-blur-sm border-slate-200 shadow-sm hover:shadow-md transition-all">
               <CardContent className="p-4">
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-3">
-                    <div className={`rounded-full p-2 ${getTypeBadgeClass(org.type)}`}>
+                    <div className={`rounded-full p-2 border ${getTypeBadgeClass(org.type)}`}>
                       {getOrgIcon(org.type)}
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-title-medium font-medium text-on-surface">
+                      <h3 className="text-base font-semibold text-slate-900">
                         {org.name}
                       </h3>
-                      <p className="text-body-small text-on-surface-variant">{org.code}</p>
+                      <p className="text-sm text-slate-500">{org.code}</p>
                     </div>
                   </div>
                   {org.is_active && (
-                    <span className="rounded-full bg-tertiary/10 px-2 py-1 text-label-small text-tertiary">
+                    <span className="rounded-full bg-green-50 border border-green-200 px-2 py-1 text-xs font-medium text-green-700">
                       Active
                     </span>
                   )}
                 </div>
 
-                <div className="mt-4 space-y-2 text-body-small text-on-surface-variant">
+                <div className="mt-4 space-y-2 text-sm text-slate-600">
                   <div className="flex items-start gap-2">
-                    <span className="font-medium">Type:</span>
-                    <span className="capitalize">{org.type}</span>
+                    <span className="font-medium min-w-[60px]">Type:</span>
+                    <span>{org.type}</span>
                   </div>
                   <div className="flex items-start gap-2">
-                    <span className="font-medium">Address:</span>
+                    <span className="font-medium min-w-[60px]">Address:</span>
                     <span className="flex-1">{org.address}</span>
                   </div>
                   <div className="flex items-start gap-2">
-                    <span className="font-medium">Contact:</span>
+                    <span className="font-medium min-w-[60px]">Contact:</span>
                     <span>{org.contact}</span>
                   </div>
                 </div>
 
                 <div className="mt-4 flex gap-2">
-                  <Button variant="outlined" size="sm" className="flex-1">
+                  <Button variant="outline" size="sm" className="flex-1">
                     <Pencil className="mr-2 h-3 w-3" />
                     Edit
                   </Button>
@@ -399,9 +397,9 @@ export default function OrganizationsPage() {
                     <input type="hidden" name="id" value={org.id} />
                     <Button
                       type="submit"
-                      variant="outlined"
+                      variant="outline"
                       size="sm"
-                      className="w-full text-error hover:bg-error/10"
+                      className="w-full text-red-600 hover:bg-red-50 hover:text-red-700 hover:border-red-300"
                       disabled={isSubmitting}
                     >
                       <Trash2 className="mr-2 h-3 w-3" />
@@ -415,13 +413,13 @@ export default function OrganizationsPage() {
         </div>
 
         {filteredOrganizations.length === 0 && (
-          <Card>
+          <Card className="bg-white/80 backdrop-blur-sm border-slate-200">
             <CardContent className="py-12 text-center">
-              <Building2 className="mx-auto mb-4 h-12 w-12 text-on-surface-variant/50" />
-              <p className="text-body-large text-on-surface-variant">
+              <Building2 className="mx-auto mb-4 h-12 w-12 text-slate-300" />
+              <p className="text-lg font-medium text-slate-700 mb-1">
                 No organizations found
               </p>
-              <p className="text-body-small text-on-surface-variant">
+              <p className="text-sm text-slate-500">
                 {searchQuery || filterType !== "all"
                   ? "Try adjusting your filters"
                   : "Click 'Add Organization' to create one"}
@@ -429,7 +427,7 @@ export default function OrganizationsPage() {
             </CardContent>
           </Card>
         )}
-      </main>
+      </div>
     </div>
   );
 }
