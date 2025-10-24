@@ -1,3 +1,4 @@
+import React from "react"
 import { Link, useLocation } from "@remix-run/react"
 import {
   Home,
@@ -24,6 +25,8 @@ import {
   MenubarShortcut,
   MenubarTrigger,
 } from "~/components/ui/menubar"
+import { useAnnouncer } from "~/hooks/useAnnouncer"
+import { LanguageSwitcher } from "~/components/LanguageSwitcher"
 
 interface AdminLayoutProps {
   children: React.ReactNode
@@ -31,9 +34,20 @@ interface AdminLayoutProps {
 
 export function AdminLayout({ children }: AdminLayoutProps) {
   const location = useLocation()
+  const { Announcer } = useAnnouncer()
+  const [currentLanguage, setCurrentLanguage] = React.useState("en")
+
+  const handleLanguageChange = (language: string) => {
+    setCurrentLanguage(language)
+    // TODO: Integrate with i18n library
+    console.log("Language changed to:", language)
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
+      {/* ARIA live regions for screen reader announcements */}
+      <Announcer />
+
       {/* Skip to main content link for accessibility */}
       <a
         href="#main-content"
@@ -191,8 +205,14 @@ export function AdminLayout({ children }: AdminLayoutProps) {
               </MenubarMenu>
             </Menubar>
 
-            {/* User Profile (placeholder) */}
+            {/* Language Switcher & User Profile */}
             <div className="flex items-center space-x-3">
+              <LanguageSwitcher
+                currentLanguage={currentLanguage}
+                onLanguageChange={handleLanguageChange}
+                variant="ghost"
+                showLabel={false}
+              />
               <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white text-sm font-semibold">
                 AD
               </div>

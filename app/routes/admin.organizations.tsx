@@ -213,6 +213,7 @@ export default function OrganizationsPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
+              aria-label="Search organizations by name, code, or address"
             />
           </div>
           <div className="flex gap-2">
@@ -280,47 +281,75 @@ export default function OrganizationsPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="code">Code</Label>
+                    <Label htmlFor="code">
+                      Organization Code <span className="text-red-500">*</span>
+                    </Label>
                     <Input
                       id="code"
                       name="code"
                       placeholder="ORG-001"
                       required
                       disabled={isSubmitting}
+                      showInfoIcon
+                      aria-label="Enter unique organization code"
                     />
+                    <p id="code-help" className="text-xs text-neutral-500">
+                      Unique identifier for this organization (e.g., ORG-001)
+                    </p>
                   </div>
 
                   <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="name">Name</Label>
+                    <Label htmlFor="name">
+                      Organization Name <span className="text-red-500">*</span>
+                    </Label>
                     <Input
                       id="name"
                       name="name"
                       placeholder="Organization name"
                       required
                       disabled={isSubmitting}
+                      showInfoIcon
+                      aria-label="Enter full organization name"
                     />
+                    <p id="name-help" className="text-xs text-neutral-500">
+                      Full legal name of the organization
+                    </p>
                   </div>
 
                   <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="address">Address</Label>
+                    <Label htmlFor="address">
+                      Address <span className="text-red-500">*</span>
+                    </Label>
                     <Input
                       id="address"
                       name="address"
                       placeholder="Full address"
                       required
                       disabled={isSubmitting}
+                      showInfoIcon
+                      aria-label="Enter complete physical address"
                     />
+                    <p id="address-help" className="text-xs text-neutral-500">
+                      Complete physical address including street, city, and postal code
+                    </p>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="contact">Contact</Label>
+                    <Label htmlFor="contact">
+                      Contact Information <span className="text-red-500">*</span>
+                    </Label>
                     <Input
                       id="contact"
                       name="contact"
                       placeholder="Phone / Email"
                       required
                       disabled={isSubmitting}
+                      showInfoIcon
+                      aria-label="Enter primary contact phone or email"
                     />
+                    <p id="contact-help" className="text-xs text-neutral-500">
+                      Primary phone number or email address for this organization
+                    </p>
                   </div>
 
                   <div className="flex items-center space-x-2">
@@ -337,10 +366,15 @@ export default function OrganizationsPage() {
                     variant="outline"
                     onClick={() => setShowAddForm(false)}
                     disabled={isSubmitting}
+                    aria-label="Cancel creating organization"
                   >
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={isSubmitting}>
+                  <Button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    aria-label={isSubmitting ? "Creating organization, please wait" : "Create new organization"}
+                  >
                     {isSubmitting ? "Creating..." : "Create Organization"}
                   </Button>
                 </div>

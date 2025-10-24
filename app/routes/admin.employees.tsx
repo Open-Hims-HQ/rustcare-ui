@@ -363,15 +363,20 @@ export default function AdminEmployees() {
 
                 {hasExpiration && (
                   <div>
-                    <Label htmlFor="expiration" className="text-slate-700 font-medium">Expiration Date</Label>
+                    <Label htmlFor="expiration" className="text-slate-700 font-medium">
+                      Expiration Date
+                    </Label>
                     <Input
                       id="expiration"
                       type="datetime-local"
                       value={expirationDate}
                       onChange={(e) => setExpirationDate(e.target.value)}
                       className="mt-1"
+                      showInfoIcon
+                      aria-label="Select when role access expires"
+                      aria-describedby="expiration-help"
                     />
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p id="expiration-help" className="text-xs text-slate-500 mt-1">
                       Role access will automatically expire on this date
                     </p>
                   </div>
@@ -401,12 +406,14 @@ export default function AdminEmployees() {
                   resetAssignmentForm();
                 }}
                 variant="outline"
+                aria-label="Cancel role assignment"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleAssignRole}
                 disabled={!selectedRoleId}
+                aria-label={!selectedRoleId ? "Please select a role first" : "Assign selected role to employee"}
               >
                 Assign Role
               </Button>

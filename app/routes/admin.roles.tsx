@@ -324,14 +324,22 @@ export default function AdminRoles() {
 
             <div className="space-y-4">
               <div>
-                <Label htmlFor="roleName">Role Name *</Label>
+                <Label htmlFor="roleName">
+                  Role Name <span className="text-red-500">*</span>
+                </Label>
                 <Input
                   id="roleName"
                   value={roleName}
                   onChange={(e) => setRoleName(e.target.value)}
                   placeholder="e.g., Physician, Nurse, Administrator"
                   className="mt-1"
+                  showInfoIcon
+                  aria-label="Enter role name"
+                  aria-required="true"
                 />
+                <p id="roleName-help" className="text-xs text-neutral-500 mt-1">
+                  Descriptive name for this role (e.g., Physician, Nurse)
+                </p>
               </div>
 
               <div>
@@ -343,25 +351,39 @@ export default function AdminRoles() {
                   placeholder="Describe the role's responsibilities and access level"
                   className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   rows={3}
+                  aria-label="Enter role description (optional)"
+                  aria-describedby="roleDescription-help"
                 />
+                <p id="roleDescription-help" className="text-xs text-neutral-500 mt-1">
+                  Optional: Describe responsibilities and access level for this role
+                </p>
               </div>
 
               <div>
-                <Label>Permissions</Label>
+                <Label>
+                  Permissions <span className="text-red-500">*</span>
+                </Label>
                 <div className="flex gap-2 mt-1">
                   <Input
                     value={newPermission}
                     onChange={(e) => setNewPermission(e.target.value)}
                     onKeyPress={(e) => e.key === "Enter" && addPermission()}
                     placeholder="e.g., read_patient, write_diagnosis"
+                    showInfoIcon
+                    aria-label="Enter permission name and press Add or Enter"
+                    aria-describedby="permissions-help"
                   />
                   <Button
                     onClick={addPermission}
                     className="bg-blue-600 hover:bg-blue-700 text-white"
+                    aria-label="Add permission to role"
                   >
                     Add
                   </Button>
                 </div>
+                <p id="permissions-help" className="text-xs text-neutral-500 mt-1">
+                  Add permissions like read_patient, write_diagnosis, manage_staff
+                </p>
 
                 {permissions.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-2">
@@ -392,6 +414,7 @@ export default function AdminRoles() {
                   resetForm();
                 }}
                 className="bg-gray-200 hover:bg-gray-300 text-gray-800"
+                aria-label="Cancel creating role"
               >
                 Cancel
               </Button>
@@ -399,6 +422,11 @@ export default function AdminRoles() {
                 onClick={handleCreateRole}
                 disabled={!roleName.trim() || permissions.length === 0}
                 className="bg-blue-600 hover:bg-blue-700 text-white disabled:bg-gray-300 disabled:cursor-not-allowed"
+                aria-label={
+                  !roleName.trim() || permissions.length === 0
+                    ? "Please enter role name and at least one permission"
+                    : "Create new role"
+                }
               >
                 Create Role
               </Button>

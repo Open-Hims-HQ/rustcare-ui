@@ -340,14 +340,28 @@ export default function AdminCompliance() {
                     placeholder="e.g., 10001, M5V 3L9"
                     value={autoAssignRequest.postal_code}
                     onChange={(e) => setAutoAssignRequest({ ...autoAssignRequest, postal_code: e.target.value })}
+                    showInfoIcon
+                    aria-label="Enter postal code for geographic compliance rules"
                   />
+                  <p id="postal-help" className="text-xs text-neutral-500">
+                    Enter postal/ZIP code to determine applicable regional compliance rules
+                  </p>
                 </div>
 
                 <div className="flex justify-end gap-2">
-                  <Button variant="outline" onClick={() => setIsAutoAssignOpen(false)}>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setIsAutoAssignOpen(false)}
+                    aria-label="Cancel auto-assign test"
+                  >
                     Cancel
                   </Button>
-                  <Button onClick={handleAutoAssign}>Test Assignment</Button>
+                  <Button 
+                    onClick={handleAutoAssign}
+                    aria-label="Test automatic compliance framework assignment"
+                  >
+                    Test Assignment
+                  </Button>
                 </div>
               </div>
             </DialogContent>
@@ -385,34 +399,55 @@ export default function AdminCompliance() {
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="rule-code">Rule Code</Label>
+                    <Label htmlFor="rule-code">
+                      Rule Code <span className="text-red-500">*</span>
+                    </Label>
                     <Input
                       id="rule-code"
                       placeholder="e.g., HIPAA-164.306"
                       value={newRule.rule_code}
                       onChange={(e) => setNewRule({ ...newRule, rule_code: e.target.value })}
+                      showInfoIcon
+                      aria-label="Enter unique rule code identifier"
                     />
+                    <p id="rule-code-help" className="text-xs text-neutral-500">
+                      Unique code from the compliance framework (e.g., HIPAA-164.306)
+                    </p>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="title">Rule Title</Label>
+                  <Label htmlFor="title">
+                    Rule Title <span className="text-red-500">*</span>
+                  </Label>
                   <Input
                     id="title"
                     placeholder="e.g., Administrative Safeguards"
                     value={newRule.title}
                     onChange={(e) => setNewRule({ ...newRule, title: e.target.value })}
+                    showInfoIcon
+                    aria-label="Enter descriptive rule title"
                   />
+                  <p id="title-help" className="text-xs text-neutral-500">
+                    Clear, descriptive title for this compliance rule
+                  </p>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="description">Description</Label>
+                  <Label htmlFor="description">
+                    Description <span className="text-red-500">*</span>
+                  </Label>
                   <Input
                     id="description"
                     placeholder="Detailed description of the rule"
                     value={newRule.description}
                     onChange={(e) => setNewRule({ ...newRule, description: e.target.value })}
+                    showInfoIcon
+                    aria-label="Enter detailed rule description"
                   />
+                  <p id="description-help" className="text-xs text-neutral-500">
+                    Comprehensive description of what this rule requires
+                  </p>
                 </div>
 
                 <div className="grid grid-cols-3 gap-4">

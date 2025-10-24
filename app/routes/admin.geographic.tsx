@@ -282,22 +282,36 @@ export default function AdminGeographic() {
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name">Region Name</Label>
+                    <Label htmlFor="name">
+                      Region Name <span className="text-red-500">*</span>
+                    </Label>
                     <Input
                       id="name"
                       placeholder="e.g., United States, California, Los Angeles"
                       value={newRegion.name}
                       onChange={(e) => setNewRegion({ ...newRegion, name: e.target.value })}
+                      showInfoIcon
+                      aria-label="Enter geographic region name"
                     />
+                    <p id="name-help" className="text-xs text-neutral-500">
+                      Full name of the geographic region
+                    </p>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="code">Region Code</Label>
+                    <Label htmlFor="code">
+                      Region Code <span className="text-red-500">*</span>
+                    </Label>
                     <Input
                       id="code"
                       placeholder="e.g., US, CA, LA"
                       value={newRegion.code}
                       onChange={(e) => setNewRegion({ ...newRegion, code: e.target.value })}
+                      showInfoIcon
+                      aria-label="Enter region code abbreviation"
                     />
+                    <p id="code-help" className="text-xs text-neutral-500">
+                      Short code or abbreviation (e.g., US, CA)
+                    </p>
                   </div>
                 </div>
                 
@@ -347,14 +361,29 @@ export default function AdminGeographic() {
                     placeholder="Comma-separated postal codes (e.g., 10001, 10002, 10003)"
                     value={newRegion.postal_codes}
                     onChange={(e) => setNewRegion({ ...newRegion, postal_codes: e.target.value })}
+                    showInfoIcon
+                    aria-label="Enter postal codes for this region"
+                    aria-describedby="postal-help"
                   />
+                  <p id="postal-help" className="text-xs text-neutral-500">
+                    Comma-separated list of postal/ZIP codes for this region
+                  </p>
                 </div>
 
                 <div className="flex justify-end gap-2">
-                  <Button variant="outline" onClick={() => setIsAddRegionOpen(false)}>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setIsAddRegionOpen(false)}
+                    aria-label="Cancel creating region"
+                  >
                     Cancel
                   </Button>
-                  <Button onClick={handleAddRegion}>Create Region</Button>
+                  <Button 
+                    onClick={handleAddRegion}
+                    aria-label="Create new geographic region"
+                  >
+                    Create Region
+                  </Button>
                 </div>
               </div>
             </DialogContent>
