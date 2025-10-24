@@ -3,31 +3,33 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "~/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-38",
+  "inline-flex items-center justify-center gap-2 font-medium transition-all rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        // Filled buttons - M3 elevated style with proper shadows
-        default: "text-white rounded-[20px] shadow-[0_1px_2px_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.3),0_4px_8px_3px_rgba(0,0,0,0.15)] active:shadow-[0_1px_2px_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)]",
-        secondary: "text-white rounded-[20px] shadow-[0_1px_2px_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.3),0_4px_8px_3px_rgba(0,0,0,0.15)]",
-        accent: "text-white rounded-[20px] shadow-[0_1px_2px_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.3),0_4px_8px_3px_rgba(0,0,0,0.15)]",
-        warning: "text-white rounded-[20px] shadow-[0_1px_2px_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.3),0_4px_8px_3px_rgba(0,0,0,0.15)]",
-        destructive: "text-white rounded-[20px] shadow-[0_1px_2px_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.3),0_4px_8px_3px_rgba(0,0,0,0.15)]",
-        success: "text-white rounded-[20px] shadow-[0_1px_2px_rgba(0,0,0,0.3),0_1px_3px_1px_rgba(0,0,0,0.15)] hover:shadow-[0_1px_3px_rgba(0,0,0,0.3),0_4px_8px_3px_rgba(0,0,0,0.15)]",
-        // Outlined buttons - M3 style
-        outline: "border rounded-[20px] bg-transparent hover:bg-[rgba(0,0,0,0.08)] active:bg-[rgba(0,0,0,0.12)]",
-        // Text buttons - M3 style (no border, just state layer)
-        ghost: "rounded-[20px] hover:bg-[rgba(0,0,0,0.08)] active:bg-[rgba(0,0,0,0.12)]",
-        // Links
-        link: "text-primary underline-offset-4 hover:underline",
+        default:
+          "bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800 shadow-sm",
+        secondary:
+          "bg-white text-neutral-700 border border-neutral-300 hover:bg-neutral-50 hover:border-neutral-400 active:bg-neutral-100",
+        outline:
+          "border border-primary-600 text-primary-600 bg-transparent hover:bg-primary-50 active:bg-primary-100",
+        ghost:
+          "text-neutral-700 hover:bg-neutral-100 active:bg-neutral-200",
+        destructive:
+          "bg-danger-600 text-white hover:bg-danger-700 active:bg-danger-800 shadow-sm",
+        success:
+          "bg-success-600 text-white hover:bg-success-700 active:bg-success-800 shadow-sm",
+        warning:
+          "bg-warning-500 text-white hover:bg-warning-600 active:bg-warning-700 shadow-sm",
+        link:
+          "text-primary-600 underline-offset-4 hover:underline hover:text-primary-700",
       },
       size: {
-        // M3 standard heights - 4dp increments
-        sm: "h-[32px] px-[12px] text-[14px] rounded-[16px]",      // Compact density
-        default: "h-[40px] px-[24px] text-[14px]",                // Default density
-        lg: "h-[48px] px-[32px] text-[16px] rounded-[24px]",      // Comfortable density
-        xl: "h-[56px] px-[40px] text-[16px] rounded-[28px]",      // Large
-        icon: "h-[40px] w-[40px] p-0",                             // Icon button (square)
+        sm: "h-8 px-3 text-sm",
+        default: "h-10 px-4 text-sm",
+        lg: "h-11 px-6 text-base",
+        xl: "h-12 px-8 text-base",
+        icon: "h-10 w-10",
       },
     },
     defaultVariants: {

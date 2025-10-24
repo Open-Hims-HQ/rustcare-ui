@@ -3,23 +3,12 @@ import { cn } from "~/lib/utils";
 
 const Card = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & { elevation?: 1 | 2 | 3 | 4 | 5 }
->(({ className, elevation = 1, ...props }, ref) => (
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
   <div
     ref={ref}
     className={cn(
-      // Material Design 3 - Elevated Card
-      "rounded-xl bg-surface text-on-surface",
-      "border border-outline-variant",
-      "transition-shadow duration-200",
-      // Elevation levels
-      elevation === 1 && "shadow-md",
-      elevation === 2 && "shadow-lg",
-      elevation === 3 && "shadow-xl",
-      elevation === 4 && "shadow-2xl",
-      elevation === 5 && "shadow-3xl",
-      // Hover state
-      "hover:shadow-lg",
+      "rounded-lg bg-white border border-neutral-200 shadow-sm transition-all",
       className
     )}
     {...props}
@@ -33,11 +22,7 @@ const CardHeader = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn(
-      // Material Design 3 - 16dp padding
-      "flex flex-col gap-2 p-4",
-      className
-    )}
+    className={cn("flex flex-col space-y-1.5 p-6", className)}
     {...props}
   />
 ));
@@ -50,8 +35,7 @@ const CardTitle = React.forwardRef<
   <h3
     ref={ref}
     className={cn(
-      // Material Design 3 - Headline small
-      "text-2xl font-normal leading-8 tracking-normal text-on-surface",
+      "text-xl font-semibold leading-none tracking-tight text-neutral-900",
       className
     )}
     {...props}
@@ -65,11 +49,7 @@ const CardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn(
-      // Material Design 3 - Body medium
-      "text-sm font-normal leading-5 tracking-[0.25px] text-on-surface-variant",
-      className
-    )}
+    className={cn("text-sm text-neutral-500", className)}
     {...props}
   />
 ));
@@ -79,15 +59,7 @@ const CardContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div 
-    ref={ref} 
-    className={cn(
-      // Material Design 3 - 16dp padding
-      "p-4 pt-0", 
-      className
-    )} 
-    {...props} 
-  />
+  <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
 ));
 CardContent.displayName = "CardContent";
 
@@ -97,11 +69,7 @@ const CardFooter = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn(
-      // Material Design 3 - 16dp padding, 8dp gap
-      "flex items-center gap-2 p-4 pt-0",
-      className
-    )}
+    className={cn("flex items-center p-6 pt-0", className)}
     {...props}
   />
 ));

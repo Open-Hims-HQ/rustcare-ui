@@ -14,15 +14,9 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      // MD3 Scrim (overlay background)
-      "fixed inset-0 z-50",
-      // Color: scrim with 32% opacity
-      "bg-scrim/[0.32]",
-      // Animation: fade in/out with emphasized easing
+      "fixed inset-0 z-50 bg-black/50 backdrop-blur-sm",
       "data-[state=open]:animate-in data-[state=closed]:animate-out",
       "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-      // Duration: medium2 (300ms)
-      "data-[state=open]:duration-300 data-[state=closed]:duration-200",
       className
     )}
     {...props}
@@ -39,24 +33,11 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        // MD3 Dialog Container
         "fixed left-[50%] top-[50%] z-50",
-        // Layout
-        "grid w-full max-w-lg",
-        // Transform: center the dialog
+        "grid w-full max-w-lg gap-4",
         "translate-x-[-50%] translate-y-[-50%]",
-        // Spacing: 24dp gap between sections
-        "gap-6",
-        // Shape: Extra-large (28px border radius)
-        "rounded-[28px]",
-        // Surface: surface-container-high background
-        "bg-surface-container-high",
-        // Elevation: Level 3
-        "shadow-xl",
-        // Spacing: 24dp padding
-        "p-6",
-        // Animation: emphasized easing with scale + fade
-        "duration-300",
+        "rounded-xl border border-neutral-200 bg-white p-6 shadow-xl",
+        "duration-200",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
@@ -67,18 +48,20 @@ const DialogContent = React.forwardRef<
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute right-6 top-6 rounded-full p-2 text-on-surface-variant hover:bg-on-surface/[0.08] focus:bg-on-surface/[0.12] focus:outline-none disabled:pointer-events-none data-[state=open]:bg-on-surface/[0.12] transition-colors">
+      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-md p-2 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:pointer-events-none transition-colors">
         <svg
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
+          width="15"
+          height="15"
+          viewBox="0 0 15 15"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6"
+          className="h-4 w-4"
         >
           <path
-            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            d="M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z"
             fill="currentColor"
+            fillRule="evenodd"
+            clipRule="evenodd"
           />
         </svg>
         <span className="sr-only">Close</span>
@@ -94,12 +77,7 @@ const DialogHeader = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      // MD3 Dialog Header
-      "flex flex-col",
-      // Spacing: 16dp gap between icon/title and description
-      "space-y-4",
-      // Text alignment
-      "text-left",
+      "flex flex-col space-y-1.5 text-left",
       className
     )}
     {...props}
@@ -113,12 +91,7 @@ const DialogFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      // MD3 Dialog Actions
-      "flex flex-row justify-end items-center",
-      // Spacing: 8dp gap between buttons
-      "gap-2",
-      // Padding top: 16dp from content
-      "pt-4",
+      "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
       className
     )}
     {...props}
@@ -133,10 +106,7 @@ const DialogTitle = React.forwardRef<
   <DialogPrimitive.Title
     ref={ref}
     className={cn(
-      // MD3 Headline Small (Dialog headline)
-      "text-2xl leading-8 font-normal tracking-normal",
-      // Color: on-surface
-      "text-on-surface",
+      "text-lg font-semibold leading-none tracking-tight text-neutral-900",
       className
     )}
     {...props}
@@ -150,13 +120,7 @@ const DialogDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn(
-      // MD3 Body Medium (Dialog supporting text)
-      "text-sm leading-5 font-normal tracking-[0.25px]",
-      // Color: on-surface-variant
-      "text-on-surface-variant",
-      className
-    )}
+    className={cn("text-sm text-neutral-500", className)}
     {...props}
   />
 ));
