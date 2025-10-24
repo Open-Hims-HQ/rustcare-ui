@@ -15,6 +15,7 @@ import {
   ListFilter,
   Scale,
   Map,
+  Keyboard,
 } from "lucide-react"
 import {
   Menubar,
@@ -27,6 +28,7 @@ import {
 } from "~/components/ui/menubar"
 import { useAnnouncer } from "~/hooks/useAnnouncer"
 import { LanguageSwitcher } from "~/components/LanguageSwitcher"
+import { KeyboardShortcuts } from "~/components/KeyboardShortcuts"
 
 interface AdminLayoutProps {
   children: React.ReactNode
@@ -196,6 +198,11 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                     <MenubarShortcut>⌘?</MenubarShortcut>
                   </MenubarItem>
                   <MenubarItem>
+                    <Keyboard className="mr-2 h-4 w-4" />
+                    Keyboard Shortcuts
+                    <MenubarShortcut>⇧⌘/</MenubarShortcut>
+                  </MenubarItem>
+                  <MenubarItem>
                     <HelpCircle className="mr-2 h-4 w-4" />
                     Support
                   </MenubarItem>
@@ -205,8 +212,9 @@ export function AdminLayout({ children }: AdminLayoutProps) {
               </MenubarMenu>
             </Menubar>
 
-            {/* Language Switcher & User Profile */}
-            <div className="flex items-center space-x-3">
+            {/* Keyboard Shortcuts Button & Language Switcher & User Profile */}
+            <div className="flex items-center space-x-2">
+              <KeyboardShortcuts variant="ghost" iconOnly />
               <LanguageSwitcher
                 currentLanguage={currentLanguage}
                 onLanguageChange={handleLanguageChange}
