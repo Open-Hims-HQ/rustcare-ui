@@ -26,19 +26,20 @@ interface LanguageSwitcherProps {
 }
 
 export function LanguageSwitcher({
-  currentLanguage = "en",
+  currentLanguage,
   onLanguageChange,
   variant = "ghost",
   showLabel = false,
   popularOnly = false,
 }: LanguageSwitcherProps) {
-  const [selectedLang, setSelectedLang] = useState(currentLanguage);
   const [searchQuery, setSearchQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const { t, setLanguage: setGlobalLanguage } = useTranslation();
+  const { t, currentLanguage: globalLanguage, setLanguage: setGlobalLanguage } = useTranslation();
+
+  // Use global language if currentLanguage prop not provided
+  const activeLanguage = currentLanguage || globalLanguage;
 
   const handleLanguageChange = (languageCode: string) => {
-    setSelectedLang(languageCode);
     setGlobalLanguage(languageCode);
     onLanguageChange?.(languageCode);
     setIsOpen(false);
@@ -46,7 +47,7 @@ export function LanguageSwitcher({
     console.log("Language changed to:", languageCode);
   };
 
-  const currentLangData = WORLD_LANGUAGES.find((lang) => lang.code === selectedLang);
+  const currentLangData = WORLD_LANGUAGES.find((lang) => lang.code === activeLanguage);
   
   // Filter languages by search query
   const filterLanguages = (languages: Language[]) => {
@@ -79,7 +80,7 @@ export function LanguageSwitcher({
           variant={variant}
           size="sm"
           className="gap-2"
-          aria-label={t("accessibility.currentLanguage", { language: currentLangData?.name || currentLanguage })}
+          aria-label={t("accessibility.currentLanguage", { language: currentLangData?.name || activeLanguage || "English" })}
         >
           <AccessibleIcon label={t("language.select")}>
             <Globe className="h-4 w-4" />
@@ -154,7 +155,7 @@ export function LanguageSwitcher({
                 className="flex items-center justify-between cursor-pointer px-3 py-2"
                 aria-label={t("accessibility.switchLanguage", { language: language.name })}
                 role="option"
-                aria-selected={selectedLang === language.code}
+                aria-selected={activeLanguage === language.code}
               >
                 <span className="flex items-center gap-2">
                   <span aria-hidden="true" className="text-lg">{language.flag}</span>
@@ -163,7 +164,7 @@ export function LanguageSwitcher({
                     <span className="text-xs text-slate-500">({language.name})</span>
                   )}
                 </span>
-                {selectedLang === language.code && (
+                {activeLanguage === language.code && (
                   <AccessibleIcon label={t("accessibility.selected")}>
                     <Check className="h-4 w-4 text-blue-600" />
                   </AccessibleIcon>
@@ -187,13 +188,13 @@ export function LanguageSwitcher({
                       className="flex items-center justify-between cursor-pointer pl-6 pr-3 py-2"
                       aria-label={t("accessibility.switchLanguage", { language: language.name })}
                       role="option"
-                      aria-selected={selectedLang === language.code}
+                      aria-selected={activeLanguage === language.code}
                     >
                       <span className="flex items-center gap-2">
                         <span aria-hidden="true" className="text-base">{language.flag}</span>
                         <span className="text-sm">{language.nativeName}</span>
                       </span>
-                      {selectedLang === language.code && (
+                      {activeLanguage === language.code && (
                         <AccessibleIcon label={t("accessibility.selected")}>
                           <Check className="h-4 w-4 text-blue-600" />
                         </AccessibleIcon>
