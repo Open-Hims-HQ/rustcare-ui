@@ -301,17 +301,23 @@
 
         <div class="section" id="reports">
             <h3>📈 Test Reports & Coverage</h3>
-            <p>Comprehensive testing with unit tests, integration tests, and end-to-end tests across multiple browsers.</p>
+            <p>Comprehensive testing with unit tests, integration tests, and end-to-end tests across multiple browsers and backend services.</p>
             <div class="reports">
                 <div class="report-card">
-                    <h4>📊 Unit Test Coverage</h4>
-                    <p>Detailed code coverage metrics including line, branch, and function coverage. View untested code and identify areas for improvement.</p>
-                    <a href="coverage/index.html">View Coverage Report →</a>
+                    <h4>📊 Frontend Coverage</h4>
+                    <p>Unit test coverage for React/TypeScript UI components including line, branch, and function coverage metrics.</p>
+                    <a href="coverage/index.html">View Frontend Coverage →</a>
+                </div>
+                
+                <div class="report-card">
+                    <h4>🦀 Backend Coverage</h4>
+                    <p>Rust backend code coverage with cargo-llvm-cov for all services: auth, database, encryption, and workflows.</p>
+                    <a href="backend-coverage/index.html">View Backend Coverage →</a>
                 </div>
                 
                 <div class="report-card">
                     <h4>🎭 E2E Test Results</h4>
-                    <p>Playwright end-to-end test results with screenshots, videos, and detailed execution traces across Chrome, Firefox, Safari, and mobile browsers.</p>
+                    <p>Playwright end-to-end test results with screenshots, videos, and execution traces across Chrome, Firefox, Safari, and mobile browsers.</p>
                     <a href="playwright-report/index.html">View E2E Report →</a>
                 </div>
             </div>

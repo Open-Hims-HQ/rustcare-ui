@@ -70,6 +70,40 @@ jobs:
           else
             echo "Warning: playwright-report directory not found"
           fi
+          # Create placeholder for backend coverage
+          mkdir -p gh-pages/backend-coverage
+          cat > gh-pages/backend-coverage/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+              <title>Backend Coverage - Coming Soon</title>
+              <style>
+                  body {
+                      font-family: system-ui, sans-serif;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      min-height: 100vh;
+                      margin: 0;
+                      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                      color: white;
+                      text-align: center;
+                  }
+                  .container { max-width: 600px; padding: 2rem; }
+                  h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+                  p { font-size: 1.2rem; opacity: 0.9; }
+                  a { color: white; text-decoration: underline; }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <h1>🦀 Backend Coverage</h1>
+                  <p>Rust backend coverage reports are generated separately.</p>
+                  <p><a href="https://github.com/open-hims/rustcare-engine/actions">View Backend Test Runs →</a></p>
+              </div>
+          </body>
+          </html>
+          EOF
           ls -la gh-pages/
       
       - name: Upload test results
