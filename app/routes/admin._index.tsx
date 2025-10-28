@@ -15,14 +15,12 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "~/components/ui/navigation-menu";
-import { Button } from "~/components/ui/button";
+import { buttonVariants } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 
 export const meta: MetaFunction = () => {
@@ -71,32 +69,32 @@ export default function AdminDashboard() {
   const { stats } = useLoaderData<typeof loader>();
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
         {/* Welcome Header */}
-        <div>
-          <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
-            Welcome to RustCare Admin
+        <div className="bg-gradient-to-br from-slate-50 to-blue-50 border border-slate-200 rounded-lg p-6 shadow-sm">
+          <h1 className="text-3xl font-semibold text-slate-900">
+            Admin Dashboard
           </h1>
-          <p className="text-slate-600 mt-2 text-lg">
+          <p className="text-slate-600 mt-1.5 text-sm">
             Manage your healthcare organization's compliance and permissions
           </p>
         </div>
 
         {/* Quick Stats Grid */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Card className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="bg-gradient-to-br from-white to-slate-50 border-slate-200/60 hover:shadow-md transition-all hover:border-blue-200">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-600">
+              <CardTitle className="text-sm font-medium text-slate-700">
                 Total Organizations
               </CardTitle>
               <Building2 className="h-4 w-4 text-blue-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-slate-900">
+              <div className="text-2xl font-semibold text-slate-900">
                 {stats.organizations.total}
               </div>
-              <p className="text-xs text-slate-500 mt-1">
-                <span className="text-green-600 font-medium">
+              <p className="text-xs text-slate-600 mt-1">
+                <span className="text-emerald-600 font-medium">
                   {stats.organizations.active} active
                 </span>
               </p>
@@ -165,48 +163,48 @@ export default function AdminDashboard() {
           <NavigationMenu className="mx-0">
             <NavigationMenuList className="flex-wrap gap-2">
               <NavigationMenuItem>
-                <Link to="/admin/organizations">
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <NavigationMenuLink asChild>
+                  <Link to="/admin/organizations" className={navigationMenuTriggerStyle()}>
                     <Building2 className="mr-2 h-4 w-4" />
                     Organizations
-                  </NavigationMenuLink>
-                </Link>
+                  </Link>
+                </NavigationMenuLink>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <Link to="/admin/employees">
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <NavigationMenuLink asChild>
+                  <Link to="/admin/employees" className={navigationMenuTriggerStyle()}>
                     <Users className="mr-2 h-4 w-4" />
                     Employees
-                  </NavigationMenuLink>
-                </Link>
+                  </Link>
+                </NavigationMenuLink>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <Link to="/admin/roles">
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <NavigationMenuLink asChild>
+                  <Link to="/admin/roles" className={navigationMenuTriggerStyle()}>
                     <Shield className="mr-2 h-4 w-4" />
                     Roles & Permissions
-                  </NavigationMenuLink>
-                </Link>
+                  </Link>
+                </NavigationMenuLink>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <Link to="/admin/compliance">
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <NavigationMenuLink asChild>
+                  <Link to="/admin/compliance" className={navigationMenuTriggerStyle()}>
                     <FileText className="mr-2 h-4 w-4" />
                     Compliance
-                  </NavigationMenuLink>
-                </Link>
+                  </Link>
+                </NavigationMenuLink>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <Link to="/admin/geographic">
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <NavigationMenuLink asChild>
+                  <Link to="/admin/geographic" className={navigationMenuTriggerStyle()}>
                     <MapPin className="mr-2 h-4 w-4" />
                     Geographic
-                  </NavigationMenuLink>
-                </Link>
+                  </Link>
+                </NavigationMenuLink>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
@@ -254,9 +252,9 @@ export default function AdminDashboard() {
                   </span>
                 </div>
               </div>
-              <Button asChild className="w-full">
-                <Link to="/admin/organizations">View All Organizations</Link>
-              </Button>
+              <Link to="/admin/organizations" className={cn(buttonVariants(), "w-full")}>
+                View All Organizations
+              </Link>
             </CardContent>
           </Card>
 
@@ -300,9 +298,9 @@ export default function AdminDashboard() {
                   </span>
                 </div>
               </div>
-              <Button asChild className="w-full">
-                <Link to="/admin/employees">Manage Employees</Link>
-              </Button>
+              <Link to="/admin/employees" className={cn(buttonVariants(), "w-full")}>
+                Manage Employees
+              </Link>
             </CardContent>
           </Card>
 
@@ -346,9 +344,9 @@ export default function AdminDashboard() {
                   </span>
                 </div>
               </div>
-              <Button asChild className="w-full">
-                <Link to="/admin/compliance">View Compliance</Link>
-              </Button>
+              <Link to="/admin/compliance" className={cn(buttonVariants(), "w-full")}>
+                View Compliance
+              </Link>
             </CardContent>
           </Card>
 
@@ -380,9 +378,9 @@ export default function AdminDashboard() {
                   <span>Audit trail included</span>
                 </div>
               </div>
-              <Button asChild className="w-full">
-                <Link to="/admin/roles">Manage Roles</Link>
-              </Button>
+              <Link to="/admin/roles" className={cn(buttonVariants(), "w-full")}>
+                Manage Roles
+              </Link>
             </CardContent>
           </Card>
 
@@ -414,9 +412,9 @@ export default function AdminDashboard() {
                   <span>Auto-assignment rules</span>
                 </div>
               </div>
-              <Button asChild className="w-full">
-                <Link to="/admin/geographic">Manage Locations</Link>
-              </Button>
+              <Link to="/admin/geographic" className={cn(buttonVariants(), "w-full")}>
+                Manage Locations
+              </Link>
             </CardContent>
           </Card>
 
@@ -448,9 +446,9 @@ export default function AdminDashboard() {
                   <span>Audit trail history</span>
                 </div>
               </div>
-              <Button asChild className="w-full" variant="outline">
-                <Link to="/admin/reports">View Reports</Link>
-              </Button>
+              <Link to="/admin/reports" className={cn(buttonVariants({ variant: "outline" }), "w-full")}>
+                View Reports
+              </Link>
             </CardContent>
           </Card>
         </div>

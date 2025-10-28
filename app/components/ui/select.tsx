@@ -1,49 +1,66 @@
 import * as React from "react";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { cn } from "~/lib/utils";
+import { useOptionalPermission } from "~/hooks/usePermissions";
+import type { PermissionCheck } from "~/lib/permissions";
 
 const Select = SelectPrimitive.Root;
 const SelectGroup = SelectPrimitive.Group;
 const SelectValue = SelectPrimitive.Value;
 
+interface SelectTriggerProps extends React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> {
+  permission?: PermissionCheck;
+  hideIfDenied?: boolean;
+}
+
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
->(({ className, children, ...props }, ref) => (
-  <SelectPrimitive.Trigger
-    ref={ref}
-    className={cn(
-      "flex h-10 w-full items-center justify-between rounded-lg border border-neutral-300 bg-white px-3 py-2",
-      "text-sm text-neutral-900 placeholder:text-neutral-400",
-      "transition-colors",
-      "hover:border-neutral-400",
-      "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent",
-      "disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-neutral-50",
-      "[&>span]:line-clamp-1",
-      className
-    )}
-    {...props}
-  >
-    {children}
-    <SelectPrimitive.Icon asChild>
-      <svg
-        width="15"
-        height="15"
-        viewBox="0 0 15 15"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-4 w-4 opacity-50"
-      >
-        <path
-          d="M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.26618 11.9026 7.38064 11.95 7.49999 11.95C7.61933 11.95 7.73379 11.9026 7.81819 11.8182L10.0682 9.56819Z"
-          fill="currentColor"
-          fillRule="evenodd"
-          clipRule="evenodd"
-        />
-      </svg>
-    </SelectPrimitive.Icon>
-  </SelectPrimitive.Trigger>
-));
+  SelectTriggerProps
+>(({ className, children, permission, hideIfDenied = false, ...props }, ref) => {
+  const hasPermission = useOptionalPermission(permission);
+
+  if (permission && !hasPermission && hideIfDenied) {
+    return null;
+  }
+
+  return (
+    <SelectPrimitive.Trigger
+      ref={ref}
+      className={cn(
+        "flex h-10 w-full items-center justify-between rounded-lg border border-neutral-300 bg-white px-3 py-2",
+        "text-sm text-neutral-900 placeholder:text-neutral-400",
+        "transition-colors",
+        "hover:border-neutral-400",
+        "focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent",
+        "disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-neutral-50",
+        "[&>span]:line-clamp-1",
+        permission && !hasPermission && "opacity-70 pointer-events-none",
+        className
+      )}
+      disabled={permission ? !hasPermission || props.disabled : props.disabled}
+      {...props}
+    >
+      {children}
+      <SelectPrimitive.Icon asChild>
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 15 15"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-4 w-4 opacity-50"
+        >
+          <path
+            d="M4.93179 5.43179C4.75605 5.60753 4.75605 5.89245 4.93179 6.06819C5.10753 6.24392 5.39245 6.24392 5.56819 6.06819L7.49999 4.13638L9.43179 6.06819C9.60753 6.24392 9.89245 6.24392 10.0682 6.06819C10.2439 5.89245 10.2439 5.60753 10.0682 5.43179L7.81819 3.18179C7.73379 3.0974 7.61933 3.04999 7.49999 3.04999C7.38064 3.04999 7.26618 3.0974 7.18179 3.18179L4.93179 5.43179ZM10.0682 9.56819C10.2439 9.39245 10.2439 9.10753 10.0682 8.93179C9.89245 8.75606 9.60753 8.75606 9.43179 8.93179L7.49999 10.8636L5.56819 8.93179C5.39245 8.75606 5.10753 8.75606 4.93179 8.93179C4.75605 9.10753 4.75605 9.39245 4.93179 9.56819L7.18179 11.8182C7.26618 11.9026 7.38064 11.95 7.49999 11.95C7.61933 11.95 7.73379 11.9026 7.81819 11.8182L10.0682 9.56819Z"
+            fill="currentColor"
+            fillRule="evenodd"
+            clipRule="evenodd"
+          />
+        </svg>
+      </SelectPrimitive.Icon>
+    </SelectPrimitive.Trigger>
+  );
+})
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
 const SelectScrollUpButton = React.forwardRef<

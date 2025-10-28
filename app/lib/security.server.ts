@@ -13,6 +13,7 @@
 
 import { redirect, json } from "@remix-run/node";
 import type { Session } from "@remix-run/node";
+import { SecurityConfig, getSecurityConfig } from "./security-config";
 
 /**
  * Session data structure
@@ -114,6 +115,13 @@ export function checkRateLimit(request: Request): boolean {
  * In production, this would integrate with your session store
  */
 export async function getUserSession(request: Request): Promise<UserSession | null> {
+  const config = getSecurityConfig();
+  
+  // If auth is disabled, return mock user for development
+  if (!config.ENABLE_AUTH) {
+    return SecurityConfig.DEV_MOCK_USER;
+  }
+
   // TODO: Implement proper session management
   // For now, return null (unauthenticated)
   
@@ -128,7 +136,13 @@ export async function getUserSession(request: Request): Promise<UserSession | nu
  * Require authenticated user
  */
 export async function requireUser(request: Request): Promise<UserSession> {
+  const config = getSecurityConfig();
   const user = await getUserSession(request);
+  
+  // If auth is disabled, return mock user
+  if (!config.ENABLE_AUTH && user) {
+    return user;
+  }
   
   if (!user) {
     throw redirect('/login', {
@@ -139,7 +153,7 @@ export async function requireUser(request: Request): Promise<UserSession> {
   }
 
   // Check session expiry (e.g., 8 hours)
-  const SESSION_TIMEOUT = 8 * 60 * 60 * 1000;
+  const SESSION_TIMEOUT = SecurityConfig.SESSION_TIMEOUT;
   if (Date.now() - user.lastActivity > SESSION_TIMEOUT) {
     throw redirect('/login?reason=expired');
   }
@@ -155,6 +169,13 @@ export async function checkPermission(
   resource: string,
   action: string
 ): Promise<boolean> {
+  const config = getSecurityConfig();
+  
+  // If permissions are disabled, allow all
+  if (!config.ENABLE_PERMISSIONS) {
+    return true;
+  }
+
   const user = await getUserSession(request);
   if (!user) return false;
 
@@ -178,6 +199,13 @@ export async function requirePermission(
   resource: string,
   action: string
 ): Promise<void> {
+  const config = getSecurityConfig();
+  
+  // If permissions are disabled, allow all
+  if (!config.ENABLE_PERMISSIONS) {
+    return;
+  }
+
   const hasPermission = await checkPermission(request, resource, action);
   
   if (!hasPermission) {
@@ -207,6 +235,13 @@ export interface AuditLogEntry {
  * Log audit event (HIPAA compliance)
  */
 export async function logAudit(request: Request, entry: Omit<AuditLogEntry, 'timestamp' | 'ipAddress' | 'userAgent'>): Promise<void> {
+  const config = getSecurityConfig();
+  
+  // If audit logging is disabled, skip
+  if (!config.ENABLE_AUDIT_LOG) {
+    return;
+  }
+
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 
              request.headers.get('x-real-ip') || 
              'unknown';
@@ -241,6 +276,7 @@ export async function validateRequest(
     skipRateLimit?: boolean;
   }
 ): Promise<UserSession | null> {
+  const config = getSecurityConfig();
   const { 
     requireAuth = false, 
     requirePermission,
@@ -249,7 +285,7 @@ export async function validateRequest(
   } = options || {};
 
   // 1. Check rate limit
-  if (!skipRateLimit && !checkRateLimit(request)) {
+  if (!skipRateLimit && config.ENABLE_RATE_LIMIT && !checkRateLimit(request)) {
     throw json(
       { error: 'Too Many Requests', message: 'Rate limit exceeded. Please try again later.' },
       { status: 429 }
@@ -260,15 +296,17 @@ export async function validateRequest(
   const user = await getUserSession(request);
 
   // 3. Validate CSRF for authenticated requests
-  if (!skipCSRF && user) {
+  if (!skipCSRF && config.ENABLE_CSRF && user) {
     const csrfValid = validateCSRF(request, user.userId);
     if (!csrfValid) {
-      await logAudit(request, {
-        userId: user.userId,
-        action: 'csrf_failure',
-        resource: new URL(request.url).pathname,
-        success: false,
-      });
+      if (config.ENABLE_AUDIT_LOG) {
+        await logAudit(request, {
+          userId: user.userId,
+          action: 'csrf_failure',
+          resource: new URL(request.url).pathname,
+          success: false,
+        });
+      }
       throw json(
         { error: 'Forbidden', message: 'Invalid CSRF token' },
         { status: 403 }
@@ -277,12 +315,12 @@ export async function validateRequest(
   }
 
   // 4. Require authentication if needed
-  if (requireAuth && !user) {
+  if (requireAuth && config.ENABLE_AUTH && !user) {
     throw redirect('/login');
   }
 
   // 5. Check permissions if needed
-  if (requirePermission && user) {
+  if (requirePermission && config.ENABLE_PERMISSIONS && user) {
     const hasPermission = await checkPermission(
       request,
       requirePermission.resource,
@@ -290,13 +328,15 @@ export async function validateRequest(
     );
 
     if (!hasPermission) {
-      await logAudit(request, {
-        userId: user.userId,
-        action: 'permission_denied',
-        resource: requirePermission.resource,
-        success: false,
-        details: { requiredAction: requirePermission.action },
-      });
+      if (config.ENABLE_AUDIT_LOG) {
+        await logAudit(request, {
+          userId: user.userId,
+          action: 'permission_denied',
+          resource: requirePermission.resource,
+          success: false,
+          details: { requiredAction: requirePermission.action },
+        });
+      }
 
       throw json(
         { error: 'Forbidden', message: 'Insufficient permissions' },

@@ -52,7 +52,8 @@
     "paste": "Paste",
     "cut": "Cut",
     "undo": "Undo",
-    "redo": "Redo"
+    "redo": "Redo",
+    "expiresAt": "Expires"
   },
   "navigation": {
     "home": "Home",
@@ -284,5 +285,149 @@
     "platformNoteDescription": "On Windows/Linux, replace ⌘ with Ctrl",
     "screenReaderNote": "Screen Reader Accessible",
     "screenReaderDescription": "All keyboard shortcuts work with screen readers. Focus indicators will be visible when navigating with keyboard."
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage system configuration and preferences",
+    "profile": "Profile",
+    "security": "Security",
+    "notifications": "Notifications",
+    "preferences": "Preferences",
+    "integrations": "Integrations",
+    "secrets": {
+      "title": "Secrets Management",
+      "subtitle": "Manage and secure your application secrets",
+      "description": "Store and manage sensitive credentials, API keys, and configuration securely",
+      "listTab": "Secrets",
+      "providersTab": "Providers",
+      "auditTab": "Audit Log",
+      "create": "Create Secret",
+      "edit": "Edit Secret",
+      "delete": "Delete Secret",
+      "rotate": "Rotate Secret",
+      "view": "View Secret",
+      "search": "Search secrets...",
+      "filter": "Filter by provider",
+      "allProviders": "All Providers",
+      "noSecrets": "No secrets found",
+      "noSecretsDescription": "Get started by creating your first secret",
+      "form": {
+        "name": "Secret Name",
+        "namePlaceholder": "database-password",
+        "value": "Secret Value",
+        "valuePlaceholder": "Enter secret value",
+        "description": "Description",
+        "descriptionPlaceholder": "What is this secret used for?",
+        "provider": "Provider",
+        "selectProvider": "Select a provider",
+        "tags": "Tags (comma-separated)",
+        "tagsPlaceholder": "production, database, api",
+        "expiresAt": "Expiration Date",
+        "metadata": "Metadata (JSON)"
+      },
+      "stats": {
+        "total": "Total Secrets",
+        "active": "Active",
+        "expired": "Expired",
+        "rotating": "Rotating"
+      },
+      "status": {
+        "active": "Active",
+        "expired": "Expired",
+        "rotating": "Rotating",
+        "failed": "Failed"
+      },
+      "actions": {
+        "rotateNow": "Rotate Now",
+        "viewHistory": "View History",
+        "copyValue": "Copy Value",
+        "revealValue": "Reveal Value",
+        "hideValue": "Hide Value"
+      },
+      "providerConfig": {
+        "title": "Secret Providers",
+        "subtitle": "Configure secret storage backends",
+        "description": "Connect to various secret management services",
+        "configure": "Configure Provider",
+        "edit": "Edit Configuration",
+        "test": "Test Connection",
+        "enable": "Enable",
+        "disable": "Disable",
+        "vault": {
+          "name": "HashiCorp Vault",
+          "description": "Enterprise-grade secret management",
+          "url": "Vault URL",
+          "token": "Vault Token",
+          "namespace": "Namespace",
+          "mountPath": "Mount Path"
+        },
+        "aws": {
+          "name": "AWS Secrets Manager",
+          "description": "Amazon Web Services secret storage",
+          "region": "AWS Region",
+          "accessKeyId": "Access Key ID",
+          "secretAccessKey": "Secret Access Key",
+          "kmsKeyId": "KMS Key ID (optional)"
+        },
+        "azure": {
+          "name": "Azure Key Vault",
+          "description": "Microsoft Azure secret management",
+          "vaultUrl": "Key Vault URL",
+          "tenantId": "Tenant ID",
+          "clientId": "Client ID",
+          "clientSecret": "Client Secret"
+        },
+        "gcp": {
+          "name": "GCP Secret Manager",
+          "description": "Google Cloud Platform secrets",
+          "projectId": "Project ID",
+          "credentials": "Service Account JSON"
+        },
+        "kubernetes": {
+          "name": "Kubernetes Secrets",
+          "description": "Native Kubernetes secret storage",
+          "namespace": "Namespace",
+          "context": "Kube Context"
+        },
+        "environment": {
+          "name": "Environment Variables",
+          "description": "System environment variables",
+          "prefix": "Variable Prefix"
+        }
+      },
+      "auditLog": {
+        "title": "Audit Log",
+        "subtitle": "Track secret access and modifications",
+        "description": "Monitor all operations performed on secrets",
+        "timestamp": "Timestamp",
+        "user": "User",
+        "action": "Action",
+        "secret": "Secret",
+        "provider": "Provider",
+        "result": "Result",
+        "details": "Details",
+        "ipAddress": "IP Address",
+        "userAgent": "User Agent",
+        "search": "Search audit log...",
+        "filter": "Filter by action",
+        "allActions": "All Actions",
+        "dateRange": "Date Range",
+        "export": "Export Log",
+        "actions": {
+          "created": "Created",
+          "read": "Read",
+          "updated": "Updated",
+          "deleted": "Deleted",
+          "rotated": "Rotated",
+          "accessed": "Accessed",
+          "failed": "Failed"
+        },
+        "results": {
+          "success": "Success",
+          "failure": "Failure",
+          "denied": "Denied"
+        }
+      }
+    }
   }
 }

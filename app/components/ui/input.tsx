@@ -1,6 +1,8 @@
 import * as React from "react";
 import { Info } from "lucide-react";
 import { cn } from "~/lib/utils";
+import { useOptionalPermission } from "~/hooks/usePermissions";
+import type { PermissionCheck } from "~/lib/permissions";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -10,13 +12,23 @@ export interface InputProps
   infoId?: string;
   /** Aria-describedby for linking input to help text */
   "aria-describedby"?: string;
+  /** Permission check for this input */
+  permission?: PermissionCheck;
+  /** If true, hide input when permission is denied. If false, make it readonly/disabled */
+  hideIfDenied?: boolean;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, showInfoIcon, infoId, "aria-describedby": ariaDescribedBy, ...props }, ref) => {
+  ({ className, type, showInfoIcon, infoId, permission, hideIfDenied = false, "aria-describedby": ariaDescribedBy, ...props }, ref) => {
     const inputId = props.id || `input-${React.useId()}`;
+    const hasPermission = useOptionalPermission(permission);
     const helpTextId = infoId || `${inputId}-help`;
     const describedBy = ariaDescribedBy || (showInfoIcon ? helpTextId : undefined);
+
+    // If permission is denied and hideIfDenied is true, don't render
+    if (permission && !hasPermission && hideIfDenied) {
+      return null;
+    }
 
     return (
       <div className="relative w-full">
@@ -31,11 +43,14 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             "aria-[invalid=true]:border-danger-500 aria-[invalid=true]:ring-danger-500",
             "file:border-0 file:bg-transparent file:text-sm file:font-medium",
             showInfoIcon && "pr-10", // Add padding for info icon
+            permission && !hasPermission && "opacity-70",
             className
           )}
           ref={ref}
           id={inputId}
           aria-describedby={describedBy}
+          readOnly={permission ? !hasPermission || props.readOnly : props.readOnly}
+          disabled={permission ? !hasPermission || props.disabled : props.disabled}
           {...props}
         />
         {showInfoIcon && (
