@@ -60,8 +60,17 @@ jobs:
         run: |
           mkdir -p gh-pages
           cp index.html gh-pages/
-          cp -r coverage gh-pages/coverage 2>/dev/null || true
-          cp -r playwright-report gh-pages/playwright-report 2>/dev/null || true
+          if [ -d "coverage" ]; then
+            cp -r coverage gh-pages/
+          else
+            echo "Warning: coverage directory not found"
+          fi
+          if [ -d "playwright-report" ]; then
+            cp -r playwright-report gh-pages/
+          else
+            echo "Warning: playwright-report directory not found"
+          fi
+          ls -la gh-pages/
       
       - name: Upload test results
         uses: actions/upload-artifact@v4
