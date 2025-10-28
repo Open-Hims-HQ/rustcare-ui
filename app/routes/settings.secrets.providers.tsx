@@ -37,7 +37,7 @@ import { useTranslation } from "~/hooks/useTranslation";
 interface ProviderConfig {
   id: string;
   name: string;
-  type: "vault" | "aws" | "azure" | "gcp" | "kubernetes" | "environment";
+  type: "vault" | "aws" | "azure" | "gcp" | "kubernetes" | "environment" | "kms";
   enabled: boolean;
   priority: number;
   config: Record<string, any>;
@@ -138,6 +138,7 @@ export default function ProvidersManagement() {
       gcp: "text-red-600",
       kubernetes: "text-blue-500",
       environment: "text-slate-600",
+      kms: "text-purple-600",
     };
     return colors[type] || "text-slate-600";
   };
@@ -266,6 +267,26 @@ export default function ProvidersManagement() {
                         <code className="text-xs bg-slate-100 px-2 py-1 rounded">
                           {provider.config.region}
                         </code>
+                      </div>
+                    )}
+                    {provider.type === "kms" && (
+                      <div className="text-sm space-y-1">
+                        {provider.config.kms_provider && (
+                          <div>
+                            <span className="text-muted-foreground">Provider: </span>
+                            <code className="text-xs bg-slate-100 px-2 py-1 rounded">
+                              {provider.config.kms_provider}
+                            </code>
+                          </div>
+                        )}
+                        {provider.config.key_name && (
+                          <div>
+                            <span className="text-muted-foreground">Key: </span>
+                            <code className="text-xs bg-slate-100 px-2 py-1 rounded">
+                              {provider.config.key_name}
+                            </code>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -398,6 +419,9 @@ function CreateProviderModal({
                 <SelectItem value="kubernetes">
                   {t("settings.secrets.providerConfig.kubernetes.name")}
                 </SelectItem>
+                <SelectItem value="kms">
+                  {t("settings.secrets.providerConfig.kms.name")}
+                </SelectItem>
                 <SelectItem value="environment">
                   {t("settings.secrets.providerConfig.environment.name")}
                 </SelectItem>
@@ -427,6 +451,7 @@ function CreateProviderModal({
           {providerType === "azure" && <AzureConfig />}
           {providerType === "gcp" && <GcpConfig />}
           {providerType === "kubernetes" && <KubernetesConfig />}
+          {providerType === "kms" && <KmsConfig />}
         </div>
 
         <DialogFooter className="mt-6">
@@ -698,6 +723,157 @@ function KubernetesConfig() {
             type="text"
             placeholder={t("settings.secrets.providerConfig.kubernetes.useInClusterConfig")}
           />
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function KmsConfig() {
+  const { t } = useTranslation();
+  const [kmsProvider, setKmsProvider] = useState<string>("vault");
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-sm">
+          {t("settings.secrets.providerConfig.kms.configuration")}
+        </CardTitle>
+        <CardDescription className="text-xs">
+          KMS (Key Management Service) encrypts data encryption keys (DEKs) for envelope encryption
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid gap-2">
+          <Label htmlFor="kms_provider">
+            {t("settings.secrets.providerConfig.kms.provider")} *
+          </Label>
+          <Select name="kms_provider" value={kmsProvider} onValueChange={setKmsProvider}>
+            <SelectTrigger id="kms_provider">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="vault">Vault KMS</SelectItem>
+              <SelectItem value="aws">AWS KMS</SelectItem>
+              <SelectItem value="azure">Azure Key Vault</SelectItem>
+              <SelectItem value="gcp">Google Cloud KMS</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {kmsProvider === "vault" && (
+          <>
+            <div className="grid gap-2">
+              <Label htmlFor="kms_vault_addr">
+                Vault Address *
+              </Label>
+              <Input
+                id="kms_vault_addr"
+                name="kms_vault_addr"
+                type="text"
+                required
+                placeholder="http://localhost:8200"
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="kms_vault_token">
+                Vault Token *
+              </Label>
+              <Input
+                id="kms_vault_token"
+                name="kms_vault_token"
+                type="password"
+                required
+                placeholder="s.xxxxxxxxxxxxx"
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="kms_vault_mount">
+                Transit Mount Path
+              </Label>
+              <Input
+                id="kms_vault_mount"
+                name="kms_vault_mount"
+                type="text"
+                defaultValue="transit"
+                placeholder="transit"
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="kms_key_name">
+                Key Name *
+              </Label>
+              <Input
+                id="kms_key_name"
+                name="kms_key_name"
+                type="text"
+                required
+                placeholder="my-master-key"
+              />
+            </div>
+          </>
+        )}
+
+        {kmsProvider === "aws" && (
+          <>
+            <div className="grid gap-2">
+              <Label htmlFor="kms_aws_region">
+                AWS Region *
+              </Label>
+              <Input
+                id="kms_aws_region"
+                name="kms_aws_region"
+                type="text"
+                required
+                placeholder="us-east-1"
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="kms_key_id">
+                KMS Key ID or ARN *
+              </Label>
+              <Input
+                id="kms_key_id"
+                name="kms_key_id"
+                type="text"
+                required
+                placeholder="alias/my-key or arn:aws:kms:..."
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="kms_aws_access_key">
+                AWS Access Key ID
+              </Label>
+              <Input
+                id="kms_aws_access_key"
+                name="kms_aws_access_key"
+                type="text"
+                placeholder="Leave empty to use IAM role"
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="kms_aws_secret_key">
+                AWS Secret Access Key
+              </Label>
+              <Input
+                id="kms_aws_secret_key"
+                name="kms_aws_secret_key"
+                type="password"
+                placeholder="Leave empty to use IAM role"
+              />
+            </div>
+          </>
+        )}
+
+        <div className="bg-blue-50 border border-blue-200 rounded p-3 text-xs text-blue-700">
+          <strong>ℹ️ KMS Integration:</strong> This enables envelope encryption where data is encrypted with DEKs, 
+          and DEKs are encrypted with your KMS master key. All crypto operations happen on the backend.
         </div>
       </CardContent>
     </Card>

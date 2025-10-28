@@ -46,6 +46,25 @@ export const API_ENDPOINTS = {
     LOGS: '/audit/logs',
     ACCESS_LOGS: '/audit/access',
   },
+
+  // KMS (Key Management Service)
+  KMS: {
+    GENERATE_DATA_KEY: '/kms/datakey/generate',
+    DECRYPT_DATA_KEY: '/kms/datakey/decrypt',
+    ENCRYPT: '/kms/encrypt',
+    DECRYPT: '/kms/decrypt',
+    RE_ENCRYPT: '/kms/re-encrypt',
+    KEYS: '/kms/keys',
+    KEY_BY_ID: (keyId: string) => `/kms/keys/${keyId}`,
+    ENABLE_ROTATION: (keyId: string) => `/kms/keys/${keyId}/rotation/enable`,
+    DISABLE_ROTATION: (keyId: string) => `/kms/keys/${keyId}/rotation/disable`,
+    ROTATION_STATUS: (keyId: string) => `/kms/keys/${keyId}/rotation/status`,
+    ROTATE_KEY: (keyId: string) => `/kms/keys/${keyId}/rotate`,
+    ENABLE_KEY: (keyId: string) => `/kms/keys/${keyId}/enable`,
+    DISABLE_KEY: (keyId: string) => `/kms/keys/${keyId}/disable`,
+    SCHEDULE_DELETION: (keyId: string) => `/kms/keys/${keyId}/schedule-deletion`,
+    CANCEL_DELETION: (keyId: string) => `/kms/keys/${keyId}/cancel-deletion`,
+  },
 } as const;
 
 // HTTP Methods
