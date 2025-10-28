@@ -1,10 +1,15 @@
-name: E2E Tests
+name: E2E Tests & Coverage
 
 on:
   push:
     branches: [main, develop]
   pull_request:
     branches: [main, develop]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   test:
@@ -15,22 +20,139 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+      
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: 'pnpm'
       
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install
       
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+        run: pnpm exec playwright install --with-deps
       
-      - name: Run Playwright tests
-        run: npm run test:e2e
+      - name: Run unit tests with coverage
+        run: pnpm test:coverage
         env:
           CI: true
+      
+      - name: Run Playwright E2E tests
+        run: pnpm test:e2e
+        env:
+          CI: true
+      
+      - name: Generate coverage report index
+        if: always()
+        run: |
+          mkdir -p gh-pages
+          cp -r coverage gh-pages/coverage
+          cp -r playwright-report gh-pages/playwright-report
+          cat > gh-pages/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>RustCare UI - Test Reports</title>
+              <style>
+                  body {
+                      font-family: system-ui, -apple-system, sans-serif;
+                      max-width: 1200px;
+                      margin: 0 auto;
+                      padding: 2rem;
+                      background: #f5f5f5;
+                  }
+                  .container {
+                      background: white;
+                      border-radius: 8px;
+                      padding: 2rem;
+                      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                  }
+                  h1 {
+                      color: #333;
+                      border-bottom: 3px solid #007bff;
+                      padding-bottom: 1rem;
+                  }
+                  .reports {
+                      display: grid;
+                      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                      gap: 2rem;
+                      margin-top: 2rem;
+                  }
+                  .report-card {
+                      border: 1px solid #ddd;
+                      border-radius: 8px;
+                      padding: 1.5rem;
+                      transition: transform 0.2s, box-shadow 0.2s;
+                  }
+                  .report-card:hover {
+                      transform: translateY(-4px);
+                      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                  }
+                  .report-card h2 {
+                      color: #007bff;
+                      margin-top: 0;
+                  }
+                  .report-card p {
+                      color: #666;
+                      line-height: 1.6;
+                  }
+                  .report-card a {
+                      display: inline-block;
+                      background: #007bff;
+                      color: white;
+                      padding: 0.75rem 1.5rem;
+                      border-radius: 4px;
+                      text-decoration: none;
+                      margin-top: 1rem;
+                      transition: background 0.2s;
+                  }
+                  .report-card a:hover {
+                      background: #0056b3;
+                  }
+                  .metadata {
+                      margin-top: 2rem;
+                      padding: 1rem;
+                      background: #f8f9fa;
+                      border-radius: 4px;
+                      font-size: 0.9rem;
+                      color: #666;
+                  }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <h1>🚀 RustCare UI - Test Reports</h1>
+                  
+                  <div class="reports">
+                      <div class="report-card">
+                          <h2>📊 Unit Test Coverage</h2>
+                          <p>View detailed code coverage metrics for unit tests including line, branch, and function coverage.</p>
+                          <a href="coverage/index.html">View Coverage Report</a>
+                      </div>
+                      
+                      <div class="report-card">
+                          <h2>🎭 E2E Test Results</h2>
+                          <p>Playwright end-to-end test results with screenshots, videos, and detailed test execution traces.</p>
+                          <a href="playwright-report/index.html">View E2E Report</a>
+                      </div>
+                  </div>
+                  
+                  <div class="metadata">
+                      <strong>Branch:</strong> ${{ github.ref_name }}<br>
+                      <strong>Commit:</strong> ${{ github.sha }}<br>
+                      <strong>Generated:</strong> $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+                  </div>
+              </div>
+          </body>
+          </html>
+          EOF
       
       - name: Upload test results
         uses: actions/upload-artifact@v4
@@ -40,6 +162,14 @@ jobs:
           path: playwright-report/
           retention-days: 30
       
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 30
+      
       - name: Upload test videos
         uses: actions/upload-artifact@v4
         if: failure()
@@ -47,3 +177,17 @@ jobs:
           name: test-videos
           path: test-results/
           retention-days: 7
+      
+      - name: Setup Pages
+        if: always() && github.ref == 'refs/heads/main'
+        uses: actions/configure-pages@v4
+      
+      - name: Upload to GitHub Pages
+        if: always() && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: gh-pages
+      
+      - name: Deploy to GitHub Pages
+        if: always() && github.ref == 'refs/heads/main'
+        uses: actions/deploy-pages@v4

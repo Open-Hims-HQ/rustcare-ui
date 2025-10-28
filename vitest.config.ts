@@ -16,6 +16,8 @@ export default defineConfig({
       '**/e2e/**',
       '**/*.spec.ts',
     ],
+    reporters: ['default', 'html'],
+    outputFile: './html/index.html',
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
@@ -28,10 +30,12 @@ export default defineConfig({
         '.cache/',
       ],
       all: true,
-      lines: 80,
-      functions: 80,
-      branches: 80,
-      statements: 80,
+      thresholds: {
+        lines: 80,
+        functions: 80,
+        branches: 80,
+        statements: 80,
+      },
     },
   },
   resolve: {
