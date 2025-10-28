@@ -54,11 +54,11 @@ export default function LandingPage() {
               <a href="#architecture" className="text-gray-600 hover:text-gray-900 transition-colors">
                 Architecture
               </a>
+              <a href="#comparison" className="text-gray-600 hover:text-gray-900 transition-colors">
+                Why RustCare
+              </a>
               <a href="#security" className="text-gray-600 hover:text-gray-900 transition-colors">
                 Security
-              </a>
-              <a href="#testing" className="text-gray-600 hover:text-gray-900 transition-colors">
-                Testing
               </a>
               <Link
                 to="/login"
@@ -1982,7 +1982,255 @@ pub fn get_patient_risk_score(patient_id: &str) -> Result<f64> {
               </p>
             </div>
           </div>
+        </div>
+      </section>
 
+      {/* Comparison Section */}
+      <section id="comparison" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-slate-900 to-indigo-900">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="inline-block px-4 py-2 bg-blue-500/20 text-blue-300 rounded-full text-sm font-semibold mb-6">
+              ⚖️ Why RustCare?
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Built for the Modern Healthcare Era
+            </h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              RustCare represents next-generation healthcare technology with performance, security, and efficiency that traditional systems can't match.
+            </p>
+          </div>
+
+          {/* Key Differentiators Grid */}
+          <div className="grid md:grid-cols-3 gap-8 mb-16">
+            <div className="p-8 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20">
+              <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl mb-6 mx-auto">
+                <Zap className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-white text-center mb-4">200x Faster</h3>
+              <p className="text-gray-300 text-center mb-4">Sub-millisecond authentication vs. 50-200ms in traditional systems</p>
+              <div className="space-y-2 text-sm text-gray-400">
+                <div className="flex items-center justify-between">
+                  <span>Traditional:</span>
+                  <span className="text-red-400">50-200ms</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>RustCare:</span>
+                  <span className="text-green-400">&lt;1ms</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-8 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20">
+              <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl mb-6 mx-auto">
+                <Server className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-white text-center mb-4">40x Less RAM</h3>
+              <p className="text-gray-300 text-center mb-4">Runs on Raspberry Pi with &lt;100 MB RAM</p>
+              <div className="space-y-2 text-sm text-gray-400">
+                <div className="flex items-center justify-between">
+                  <span>Traditional:</span>
+                  <span className="text-red-400">1-4 GB RAM</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>RustCare:</span>
+                  <span className="text-green-400">&lt;100 MB</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-8 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20">
+              <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl mb-6 mx-auto">
+                <Shield className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-white text-center mb-4">70% Fewer Vulnerabilities</h3>
+              <p className="text-gray-300 text-center mb-4">Memory safety guaranteed by Rust's ownership system</p>
+              <div className="space-y-2 text-sm text-gray-400">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-400" />
+                  <span>No buffer overflows</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-400" />
+                  <span>No use-after-free</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Comparison Table */}
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead className="bg-white/5">
+                  <tr>
+                    <th className="px-6 py-4 text-white font-semibold">Feature</th>
+                    <th className="px-6 py-4 text-gray-400 font-semibold">Traditional Systems</th>
+                    <th className="px-6 py-4 text-blue-300 font-semibold">🚀 RustCare</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/10">
+                  <tr className="hover:bg-white/5 transition-colors">
+                    <td className="px-6 py-4 text-white font-medium">Core Technology</td>
+                    <td className="px-6 py-4 text-gray-400">Java / Spring (JVM)</td>
+                    <td className="px-6 py-4 text-gray-300">Rust + React (memory-safe)</td>
+                  </tr>
+                  <tr className="hover:bg-white/5 transition-colors">
+                    <td className="px-6 py-4 text-white font-medium">Deployment</td>
+                    <td className="px-6 py-4 text-gray-400">Heavy (1-2 GB RAM min)</td>
+                    <td className="px-6 py-4 text-gray-300">Edge-ready (&lt;100 MB RAM)</td>
+                  </tr>
+                  <tr className="hover:bg-white/5 transition-colors">
+                    <td className="px-6 py-4 text-white font-medium">Security</td>
+                    <td className="px-6 py-4 text-gray-400">Basic RBAC</td>
+                    <td className="px-6 py-4 text-gray-300">Zero-Trust + Zanzibar + PQC</td>
+                  </tr>
+                  <tr className="hover:bg-white/5 transition-colors">
+                    <td className="px-6 py-4 text-white font-medium">Compliance</td>
+                    <td className="px-6 py-4 text-gray-400">HIPAA (basic), HL7 v2.x</td>
+                    <td className="px-6 py-4 text-gray-300">HIPAA + FHIR R4+ + GDPR + WHO</td>
+                  </tr>
+                  <tr className="hover:bg-white/5 transition-colors">
+                    <td className="px-6 py-4 text-white font-medium">Architecture</td>
+                    <td className="px-6 py-4 text-gray-400">Monolithic core</td>
+                    <td className="px-6 py-4 text-gray-300">Microservices + WASM plugins</td>
+                  </tr>
+                  <tr className="hover:bg-white/5 transition-colors">
+                    <td className="px-6 py-4 text-white font-medium">Offline Support</td>
+                    <td className="px-6 py-4 text-gray-400">Weak (requires server)</td>
+                    <td className="px-6 py-4 text-gray-300">Offline-first with sync</td>
+                  </tr>
+                  <tr className="hover:bg-white/5 transition-colors">
+                    <td className="px-6 py-4 text-white font-medium">Extensibility</td>
+                    <td className="px-6 py-4 text-gray-400">Language-specific</td>
+                    <td className="px-6 py-4 text-gray-300">WASM SDK (any language)</td>
+                  </tr>
+                  <tr className="hover:bg-white/5 transition-colors">
+                    <td className="px-6 py-4 text-white font-medium">Testing Coverage</td>
+                    <td className="px-6 py-4 text-gray-400">Moderate</td>
+                    <td className="px-6 py-4 text-gray-300">1,000+ tests, 85%+ coverage</td>
+                  </tr>
+                  <tr className="hover:bg-white/5 transition-colors">
+                    <td className="px-6 py-4 text-white font-medium">License</td>
+                    <td className="px-6 py-4 text-gray-400">MPL 2.0 / AGPL 3.0</td>
+                    <td className="px-6 py-4 text-gray-300">Apache 2.0 (business-friendly)</td>
+                  </tr>
+                  <tr className="hover:bg-white/5 transition-colors">
+                    <td className="px-6 py-4 text-white font-medium">5-Year TCO</td>
+                    <td className="px-6 py-4 text-gray-400">$270k-$650k</td>
+                    <td className="px-6 py-4 text-green-400 font-semibold">$65k-$190k (70% savings)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Real-World Impact */}
+          <div className="mt-16 grid md:grid-cols-2 gap-8">
+            <div className="p-8 bg-gradient-to-br from-red-900/30 to-pink-900/30 backdrop-blur-lg rounded-2xl border border-red-500/30">
+              <h3 className="text-2xl font-bold text-white mb-4">❌ Traditional Systems</h3>
+              <ul className="space-y-3 text-gray-300">
+                <li className="flex items-start gap-2">
+                  <span className="text-red-400 mt-1">•</span>
+                  <span>Require dedicated IT infrastructure</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-400 mt-1">•</span>
+                  <span>High operational costs (servers, maintenance)</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-400 mt-1">•</span>
+                  <span>Limited deployment in rural settings</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-400 mt-1">•</span>
+                  <span>Complex upgrade procedures</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-400 mt-1">•</span>
+                  <span>Weak offline capabilities</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="p-8 bg-gradient-to-br from-green-900/30 to-emerald-900/30 backdrop-blur-lg rounded-2xl border border-green-500/30">
+              <h3 className="text-2xl font-bold text-white mb-4">✅ RustCare Advantages</h3>
+              <ul className="space-y-3 text-gray-300">
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
+                  <span>Deploy anywhere: Cloud, on-premises, edge devices</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
+                  <span>Low operational costs with minimal hardware</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
+                  <span>Rural healthcare ready with offline-first design</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
+                  <span>One-click upgrades via Docker/Kubernetes</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
+                  <span>Intelligent sync engine for distributed care</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Target Audience */}
+          <div className="mt-16 p-8 bg-gradient-to-br from-blue-900/30 to-indigo-900/30 backdrop-blur-lg rounded-2xl border border-blue-500/30">
+            <h3 className="text-2xl font-bold text-white mb-6 text-center">Perfect For</h3>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="text-center">
+                <div className="text-4xl mb-2">🏥</div>
+                <div className="text-white font-semibold mb-1">Small Clinics</div>
+                <div className="text-sm text-gray-400">Limited IT budgets</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl mb-2">🌾</div>
+                <div className="text-white font-semibold mb-1">Rural Healthcare</div>
+                <div className="text-sm text-gray-400">Intermittent connectivity</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl mb-2">🚑</div>
+                <div className="text-white font-semibold mb-1">Mobile Units</div>
+                <div className="text-sm text-gray-400">Operating from vehicles</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl mb-2">🏢</div>
+                <div className="text-white font-semibold mb-1">Enterprise</div>
+                <div className="text-sm text-gray-400">Multi-site deployments</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl mb-2">🌍</div>
+                <div className="text-white font-semibold mb-1">Health NGOs</div>
+                <div className="text-sm text-gray-400">Low-resource settings</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl mb-2">🔬</div>
+                <div className="text-white font-semibold mb-1">Research</div>
+                <div className="text-sm text-gray-400">FHIR R4+ compatibility</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl mb-2">🏛️</div>
+                <div className="text-white font-semibold mb-1">Governments</div>
+                <div className="text-sm text-gray-400">WHO/ICD compliance</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl mb-2">☁️</div>
+                <div className="text-white font-semibold mb-1">SaaS Providers</div>
+                <div className="text-sm text-gray-400">Healthcare platforms</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testing Section */}
+      <section id="testing" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-3 gap-8">
             <div className="p-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-200">
               <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mb-6 mx-auto">
@@ -2140,6 +2388,7 @@ pub fn get_patient_risk_score(patient_id: &str) -> Result<f64> {
                 <li><a href="https://github.com/open-hims" className="hover:text-white transition-colors">GitHub Organization</a></li>
                 <li><a href="https://github.com/open-hims/rustcare-engine" className="hover:text-white transition-colors">Backend Repository</a></li>
                 <li><a href="https://github.com/open-hims/rustcare-ui" className="hover:text-white transition-colors">Frontend Repository</a></li>
+                <li><a href="https://github.com/open-hims/.github/blob/main/COMPARISON.md" className="hover:text-white transition-colors">Feature Comparison</a></li>
               </ul>
             </div>
             <div>
