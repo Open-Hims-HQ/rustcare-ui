@@ -69,86 +69,86 @@ export default function AdminDashboard() {
   const { stats } = useLoaderData<typeof loader>();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 p-6 lg:p-8">
         {/* Welcome Header */}
-        <div className="bg-gradient-to-br from-slate-50 to-blue-50 border border-slate-200 rounded-lg p-6 shadow-sm">
-          <h1 className="text-3xl font-semibold text-slate-900">
+        <div className="bg-gradient-to-br from-slate-50 to-blue-50 border-2 border-slate-200 rounded-xl p-8 shadow-sm hover:shadow-md transition-all duration-200">
+          <h1 className="text-4xl font-bold text-slate-900">
             Admin Dashboard
           </h1>
-          <p className="text-slate-600 mt-1.5 text-sm">
+          <p className="text-slate-600 mt-2 text-base">
             Manage your healthcare organization's compliance and permissions
           </p>
         </div>
 
         {/* Quick Stats Grid */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Card className="bg-gradient-to-br from-white to-slate-50 border-slate-200/60 hover:shadow-md transition-all hover:border-blue-200">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-700">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <Card className="bg-gradient-to-br from-white to-slate-50 border-slate-200/60 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 hover:border-blue-300 cursor-pointer">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-sm font-semibold text-slate-700">
                 Total Organizations
               </CardTitle>
-              <Building2 className="h-4 w-4 text-blue-600" />
+              <Building2 className="h-5 w-5 text-blue-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-semibold text-slate-900">
+              <div className="text-3xl font-bold text-slate-900">
                 {stats.organizations.total}
               </div>
-              <p className="text-xs text-slate-600 mt-1">
-                <span className="text-emerald-600 font-medium">
+              <p className="text-sm text-slate-600 mt-2">
+                <span className="text-emerald-600 font-semibold">
                   {stats.organizations.active} active
                 </span>
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-600">
+          <Card className="bg-white border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 hover:border-blue-300 cursor-pointer">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-sm font-semibold text-slate-700">
                 Total Employees
               </CardTitle>
-              <Users className="h-4 w-4 text-blue-600" />
+              <Users className="h-5 w-5 text-blue-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-slate-900">
+              <div className="text-3xl font-bold text-slate-900">
                 {stats.employees.total}
               </div>
-              <p className="text-xs text-slate-500 mt-1">
-                <span className="text-green-600 font-medium">
+              <p className="text-sm text-slate-600 mt-2">
+                <span className="text-green-600 font-semibold">
                   {stats.employees.active} active
                 </span>
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-600">
+          <Card className="bg-white border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 hover:border-green-300 cursor-pointer">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-sm font-semibold text-slate-700">
                 Compliance Rate
               </CardTitle>
-              <CheckCircle2 className="h-4 w-4 text-green-600" />
+              <CheckCircle2 className="h-5 w-5 text-green-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-slate-900">
+              <div className="text-3xl font-bold text-slate-900">
                 {stats.compliance.compliant}%
               </div>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-sm text-slate-600 mt-2">
                 {stats.compliance.frameworks} frameworks monitored
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white/80 backdrop-blur-sm border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-slate-600">
+          <Card className="bg-white border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 hover:border-orange-300 cursor-pointer">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardTitle className="text-sm font-semibold text-slate-700">
                 Pending Reviews
               </CardTitle>
-              <AlertCircle className="h-4 w-4 text-orange-600" />
+              <AlertCircle className="h-5 w-5 text-orange-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-slate-900">
+              <div className="text-3xl font-bold text-slate-900">
                 {stats.compliance.pending}
               </div>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-sm text-slate-600 mt-2">
                 Requires attention
               </p>
             </CardContent>
@@ -157,11 +157,11 @@ export default function AdminDashboard() {
 
         {/* Navigation Menu - Main Actions */}
         <div>
-          <h2 className="text-2xl font-semibold text-slate-900 mb-4">
+          <h2 className="text-2xl font-bold text-slate-900 mb-5">
             Quick Access
           </h2>
           <NavigationMenu className="mx-0">
-            <NavigationMenuList className="flex-wrap gap-2">
+            <NavigationMenuList className="flex-wrap gap-3">
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
                   <Link to="/admin/organizations" className={navigationMenuTriggerStyle()}>

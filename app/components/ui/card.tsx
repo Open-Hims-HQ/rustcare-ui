@@ -20,7 +20,8 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={cn(
-          "rounded-lg bg-white border border-neutral-200 shadow-sm transition-all",
+          "rounded-xl bg-white border border-neutral-200 shadow-sm transition-all duration-200",
+          "hover:shadow-md hover:border-neutral-300",
           permission && !hasPermission && "opacity-50 pointer-events-none",
           className
         )}
@@ -48,7 +49,7 @@ const CardHeader = React.forwardRef<HTMLDivElement, CardHeaderProps>(
       <div
         ref={ref}
         className={cn(
-          "flex flex-col space-y-1.5 p-6",
+          "flex flex-col space-y-2 p-6 pb-4",
           permission && !hasPermission && "opacity-50",
           className
         )}
@@ -78,12 +79,12 @@ const CardTitle = React.forwardRef<HTMLParagraphElement, CardTitleProps>(
     }
 
     return (
-      <div className="flex items-baseline justify-between gap-2">
+      <div className="flex items-baseline justify-between gap-3">
         <h3
           ref={ref}
           id={titleId}
           className={cn(
-            "text-xl font-semibold leading-none tracking-tight text-neutral-900",
+            "text-xl font-semibold leading-tight tracking-tight text-neutral-900",
             permission && !hasPermission && "opacity-50",
             className
           )}
@@ -127,11 +128,11 @@ const CardDescription = React.forwardRef<HTMLParagraphElement, CardDescriptionPr
     }
 
     return (
-      <div className="space-y-1">
+      <div className="space-y-1.5">
         <p
           ref={ref}
           className={cn(
-            "text-sm text-neutral-500",
+            "text-sm text-neutral-600 leading-relaxed",
             permission && !hasPermission && "opacity-50",
             className
           )}
@@ -174,7 +175,7 @@ const CardContent = React.forwardRef<HTMLDivElement, CardContentProps>(
       <div
         ref={ref}
         className={cn(
-          "p-6 pt-0",
+          "px-6 py-4",
           permission && !hasPermission && "opacity-50 pointer-events-none",
           className
         )}
@@ -202,7 +203,7 @@ const CardFooter = React.forwardRef<HTMLDivElement, CardFooterProps>(
       <div
         ref={ref}
         className={cn(
-          "flex items-center p-6 pt-0",
+          "flex items-center gap-3 px-6 py-4 pt-0",
           permission && !hasPermission && "opacity-50",
           className
         )}

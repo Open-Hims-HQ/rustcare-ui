@@ -5,33 +5,35 @@ import { useOptionalPermission } from "~/hooks/usePermissions";
 import type { PermissionCheck } from "~/lib/permissions";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 font-medium transition-all rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 ease-in-out rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed select-none touch-manipulation",
   {
     variants: {
       variant: {
         default:
-          "bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800 shadow-sm",
+          "bg-primary-600 text-white hover:bg-primary-700 hover:shadow-md active:bg-primary-800 active:scale-[0.98] shadow-sm hover:-translate-y-0.5 active:translate-y-0",
         secondary:
-          "bg-white text-neutral-700 border border-neutral-300 hover:bg-neutral-50 hover:border-neutral-400 active:bg-neutral-100",
+          "bg-white text-neutral-700 border border-neutral-300 hover:bg-neutral-50 hover:border-neutral-400 hover:shadow-md active:bg-neutral-100 active:scale-[0.98] shadow-sm hover:-translate-y-0.5 active:translate-y-0",
         outline:
-          "border border-primary-600 text-primary-600 bg-transparent hover:bg-primary-50 active:bg-primary-100",
+          "border-2 border-primary-600 text-primary-600 bg-transparent hover:bg-primary-50 hover:shadow-md active:bg-primary-100 active:scale-[0.98] hover:-translate-y-0.5 active:translate-y-0",
         ghost:
-          "text-neutral-700 hover:bg-neutral-100 active:bg-neutral-200",
+          "text-neutral-700 hover:bg-neutral-100 hover:shadow-sm active:bg-neutral-200 active:scale-[0.98]",
         destructive:
-          "bg-danger-600 text-white hover:bg-danger-700 active:bg-danger-800 shadow-sm",
+          "bg-danger-600 text-white hover:bg-danger-700 hover:shadow-md active:bg-danger-800 active:scale-[0.98] shadow-sm hover:-translate-y-0.5 active:translate-y-0",
         success:
-          "bg-success-600 text-white hover:bg-success-700 active:bg-success-800 shadow-sm",
+          "bg-success-600 text-white hover:bg-success-700 hover:shadow-md active:bg-success-800 active:scale-[0.98] shadow-sm hover:-translate-y-0.5 active:translate-y-0",
         warning:
-          "bg-warning-500 text-white hover:bg-warning-600 active:bg-warning-700 shadow-sm",
+          "bg-warning-500 text-white hover:bg-warning-600 hover:shadow-md active:bg-warning-700 active:scale-[0.98] shadow-sm hover:-translate-y-0.5 active:translate-y-0",
         link:
-          "text-primary-600 underline-offset-4 hover:underline hover:text-primary-700",
+          "text-primary-600 underline-offset-4 hover:underline hover:text-primary-700 active:text-primary-800",
       },
       size: {
-        sm: "h-8 px-3 text-sm",
-        default: "h-10 px-4 text-sm",
-        lg: "h-11 px-6 text-base",
-        xl: "h-12 px-8 text-base",
-        icon: "h-10 w-10",
+        sm: "h-9 px-3 text-sm min-w-[4rem] rounded-md gap-1.5",
+        default: "h-10 px-5 text-sm min-w-[5rem] gap-2",
+        lg: "h-12 px-6 text-base min-w-[6rem] gap-2.5",
+        xl: "h-14 px-8 text-lg min-w-[7rem] gap-3",
+        icon: "h-10 w-10 p-0",
+        "icon-sm": "h-8 w-8 p-0 rounded-md",
+        "icon-lg": "h-12 w-12 p-0",
       },
     },
     defaultVariants: {

@@ -35,14 +35,15 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           type={type}
           className={cn(
-            "flex h-10 w-full rounded-lg border border-neutral-300 bg-white px-3 py-2",
+            "flex h-11 w-full rounded-lg border-2 border-neutral-300 bg-white px-4 py-2.5",
             "text-sm text-neutral-900 placeholder:text-neutral-400",
-            "transition-colors",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:border-transparent",
+            "transition-all duration-200",
+            "hover:border-neutral-400",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:border-primary-500",
             "disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-neutral-50",
-            "aria-[invalid=true]:border-danger-500 aria-[invalid=true]:ring-danger-500",
+            "aria-[invalid=true]:border-danger-500 aria-[invalid=true]:ring-danger-500 aria-[invalid=true]:hover:border-danger-600",
             "file:border-0 file:bg-transparent file:text-sm file:font-medium",
-            showInfoIcon && "pr-10", // Add padding for info icon
+            showInfoIcon && "pr-11", // Add padding for info icon
             permission && !hasPermission && "opacity-70",
             className
           )}
@@ -56,7 +57,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {showInfoIcon && (
           <button
             type="button"
-            className="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition-colors p-1 rounded hover:bg-neutral-100"
             aria-label="Show help information"
             aria-controls={helpTextId}
             // TODO: Implement tooltip/popover for help text
