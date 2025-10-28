@@ -83,19 +83,13 @@ export default function App() {
   }, []);
   
   return (
-    <>
-      {/* CSRF token meta tag for client-side access */}
-      <head>
-        <meta name="csrf-token" content={csrfToken} />
-      </head>
-      <DirectionProvider dir={direction}>
-        <TranslationProvider 
-          defaultLanguage={initialLanguage} 
-          preloadLanguages={["en", "es", "fr", "zh", "ar"]}
-        >
-          <Outlet />
-        </TranslationProvider>
-      </DirectionProvider>
-    </>
+    <DirectionProvider dir={direction}>
+      <TranslationProvider 
+        defaultLanguage={initialLanguage} 
+        preloadLanguages={["en", "es", "fr", "zh", "ar"]}
+      >
+        <Outlet context={{ csrfToken }} />
+      </TranslationProvider>
+    </DirectionProvider>
   );
 }
