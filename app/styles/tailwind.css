@@ -4,9 +4,7 @@
  * Professional healthcare-focused design with consistent theming
  */
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
 @theme {
   /* ============================================
