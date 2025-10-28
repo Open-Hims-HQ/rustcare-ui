@@ -10,6 +10,11 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  actions: read
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   test:
@@ -181,16 +186,17 @@ jobs:
       - name: Setup Pages
         if: always() && github.ref == 'refs/heads/main'
         uses: actions/configure-pages@v4
-        with:
-          enablement: true
+        continue-on-error: true
       
       - name: Upload to GitHub Pages
         if: always() && github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v3
         with:
           path: gh-pages
+        continue-on-error: true
       
       - name: Deploy to GitHub Pages
         id: deployment
         if: always() && github.ref == 'refs/heads/main'
         uses: actions/deploy-pages@v4
+        continue-on-error: true
