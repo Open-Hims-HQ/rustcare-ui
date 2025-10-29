@@ -19,8 +19,8 @@ export default defineConfig({
     },
   },
   build: {
-    // Optimize build for production
-    minify: "terser",
+    // Optimize build for production - use esbuild (faster and no extra deps)
+    minify: "esbuild",
     cssMinify: true,
     rollupOptions: {
       output: {
@@ -41,8 +41,10 @@ export default defineConfig({
     },
     // Increase chunk size warning limit
     chunkSizeWarningLimit: 1000,
-    // Enable source maps for production debugging
-    sourcemap: false, // Set to true if you need debugging in production
+    // Disable source maps for smaller bundle size
+    sourcemap: false,
+    // Target modern browsers for smaller output
+    target: 'esnext',
   },
   optimizeDeps: {
     // Pre-bundle dependencies for faster dev server startup
