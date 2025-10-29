@@ -12,6 +12,10 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
+# Get the project root directory (parent of scripts directory)
+PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$PROJECT_ROOT"
+
 # Configuration
 SERVER_USER="openhims"
 SERVER_IP="20.197.44.40"
@@ -27,6 +31,8 @@ fi
 echo -e "${BLUE}================================${NC}"
 echo -e "${BLUE}  RustCare UI Build & Deploy${NC}"
 echo -e "${BLUE}================================${NC}"
+echo ""
+echo -e "${YELLOW}Working directory: $PROJECT_ROOT${NC}"
 echo ""
 
 # Step 1: Build locally
