@@ -1,5 +1,7 @@
-import type { MetaFunction } from "@remix-run/node";
-import { Link } from "@remix-run/react";
+import type { MetaFunction, LoaderFunctionArgs } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { Link, useLoaderData } from "@remix-run/react";
+import { useMemo } from "react";
 import {
   Shield,
   Zap,
@@ -32,7 +34,31 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+// Add loader with caching for better performance
+export async function loader({ request }: LoaderFunctionArgs) {
+  // Pre-compute static data for the landing page
+  const data = {
+    timestamp: new Date().toISOString(),
+    cacheDuration: 60, // 1 minute cache
+  };
+
+  return json(data, {
+    headers: {
+      "Cache-Control": "public, max-age=60, s-maxage=60",
+      "CDN-Cache-Control": "public, max-age=60",
+      "Vercel-CDN-Cache-Control": "public, max-age=60",
+    },
+  });
+}
+
 export default function LandingPage() {
+  const data = useLoaderData<typeof loader>();
+
+  // Memoize expensive computations to prevent unnecessary re-renders
+  const memoizedFeatures = useMemo(() => features, []);
+  const memoizedArchitectureLayers = useMemo(() => architectureLayers, []);
+  const memoizedSecurityFeatures = useMemo(() => securityFeatures, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Navigation */}
