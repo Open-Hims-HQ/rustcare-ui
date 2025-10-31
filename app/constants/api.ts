@@ -36,10 +36,35 @@ export const API_ENDPOINTS = {
   },
 
   // Healthcare Data
-  PATIENTS: '/patients',
-  PATIENT_BY_ID: (id: string) => `/patients/${id}`,
-  ENCOUNTERS: '/encounters',
-  ENCOUNTER_BY_ID: (id: string) => `/encounters/${id}`,
+  HEALTHCARE: {
+    PATIENTS: '/organizations/:orgId/patients',
+    PATIENT_BY_ID: (orgId: string, patientId: string) => `/organizations/${orgId}/patients/${patientId}`,
+    MEDICAL_RECORDS: '/healthcare/medical-records',
+    MEDICAL_RECORD_BY_ID: (recordId: string) => `/healthcare/medical-records/${recordId}`,
+    MEDICAL_RECORD_AUDIT: (recordId: string) => `/healthcare/medical-records/${recordId}/audit`,
+    PROVIDERS: '/healthcare/providers',
+    PROVIDER_BY_ID: (id: string) => `/healthcare/providers/${id}`,
+    APPOINTMENTS: '/healthcare/appointments',
+    APPOINTMENT_BY_ID: (id: string) => `/healthcare/appointments/${id}`,
+    VITAL_SIGNS: (patientId: string) => `/healthcare/patients/${patientId}/vital-signs`,
+    SERVICE_TYPES: '/healthcare/service-types',
+    SERVICE_TYPE_BY_ID: (id: string) => `/healthcare/service-types/${id}`,
+  },
+
+  // Pharmacy
+  PHARMACY: {
+    PHARMACIES: '/pharmacy/pharmacies',
+    INVENTORY: '/pharmacy/inventory',
+    PRESCRIPTIONS: '/pharmacy/prescriptions',
+  },
+
+  // Vendors
+  VENDORS: {
+    TYPES: '/vendors/types',
+    LIST: '/vendors',
+    INVENTORY: (vendorId: string) => `/vendors/${vendorId}/inventory`,
+    SERVICES: (vendorId: string) => `/vendors/${vendorId}/services`,
+  },
 
   // Audit & Compliance
   AUDIT: {

@@ -16,6 +16,11 @@ import {
   Scale,
   Map,
   Keyboard,
+  Activity,
+  Heart,
+  Pill,
+  Package,
+  Stethoscope,
 } from "lucide-react"
 import {
   Menubar,
@@ -180,6 +185,98 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                       <Map className="mr-2 h-4 w-4" />
                       Geographic Locations
                       <MenubarShortcut>⌘G</MenubarShortcut>
+                    </Link>
+                  </MenubarItem>
+                </MenubarContent>
+              </MenubarMenu>
+
+              {/* Healthcare Menu */}
+              <MenubarMenu>
+                <MenubarTrigger>
+                  <Heart className="mr-2 h-4 w-4" />
+                  Healthcare
+                </MenubarTrigger>
+                <MenubarContent>
+                  <MenubarItem asChild>
+                    <Link to="/admin/healthcare/service-types">
+                      <Settings className="mr-2 h-4 w-4" />
+                      Service Types
+                      <MenubarShortcut>⌘S</MenubarShortcut>
+                    </Link>
+                  </MenubarItem>
+                  <MenubarItem asChild>
+                    <Link to="/admin/healthcare/providers">
+                      <Stethoscope className="mr-2 h-4 w-4" />
+                      Providers
+                      <MenubarShortcut>⌘P</MenubarShortcut>
+                    </Link>
+                  </MenubarItem>
+                  <MenubarSeparator />
+                  <MenubarItem asChild>
+                    <Link to="/admin/emr">
+                      <Activity className="mr-2 h-4 w-4" />
+                      EMR Records
+                      <MenubarShortcut>⌘M</MenubarShortcut>
+                    </Link>
+                  </MenubarItem>
+                </MenubarContent>
+              </MenubarMenu>
+
+              {/* Pharmacy Menu */}
+              <MenubarMenu>
+                <MenubarTrigger>
+                  <Pill className="mr-2 h-4 w-4" />
+                  Pharmacy
+                </MenubarTrigger>
+                <MenubarContent>
+                  <MenubarItem asChild>
+                    <Link to="/admin/pharmacy">
+                      <ListFilter className="mr-2 h-4 w-4" />
+                      Manage Pharmacy
+                      <MenubarShortcut>⌘⇧P</MenubarShortcut>
+                    </Link>
+                  </MenubarItem>
+                  <MenubarSeparator />
+                  <MenubarItem asChild>
+                    <Link to="/admin/pharmacy#inventory">
+                      <Package className="mr-2 h-4 w-4" />
+                      Inventory
+                    </Link>
+                  </MenubarItem>
+                  <MenubarItem asChild>
+                    <Link to="/admin/pharmacy#prescriptions">
+                      <FileText className="mr-2 h-4 w-4" />
+                      Prescriptions
+                    </Link>
+                  </MenubarItem>
+                </MenubarContent>
+              </MenubarMenu>
+
+              {/* Vendors Menu */}
+              <MenubarMenu>
+                <MenubarTrigger>
+                  <Package className="mr-2 h-4 w-4" />
+                  Vendors
+                </MenubarTrigger>
+                <MenubarContent>
+                  <MenubarItem asChild>
+                    <Link to="/admin/vendors">
+                      <ListFilter className="mr-2 h-4 w-4" />
+                      Manage Vendors
+                      <MenubarShortcut>⌘⇧V</MenubarShortcut>
+                    </Link>
+                  </MenubarItem>
+                  <MenubarSeparator />
+                  <MenubarItem asChild>
+                    <Link to="/admin/vendors#types">
+                      <Settings className="mr-2 h-4 w-4" />
+                      Vendor Types
+                    </Link>
+                  </MenubarItem>
+                  <MenubarItem asChild>
+                    <Link to="/admin/vendors#services">
+                      <Package className="mr-2 h-4 w-4" />
+                      Services Catalog
                     </Link>
                   </MenubarItem>
                 </MenubarContent>
