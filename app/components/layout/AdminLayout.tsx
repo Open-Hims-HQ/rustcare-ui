@@ -115,6 +115,12 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                       <MenubarShortcut>⌘D</MenubarShortcut>
                     </Link>
                   </MenubarItem>
+                  <MenubarItem asChild>
+                    <Link to="/admin/onboarding">
+                      <UserPlus className="mr-2 h-4 w-4" />
+                      Hospital Onboarding
+                    </Link>
+                  </MenubarItem>
                   <MenubarSeparator />
                   <MenubarItem>
                     <Download className="mr-2 h-4 w-4" />
