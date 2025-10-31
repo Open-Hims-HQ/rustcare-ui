@@ -110,9 +110,44 @@ ENDSSH
 echo -e "${GREEN}✓ Production dependencies installed${NC}"
 echo ""
 
-# Step 5: Restart the application using systemd
-echo -e "${BLUE}Step 5: Restarting the application on server...${NC}"
+# Step 5: Ensure systemd service exists and restart
+echo -e "${BLUE}Step 5: Setting up systemd service and restarting...${NC}"
 
+# Copy systemd service file if it doesn't exist
+ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no "$SERVER_USER@$SERVER_IP" << 'ENDSERVICEDEF'
+if [ ! -f /etc/systemd/system/remix.service ]; then
+    echo "Creating systemd service file..."
+    
+    sudo tee /etc/systemd/system/remix.service > /dev/null << 'EOF'
+[Unit]
+Description=RustCare Remix Application
+After=network.target
+
+[Service]
+Type=simple
+User=openhims
+WorkingDirectory=/home/openhims/rustcare-ui
+Environment="NVM_DIR=/home/openhims/.nvm"
+Environment="PATH=/home/openhims/.nvm/versions/node/v20.0.0/bin:/usr/local/bin:/usr/bin:/bin"
+ExecStart=/bin/bash -c '. /home/openhims/.nvm/nvm.sh && nvm use 20 && cd /home/openhims/rustcare-ui && pnpm start'
+Restart=always
+RestartSec=10
+StandardOutput=append:/home/openhims/rustcare-ui/app.log
+StandardError=append:/home/openhims/rustcare-ui/app.log
+
+[Install]
+WantedBy=multi-user.target
+EOF
+    
+    sudo systemctl daemon-reload
+    sudo systemctl enable remix.service
+    echo "Service file created and enabled"
+else
+    echo "Service file already exists"
+fi
+ENDSERVICEDEF
+
+# Restart the service
 ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no "$SERVER_USER@$SERVER_IP" << 'ENDSSH'
 sudo systemctl daemon-reload
 sudo systemctl restart remix.service
