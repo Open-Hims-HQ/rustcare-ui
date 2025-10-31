@@ -66,6 +66,16 @@ export const API_ENDPOINTS = {
     SERVICES: (vendorId: string) => `/vendors/${vendorId}/services`,
   },
 
+  // Notifications
+  NOTIFICATIONS: {
+    LIST: '/notifications',
+    BY_ID: (id: string) => `/notifications/${id}`,
+    MARK_READ: (id: string) => `/notifications/${id}/read`,
+    BULK_MARK_READ: '/notifications/bulk-read',
+    UNREAD_COUNT: '/notifications/unread/count',
+    AUDIT_LOGS: (id: string) => `/notifications/${id}/audit-logs`,
+  },
+
   // Audit & Compliance
   AUDIT: {
     LOGS: '/audit/logs',

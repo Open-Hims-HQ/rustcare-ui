@@ -13,6 +13,7 @@ import { DirectionProvider } from "@radix-ui/react-direction";
 import { TranslationProvider } from "~/hooks/useTranslation";
 import { useState, useEffect } from "react";
 import { getLanguage } from "~/lib/i18n/languages";
+import { initAccessibility } from "~/lib/accessibility";
 
 import styles from "./styles/tailwind.css?url";
 
@@ -29,17 +30,17 @@ export const links: LinksFunction = () => [
     crossOrigin: "anonymous",
   },
   
-  // Preload critical fonts
+  // Preload critical fonts - WCAG AAA accessible healthcare fonts
   {
     rel: "preload",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+    href: "https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Open+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap",
     as: "style",
   },
   
-  // Load fonts with optimal settings
+  // Load fonts with optimal settings - Maximum accessibility
   {
     rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+    href: "https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Open+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap",
   },
   
   // Load critical CSS
@@ -98,6 +99,9 @@ export default function App() {
   
   useEffect(() => {
     if (typeof window !== "undefined") {
+      // Initialize accessibility preferences
+      initAccessibility();
+      
       const savedLanguage = localStorage.getItem("preferredLanguage") || "en";
       setInitialLanguage(savedLanguage);
       

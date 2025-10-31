@@ -110,10 +110,11 @@
   
   /* ============================================
      TYPOGRAPHY
-     Clear, readable text hierarchy
+     WCAG AAA accessible fonts for healthcare
+     Order: Lexend > Open Sans > Inter > System fonts
      ============================================ */
-  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  --font-sans: "Lexend", "Open Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Verdana, Tahoma, sans-serif;
+  --font-mono: "JetBrains Mono", "Courier New", monospace;
   
   --font-size-xs: 0.75rem;    /* 12px */
   --font-size-sm: 0.875rem;   /* 14px */
@@ -336,6 +337,69 @@ textarea:focus-visible {
   overflow: visible;
   clip: auto;
   white-space: normal;
+}
+
+/* ============================================
+   ACCESSIBILITY ENHANCEMENTS
+   WCAG AAA compliance features
+   ============================================ */
+
+/* High contrast mode */
+.high-contrast {
+  --color-background: #ffffff;
+  --color-text-primary: #000000;
+  --color-border: #000000;
+  --color-primary-600: #0000ff;
+}
+
+.high-contrast * {
+  background-color: var(--color-background) !important;
+  color: var(--color-text-primary) !important;
+  border-color: var(--color-border) !important;
+}
+
+/* Reduce motion for users sensitive to animations */
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Keyboard navigation enhancements */
+.keyboard-navigation :focus-visible {
+  outline: 3px solid var(--color-primary-600) !important;
+  outline-offset: 2px !important;
+  border-radius: 4px;
+}
+
+/* Font size variations */
+[data-font-size="small"] {
+  font-size: 0.875rem; /* 14px */
+}
+
+[data-font-size="normal"] {
+  font-size: 1rem; /* 16px */
+}
+
+[data-font-size="large"] {
+  font-size: 1.125rem; /* 18px */
+}
+
+[data-font-size="xlarge"] {
+  font-size: 1.25rem; /* 20px */
+}
+
+/* Braille-optimized content spacing */
+.braille-optimized {
+  letter-spacing: 0.05em;
+  word-spacing: 0.1em;
+}
+
+.braille-optimized :is(p, span, div) {
+  line-height: 1.6;
 }
 
 /* ============================================

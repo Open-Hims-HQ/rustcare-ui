@@ -21,6 +21,11 @@ import {
   Pill,
   Package,
   Stethoscope,
+  User,
+  ChevronDown,
+  Accessibility,
+  LogOut,
+  Bell,
 } from "lucide-react"
 import {
   Menubar,
@@ -31,9 +36,18 @@ import {
   MenubarShortcut,
   MenubarTrigger,
 } from "~/components/ui/menubar"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu"
 import { useAnnouncer } from "~/hooks/useAnnouncer"
 import { LanguageSwitcher } from "~/components/LanguageSwitcher"
 import { KeyboardShortcuts } from "~/components/KeyboardShortcuts"
+import { useAccessibility } from "~/lib/accessibility"
 
 interface AdminLayoutProps {
   children: React.ReactNode
@@ -43,11 +57,20 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const location = useLocation()
   const { Announcer } = useAnnouncer()
   const [currentLanguage, setCurrentLanguage] = React.useState("en")
+  const accessibility = useAccessibility()
 
   const handleLanguageChange = (language: string) => {
     setCurrentLanguage(language)
     // TODO: Integrate with i18n library
     console.log("Language changed to:", language)
+  }
+  
+  const toggleAccessibility = () => {
+    const newValue = !accessibility.preferences.audioEnabled && !accessibility.preferences.brailleEnabled
+    accessibility.updatePreferences({ 
+      audioEnabled: newValue,
+      brailleEnabled: newValue 
+    })
   }
 
   return (
@@ -282,6 +305,23 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 </MenubarContent>
               </MenubarMenu>
 
+              {/* Notifications Menu */}
+              <MenubarMenu>
+                <MenubarTrigger>
+                  <Bell className="mr-2 h-4 w-4" />
+                  Notifications
+                </MenubarTrigger>
+                <MenubarContent>
+                  <MenubarItem asChild>
+                    <Link to="/admin/notifications">
+                      <Bell className="mr-2 h-4 w-4" />
+                      All Notifications
+                      <MenubarShortcut>⌘N</MenubarShortcut>
+                    </Link>
+                  </MenubarItem>
+                </MenubarContent>
+              </MenubarMenu>
+
               {/* Help Menu */}
               <MenubarMenu>
                 <MenubarTrigger>
@@ -318,9 +358,55 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 variant="ghost"
                 showLabel={false}
               />
-              <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white text-sm font-semibold">
-                AD
-              </div>
+              
+              {/* User Profile Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger className="focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 rounded-full">
+                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white text-sm font-semibold hover:from-blue-600 hover:to-blue-800 transition-all cursor-pointer">
+                    AD
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">Admin User</p>
+                      <p className="text-xs leading-none text-muted-foreground">admin@rustcare.com</p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  
+                  <DropdownMenuItem asChild>
+                    <Link to="/profile" className="cursor-pointer">
+                      <User className="mr-2 h-4 w-4" />
+                      <span>My Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuItem asChild>
+                    <Link to="/settings" className="cursor-pointer">
+                      <Settings className="mr-2 h-4 w-4" />
+                      <span>Settings</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuSeparator />
+                  
+                  <DropdownMenuItem onClick={toggleAccessibility} className="cursor-pointer">
+                    <Accessibility className="mr-2 h-4 w-4" />
+                    <span>Accessibility</span>
+                    <span className="ml-auto">
+                      {accessibility.preferences.audioEnabled && accessibility.preferences.brailleEnabled ? 'On' : 'Off'}
+                    </span>
+                  </DropdownMenuItem>
+                  
+                  <DropdownMenuSeparator />
+                  
+                  <DropdownMenuItem className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Logout</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
