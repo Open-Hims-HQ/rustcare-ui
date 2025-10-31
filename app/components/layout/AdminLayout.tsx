@@ -194,6 +194,41 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 </MenubarContent>
               </MenubarMenu>
 
+              {/* Permissions & Access Control Menu */}
+              <MenubarMenu>
+                <MenubarTrigger>
+                  <Keyboard className="mr-2 h-4 w-4" />
+                  Permissions
+                </MenubarTrigger>
+                <MenubarContent>
+                  <MenubarItem asChild>
+                    <Link to="/admin/permissions">
+                      <Shield className="mr-2 h-4 w-4" />
+                      Manage Permissions
+                    </Link>
+                  </MenubarItem>
+                  <MenubarItem asChild>
+                    <Link to="/admin/permissions/roles">
+                      <Users className="mr-2 h-4 w-4" />
+                      Zanzibar Roles
+                    </Link>
+                  </MenubarItem>
+                  <MenubarSeparator />
+                  <MenubarItem asChild>
+                    <Link to="/admin/permissions/api">
+                      <FileText className="mr-2 h-4 w-4" />
+                      API Permissions
+                    </Link>
+                  </MenubarItem>
+                  <MenubarItem asChild>
+                    <Link to="/admin/permissions/pages">
+                      <Settings className="mr-2 h-4 w-4" />
+                      Page Permissions
+                    </Link>
+                  </MenubarItem>
+                </MenubarContent>
+              </MenubarMenu>
+
               {/* Compliance Menu */}
               <MenubarMenu>
                 <MenubarTrigger>
