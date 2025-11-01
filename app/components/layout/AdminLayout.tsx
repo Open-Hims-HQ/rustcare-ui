@@ -26,6 +26,12 @@ import {
   Accessibility,
   LogOut,
   Bell,
+  DollarSign,
+  CreditCard,
+  Receipt,
+  TrendingUp,
+  MoreHorizontal,
+  CheckCircle2,
 } from "lucide-react"
 import {
   Menubar,
@@ -346,6 +352,95 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 </MenubarContent>
               </MenubarMenu>
 
+              {/* Insurance Menu */}
+              <MenubarMenu>
+                <MenubarTrigger>
+                  <Shield className="mr-2 h-4 w-4" />
+                  Insurance
+                </MenubarTrigger>
+                <MenubarContent>
+                  <MenubarItem asChild>
+                    <Link to="/admin/insurance">
+                      <Shield className="mr-2 h-4 w-4" />
+                      Providers
+                    </Link>
+                  </MenubarItem>
+                  <MenubarItem asChild>
+                    <Link to="/admin/insurance/plans">
+                      <FileText className="mr-2 h-4 w-4" />
+                      Plans
+                    </Link>
+                  </MenubarItem>
+                  <MenubarItem asChild>
+                    <Link to="/admin/insurance/claim-rules">
+                      <Settings className="mr-2 h-4 w-4" />
+                      Claim Rules
+                    </Link>
+                  </MenubarItem>
+                  <MenubarSeparator />
+                  <MenubarItem asChild>
+                    <Link to="/admin/insurance/eligibility">
+                      <Activity className="mr-2 h-4 w-4" />
+                      Eligibility Check
+                    </Link>
+                  </MenubarItem>
+                  <MenubarItem asChild>
+                    <Link to="/admin/insurance/authorizations">
+                      <CheckCircle2 className="mr-2 h-4 w-4" />
+                      Prior Authorizations
+                    </Link>
+                  </MenubarItem>
+                </MenubarContent>
+              </MenubarMenu>
+
+              {/* Finance Menu */}
+              <MenubarMenu>
+                <MenubarTrigger>
+                  <DollarSign className="mr-2 h-4 w-4" />
+                  Finance
+                </MenubarTrigger>
+                <MenubarContent>
+                  <MenubarItem asChild>
+                    <Link to="/admin/finance/billing">
+                      <Receipt className="mr-2 h-4 w-4" />
+                      Billing
+                      <MenubarShortcut>⌘B</MenubarShortcut>
+                    </Link>
+                  </MenubarItem>
+                  <MenubarItem asChild>
+                    <Link to="/admin/finance/claims">
+                      <FileText className="mr-2 h-4 w-4" />
+                      Claims
+                    </Link>
+                  </MenubarItem>
+                  <MenubarItem asChild>
+                    <Link to="/admin/finance/payments">
+                      <CreditCard className="mr-2 h-4 w-4" />
+                      Payments
+                    </Link>
+                  </MenubarItem>
+                  <MenubarSeparator />
+                  <MenubarItem asChild>
+                    <Link to="/admin/finance/accounting">
+                      <TrendingUp className="mr-2 h-4 w-4" />
+                      Accounting
+                    </Link>
+                  </MenubarItem>
+                  <MenubarItem asChild>
+                    <Link to="/admin/finance/accounting/receivables">
+                      <ListFilter className="mr-2 h-4 w-4" />
+                      Accounts Receivable
+                    </Link>
+                  </MenubarItem>
+                  <MenubarItem asChild>
+                    <Link to="/admin/finance/accounting/reports">
+                      <FileText className="mr-2 h-4 w-4" />
+                      Financial Reports
+                    </Link>
+                  </MenubarItem>
+                </MenubarContent>
+              </MenubarMenu>
+
               {/* Notifications Menu */}
               <MenubarMenu>
                 <MenubarTrigger>
@@ -363,11 +458,11 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 </MenubarContent>
               </MenubarMenu>
 
-              {/* Help Menu */}
+              {/* More Menu */}
               <MenubarMenu>
                 <MenubarTrigger>
-                  <HelpCircle className="mr-2 h-4 w-4" />
-                  Help
+                  <MoreHorizontal className="mr-2 h-4 w-4" />
+                  More
                 </MenubarTrigger>
                 <MenubarContent>
                   <MenubarItem>
@@ -392,7 +487,6 @@ export function AdminLayout({ children }: AdminLayoutProps) {
 
             {/* Keyboard Shortcuts Button & Language Switcher & User Profile */}
             <div className="flex items-center space-x-2">
-              <KeyboardShortcuts variant="ghost" iconOnly />
               <LanguageSwitcher
                 currentLanguage={currentLanguage}
                 onLanguageChange={handleLanguageChange}
