@@ -19,7 +19,7 @@ cd "$PROJECT_ROOT"
 # Configuration
 SERVER_USER="openhims"
 SERVER_IP="20.197.44.40"
-SSH_KEY="$HOME/Projects/rustcare-infra/open-hims_key.pem"
+SSH_KEY="$HOME/Projects/rustcare-infra/Open-Hims-HQ_key.pem"
 REMOTE_DIR="/home/openhims/rustcare-ui"
 
 # Check if SSH key exists

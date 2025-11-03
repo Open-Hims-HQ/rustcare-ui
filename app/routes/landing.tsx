@@ -142,7 +142,7 @@ export default function LandingPage() {
                   <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <a
-                  href="https://github.com/Open-Hims-HQ"
+                  href="https://github.com/Open-Hims-HQ-HQ"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group px-8 py-4 bg-white border-2 border-gray-200 text-gray-900 rounded-xl font-semibold hover:border-gray-300 hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
@@ -400,7 +400,7 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
-                href="https://github.com/Open-Hims-HQ"
+                href="https://github.com/Open-Hims-HQ-HQ"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-8 py-4 bg-white text-blue-600 rounded-xl font-semibold hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2"
@@ -409,7 +409,7 @@ export default function LandingPage() {
                 Start Contributing
               </a>
               <a
-                href="https://github.com/Open-Hims-HQ/rustcare-engine/discussions"
+                href="https://github.com/Open-Hims-HQ-HQ/rustcare-engine/discussions"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-8 py-4 bg-blue-500 text-white rounded-xl font-semibold hover:bg-blue-400 transition-all duration-300 flex items-center justify-center gap-2"
@@ -1515,7 +1515,7 @@ pub fn get_patient_risk_score(patient_id: &str) -> Result<f64> {
           {/* CTA */}
           <div className="mt-12 text-center">
             <a
-              href="https://github.com/Open-Hims-HQ/rustcare-engine/tree/main/plugin-runtime-core"
+              href="https://github.com/Open-Hims-HQ-HQ/rustcare-engine/tree/main/plugin-runtime-core"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-semibold hover:shadow-2xl hover:scale-105 transition-all duration-300"
@@ -2375,7 +2375,7 @@ pub fn get_patient_risk_score(patient_id: &str) -> Result<f64> {
               <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Link>
             <a
-              href="https://github.com/Open-Hims-HQ"
+              href="https://github.com/Open-Hims-HQ-HQ"
               target="_blank"
               rel="noopener noreferrer"
               className="px-8 py-4 bg-white border-2 border-gray-200 text-gray-900 rounded-xl font-semibold hover:border-gray-300 hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2"
@@ -2411,17 +2411,17 @@ pub fn get_patient_risk_score(patient_id: &str) -> Result<f64> {
             <div>
               <h4 className="font-semibold text-white mb-4">Resources</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="https://github.com/Open-Hims-HQ" className="hover:text-white transition-colors">GitHub Organization</a></li>
-                <li><a href="https://github.com/Open-Hims-HQ/rustcare-engine" className="hover:text-white transition-colors">Backend Repository</a></li>
-                <li><a href="https://github.com/Open-Hims-HQ/rustcare-ui" className="hover:text-white transition-colors">Frontend Repository</a></li>
-                <li><a href="https://github.com/Open-Hims-HQ/.github/blob/main/COMPARISON.md" className="hover:text-white transition-colors">Feature Comparison</a></li>
+                <li><a href="https://github.com/Open-Hims-HQ-HQ" className="hover:text-white transition-colors">GitHub Organization</a></li>
+                <li><a href="https://github.com/Open-Hims-HQ-HQ/rustcare-engine" className="hover:text-white transition-colors">Backend Repository</a></li>
+                <li><a href="https://github.com/Open-Hims-HQ-HQ/rustcare-ui" className="hover:text-white transition-colors">Frontend Repository</a></li>
+                <li><a href="https://github.com/Open-Hims-HQ-HQ/.github/blob/main/COMPARISON.md" className="hover:text-white transition-colors">Feature Comparison</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold text-white mb-4">Community</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="https://github.com/Open-Hims-HQ/rustcare-engine/discussions" className="hover:text-white transition-colors">Discussions</a></li>
-                <li><a href="https://github.com/Open-Hims-HQ/rustcare-engine/issues" className="hover:text-white transition-colors">Issues</a></li>
+                <li><a href="https://github.com/Open-Hims-HQ-HQ/rustcare-engine/discussions" className="hover:text-white transition-colors">Discussions</a></li>
+                <li><a href="https://github.com/Open-Hims-HQ-HQ/rustcare-engine/issues" className="hover:text-white transition-colors">Issues</a></li>
                 <li><a href="mailto:support@pages.openhims.health" className="hover:text-white transition-colors">Support</a></li>
               </ul>
             </div>
