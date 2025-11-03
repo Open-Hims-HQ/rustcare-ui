@@ -159,7 +159,7 @@ export default function LoginPage() {
           <div className="flex items-center justify-center gap-4 text-sm text-gray-600">
             <a href="https://pages.openhims.health" className="hover:text-gray-900">About</a>
             <span>•</span>
-            <a href="https://github.com/Open-Hims-HQ-HQ" className="hover:text-gray-900">GitHub</a>
+            <a href="https://github.com/Open-Hims-HQ" className="hover:text-gray-900">GitHub</a>
             <span>•</span>
             <a href="#" className="hover:text-gray-900">Privacy</a>
           </div>
