@@ -323,7 +323,7 @@ Memory Usage:          < 100MB    per instance
 
 - **Website**: https://rustcare.dev
 - **Documentation**: https://docs.rustcare.dev
-- **GitHub**: https://github.com/open-hims/rustcare-engine
+- **GitHub**: https://github.com/Open-Hims-HQ/rustcare-engine
 - **Security**: security@rustcare.dev
 - **Support**: support@rustcare.dev
 

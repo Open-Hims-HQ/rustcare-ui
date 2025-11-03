@@ -99,7 +99,7 @@ jobs:
               <div class="container">
                   <h1>🦀 Backend Coverage</h1>
                   <p>Rust backend coverage reports are generated separately.</p>
-                  <p><a href="https://github.com/open-hims/rustcare-engine/actions">View Backend Test Runs →</a></p>
+                  <p><a href="https://github.com/Open-Hims-HQ/rustcare-engine/actions">View Backend Test Runs →</a></p>
               </div>
           </body>
           </html>
