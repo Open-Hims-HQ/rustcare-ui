@@ -80,7 +80,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100">
+    <div className="flex flex-col min-h-screen bg-white">
       {/* ARIA live regions for screen reader announcements */}
       <Announcer />
 

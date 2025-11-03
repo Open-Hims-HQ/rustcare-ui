@@ -2,8 +2,15 @@ import { expect, afterEach, vi } from 'vitest';
 import { cleanup } from '@testing-library/react';
 import * as matchers from '@testing-library/jest-dom/matchers';
 
-// Extend Vitest's expect with jest-dom matchers
-expect.extend(matchers);
+// Extend Vitest's expect with jest-dom matchers and axe
+try {
+  const { toHaveNoViolations } = require('jest-axe');
+  expect.extend(matchers);
+  expect.extend(toHaveNoViolations);
+} catch (e) {
+  // Jest-axe not available, just extend with jest-dom
+  expect.extend(matchers);
+}
 
 // Mock Remix React hooks
 vi.mock('@remix-run/react', async () => {

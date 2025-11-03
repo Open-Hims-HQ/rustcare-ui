@@ -71,7 +71,7 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-8 p-6 lg:p-8">
         {/* Welcome Header */}
-        <div className="bg-gradient-to-br from-slate-50 to-blue-50 border-2 border-slate-200 rounded-xl p-8 shadow-sm hover:shadow-md transition-all duration-200">
+        <div className="bg-white border border-slate-200 rounded-xl p-8">
           <h1 className="text-4xl font-bold text-slate-900">
             Admin Dashboard
           </h1>
@@ -82,7 +82,7 @@ export default function AdminDashboard() {
 
         {/* Quick Stats Grid */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          <Card className="bg-gradient-to-br from-white to-slate-50 border-slate-200/60 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 hover:border-blue-300 cursor-pointer">
+          <Card className="border border-slate-200 hover:border-slate-300 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
               <CardTitle className="text-sm font-semibold text-slate-700">
                 Total Organizations
@@ -101,7 +101,7 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 hover:border-blue-300 cursor-pointer">
+          <Card className="border border-slate-200 hover:border-slate-300 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
               <CardTitle className="text-sm font-semibold text-slate-700">
                 Total Employees
@@ -120,7 +120,7 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 hover:border-green-300 cursor-pointer">
+          <Card className="border border-slate-200 hover:border-slate-300 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
               <CardTitle className="text-sm font-semibold text-slate-700">
                 Compliance Rate
@@ -137,7 +137,7 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="bg-white border-slate-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 hover:border-orange-300 cursor-pointer">
+          <Card className="border border-slate-200 hover:border-slate-300 transition-colors">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
               <CardTitle className="text-sm font-semibold text-slate-700">
                 Pending Reviews
