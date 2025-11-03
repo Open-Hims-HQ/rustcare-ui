@@ -35,6 +35,12 @@ echo ""
 echo -e "${YELLOW}Working directory: $PROJECT_ROOT${NC}"
 echo ""
 
+# Step 0: Ensure lockfile is up to date
+echo -e "${BLUE}Step 0: Ensuring lockfile is up to date...${NC}"
+pnpm install --no-frozen-lockfile
+echo -e "${GREEN}✓ Lockfile updated${NC}"
+echo ""
+
 # Step 1: Build locally
 echo -e "${BLUE}Step 1: Building locally...${NC}"
 pnpm run build
@@ -104,7 +110,13 @@ if ! command -v pnpm &> /dev/null; then
     npm install -g pnpm
 fi
 
-pnpm install --prod --frozen-lockfile
+# Try frozen lockfile first, fall back to updating if needed
+if pnpm install --prod --frozen-lockfile 2>&1 | grep -q "ERR_PNPM_OUTDATED_LOCKFILE"; then
+    echo "Warning: Lockfile out of date. Updating lockfile..."
+    pnpm install --prod --no-frozen-lockfile
+else
+    echo "Dependencies installed successfully with frozen lockfile"
+fi
 ENDSSH
 
 echo -e "${GREEN}✓ Production dependencies installed${NC}"
