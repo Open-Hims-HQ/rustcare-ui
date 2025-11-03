@@ -3,6 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "~/lib/utils";
 import { useOptionalPermission } from "~/hooks/usePermissions";
 import type { PermissionCheck } from "~/lib/permissions";
+import { useMcp, type McpButtonConfig } from "~/decorators/mcp-component";
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 ease-in-out rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500 disabled:pointer-events-none disabled:opacity-50 disabled:cursor-not-allowed select-none touch-manipulation",
@@ -50,11 +51,16 @@ export interface ButtonProps
   permission?: PermissionCheck;
   hideIfDenied?: boolean;
   disabledMessage?: string;
+  /** MCP configuration for auto-registration */
+  mcp?: McpButtonConfig;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, permission, hideIfDenied = false, disabledMessage, asChild, ...props }, ref) => {
+  ({ className, variant, size, permission, hideIfDenied = false, disabledMessage, asChild, mcp, ...props }, ref) => {
     const hasPermission = useOptionalPermission(permission);
+    
+    // Auto-register MCP config if provided
+    useMcp(mcp);
 
     // If permission is denied and hideIfDenied is true, don't render
     if (permission && !hasPermission && hideIfDenied) {
