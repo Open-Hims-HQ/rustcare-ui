@@ -1,5 +1,5 @@
-import React from "react"
-import { Link, useLocation } from "@remix-run/react"
+import React, { useEffect } from "react"
+import { Link, useLocation, useNavigate } from "@remix-run/react"
 import {
   Home,
   Building2,
@@ -54,6 +54,8 @@ import { useAnnouncer } from "~/hooks/useAnnouncer"
 import { LanguageSwitcher } from "~/components/LanguageSwitcher"
 import { KeyboardShortcuts } from "~/components/KeyboardShortcuts"
 import { useAccessibility } from "~/lib/accessibility"
+import { useAuthStore } from "~/stores/useAuthStore"
+import { authApi } from "~/lib/api/auth"
 
 interface AdminLayoutProps {
   children: React.ReactNode
@@ -61,22 +63,44 @@ interface AdminLayoutProps {
 
 export function AdminLayout({ children }: AdminLayoutProps) {
   const location = useLocation()
+  const navigate = useNavigate()
   const { Announcer } = useAnnouncer()
   const [currentLanguage, setCurrentLanguage] = React.useState("en")
   const accessibility = useAccessibility()
+  const { user, isAuthenticated, logout } = useAuthStore()
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login")
+    }
+  }, [isAuthenticated, navigate])
+
+  const handleLogout = async () => {
+    try {
+      await authApi.logout()
+    } catch (error) {
+      console.error("Logout failed", error)
+    }
+    logout()
+    navigate("/login")
+  }
 
   const handleLanguageChange = (language: string) => {
     setCurrentLanguage(language)
     // TODO: Integrate with i18n library
     console.log("Language changed to:", language)
   }
-  
+
   const toggleAccessibility = () => {
     const newValue = !accessibility.preferences.audioEnabled && !accessibility.preferences.brailleEnabled
-    accessibility.updatePreferences({ 
+    accessibility.updatePreferences({
       audioEnabled: newValue,
-      brailleEnabled: newValue 
+      brailleEnabled: newValue
     })
+  }
+
+  if (!isAuthenticated) {
+    return null // or a loading spinner
   }
 
   return (
@@ -493,39 +517,39 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 variant="ghost"
                 showLabel={false}
               />
-              
+
               {/* User Profile Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger className="focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 rounded-full">
                   <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white text-sm font-semibold hover:from-blue-600 hover:to-blue-800 transition-all cursor-pointer">
-                    AD
+                    {user?.name?.substring(0, 2).toUpperCase() || "AD"}
                   </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuLabel>
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">Admin User</p>
-                      <p className="text-xs leading-none text-muted-foreground">admin@rustcare.com</p>
+                      <p className="text-sm font-medium leading-none">{user?.name || "Admin User"}</p>
+                      <p className="text-xs leading-none text-muted-foreground">{user?.email || "admin@rustcare.com"}</p>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  
+
                   <DropdownMenuItem asChild>
                     <Link to="/profile" className="cursor-pointer">
                       <User className="mr-2 h-4 w-4" />
                       <span>My Profile</span>
                     </Link>
                   </DropdownMenuItem>
-                  
+
                   <DropdownMenuItem asChild>
                     <Link to="/settings" className="cursor-pointer">
                       <Settings className="mr-2 h-4 w-4" />
                       <span>Settings</span>
                     </Link>
                   </DropdownMenuItem>
-                  
+
                   <DropdownMenuSeparator />
-                  
+
                   <DropdownMenuItem onClick={toggleAccessibility} className="cursor-pointer">
                     <Accessibility className="mr-2 h-4 w-4" />
                     <span>Accessibility</span>
@@ -533,10 +557,10 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                       {accessibility.preferences.audioEnabled && accessibility.preferences.brailleEnabled ? 'On' : 'Off'}
                     </span>
                   </DropdownMenuItem>
-                  
+
                   <DropdownMenuSeparator />
-                  
-                  <DropdownMenuItem className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50">
+
+                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50">
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Logout</span>
                   </DropdownMenuItem>

@@ -4,8 +4,8 @@
  */
 
 // Base API URL - can be overridden via environment variable
-export const API_BASE_URL = typeof process !== 'undefined' && process.env?.API_BASE_URL 
-  ? process.env.API_BASE_URL 
+export const API_BASE_URL = typeof process !== 'undefined' && process.env?.API_BASE_URL
+  ? process.env.API_BASE_URL
   : 'https://api.openhims.health/api/v1';
 
 // API Endpoints
@@ -19,20 +19,34 @@ export const API_ENDPOINTS = {
     ROLES: '/permissions/roles',
     ROLE_BY_ID: (id: string) => `/permissions/roles/${id}`,
     USER_PERMISSIONS: (userId: string) => `/permissions/users/${userId}`,
+    CHECK: '/permissions/check',
   },
 
   // Organizations & Hospitals
   ORGANIZATIONS: '/organizations',
   ORGANIZATION_BY_ID: (id: string) => `/organizations/${id}`,
+  ORGANIZATION_USERS: (orgId: string) => `/organizations/${orgId}/users`,
+  RESEND_CREDENTIALS: (userId: string) => `/users/${userId}/resend-credentials`,
+  EMAIL_VERIFY: '/email/verify',
   HOSPITALS: '/hospitals',
   HOSPITAL_BY_ID: (id: string) => `/hospitals/${id}`,
 
   // Authentication & Authorization
   AUTH: {
     CHECK: '/auth/check',
-    LOGIN: '/auth/login',
-    LOGOUT: '/auth/logout',
+    LOGIN: '/login',
+    LOGOUT: '/logout',
     REFRESH: '/auth/refresh',
+  },
+
+  // Forms
+  FORMS: {
+    LIST: '/forms',
+    CREATE: '/forms',
+    BY_ID: (id: string) => `/forms/${id}`,
+    BY_SLUG: (slug: string) => `/forms/slug/${slug}`,
+    SUBMIT: '/forms/submit',
+    SUBMISSIONS: (formId: string) => `/forms/${formId}/submissions`,
   },
 
   // Healthcare Data

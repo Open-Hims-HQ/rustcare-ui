@@ -1,11 +1,12 @@
-import { json, type LoaderFunctionArgs, type MetaFunction, type ActionFunctionArgs } from "@remix-run/node";
-import { useLoaderData, Form, useNavigate } from "@remix-run/react";
+import { json, type LoaderFunctionArgs, type MetaFunction, type ActionFunctionArgs, redirect } from "@remix-run/node";
+import { useLoaderData, Form, useNavigate, useActionData, useNavigation } from "@remix-run/react";
 import { useState } from "react";
-import { UserPlus, Mail, Key, CheckCircle, AlertCircle, Building2, Users } from "lucide-react";
+import { UserPlus, Mail, Key, CheckCircle, AlertCircle, Building2, Users, Loader2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { organizationsApi, onboardingApi } from "~/lib/api.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -14,36 +15,72 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-// Loader: Mock data for organizations
+// Loader: Fetch organizations from API
 export async function loader({ request }: LoaderFunctionArgs) {
   try {
-    // TODO: Fetch from actual API
-    const organizations = [
-      {
-        id: 'org-001',
-        name: 'Demo Hospital',
-        slug: 'demo-hospital',
-        type: 'Hospital',
-      },
-      {
-        id: 'org-002',
-        name: 'City Medical Center',
-        slug: 'city-medical-center',
-        type: 'Clinic',
-      },
-    ];
-
-    return json({ organizations, isMockData: true });
+    const organizations = await organizationsApi.list();
+    return json({ 
+      organizations: organizations.map(org => ({
+        id: org.id,
+        name: org.name,
+        slug: org.code || org.id,
+        type: org.type || 'Hospital',
+      })),
+      isMockData: false 
+    });
   } catch (error) {
     console.error('Error loading organizations:', error);
-    return json({ organizations: [], isMockData: true });
+    // Fallback to empty array if API fails
+    return json({ organizations: [], isMockData: false, error: 'Failed to load organizations' });
+  }
+}
+
+// Action: Handle form submission
+export async function action({ request }: ActionFunctionArgs) {
+  try {
+    const formData = await request.formData();
+    const organizationId = formData.get("organizationId") as string;
+    const email = formData.get("email") as string;
+    const fullName = formData.get("fullName") as string;
+    const role = formData.get("role") as string;
+    const sendCredentials = formData.get("sendCredentials") === "true";
+
+    if (!organizationId || !email || !fullName || !role) {
+      return json({ 
+        error: "All fields are required",
+        success: false 
+      }, { status: 400 });
+    }
+
+    const result = await onboardingApi.createUser(organizationId, {
+      email,
+      full_name: fullName,
+      role,
+      send_credentials: sendCredentials,
+    });
+
+    return json({ 
+      success: true, 
+      message: result.message,
+      user: result.user,
+      temporaryPassword: result.temporary_password 
+    });
+  } catch (error) {
+    console.error('Error creating user:', error);
+    return json({ 
+      error: error instanceof Error ? error.message : "Failed to create user",
+      success: false 
+    }, { status: 500 });
   }
 }
 
 export default function OnboardingPage() {
-  const { organizations, isMockData } = useLoaderData<typeof loader>();
+  const { organizations, isMockData, error: loaderError } = useLoaderData<typeof loader>();
+  const actionData = useActionData<typeof action>();
+  const navigation = useNavigation();
   const navigate = useNavigate();
-  const [activeStep, setActiveStep] = useState(1);
+  const isSubmitting = navigation.state === "submitting";
+  
   const [formData, setFormData] = useState({
     email: '',
     fullName: '',
@@ -52,13 +89,13 @@ export default function OnboardingPage() {
     sendCredentials: true,
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: Implement actual API call
-    console.log('Creating user:', formData);
-    alert('User created successfully!');
-    navigate('/admin/users');
-  };
+  // Show success message and redirect if user was created
+  if (actionData?.success) {
+    // You could use a toast notification here instead
+    setTimeout(() => {
+      navigate('/admin/users');
+    }, 2000);
+  }
 
   return (
     <div className="space-y-8 p-6 lg:p-8">
@@ -77,14 +114,43 @@ export default function OnboardingPage() {
         </p>
       </div>
 
-      {/* Mock Data Warning */}
-      {isMockData && (
-        <div className="p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-lg">
+      {/* Error Messages */}
+      {loaderError && (
+        <div className="p-4 bg-red-50 border-l-4 border-red-400 rounded-lg">
           <div className="flex items-center">
-            <AlertCircle className="h-5 w-5 text-yellow-600 mr-3" />
+            <AlertCircle className="h-5 w-5 text-red-600 mr-3" />
             <div>
-              <p className="text-sm font-medium text-yellow-800">Development Mode</p>
-              <p className="text-sm text-yellow-700">Showing demo data. Backend API not connected.</p>
+              <p className="text-sm font-medium text-red-800">Error</p>
+              <p className="text-sm text-red-700">{loaderError}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {actionData?.error && (
+        <div className="p-4 bg-red-50 border-l-4 border-red-400 rounded-lg">
+          <div className="flex items-center">
+            <AlertCircle className="h-5 w-5 text-red-600 mr-3" />
+            <div>
+              <p className="text-sm font-medium text-red-800">Error</p>
+              <p className="text-sm text-red-700">{actionData.error}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {actionData?.success && (
+        <div className="p-4 bg-green-50 border-l-4 border-green-400 rounded-lg">
+          <div className="flex items-center">
+            <CheckCircle className="h-5 w-5 text-green-600 mr-3" />
+            <div>
+              <p className="text-sm font-medium text-green-800">Success</p>
+              <p className="text-sm text-green-700">{actionData.message}</p>
+              {actionData.temporaryPassword && (
+                <p className="text-sm text-green-700 mt-1">
+                  Temporary password: <code className="bg-green-100 px-2 py-1 rounded">{actionData.temporaryPassword}</code>
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -189,12 +255,21 @@ export default function OnboardingPage() {
 
             {/* Submit Button */}
             <div className="flex justify-end gap-3 pt-4 border-t">
-              <Button type="button" variant="outline" onClick={() => navigate('/admin/users')}>
+              <Button type="button" variant="outline" onClick={() => navigate('/admin/users')} disabled={isSubmitting}>
                 Cancel
               </Button>
-              <Button type="submit" className="shadow-md">
-                <Mail className="h-4 w-4 mr-2" />
-                Create User & Send Credentials
+              <Button type="submit" className="shadow-md" disabled={isSubmitting || !formData.organizationId}>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    <Mail className="h-4 w-4 mr-2" />
+                    Create User & Send Credentials
+                  </>
+                )}
               </Button>
             </div>
           </Form>

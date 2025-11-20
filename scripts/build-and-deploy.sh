@@ -35,12 +35,6 @@ echo ""
 echo -e "${YELLOW}Working directory: $PROJECT_ROOT${NC}"
 echo ""
 
-# Step 0: Ensure lockfile is up to date
-echo -e "${BLUE}Step 0: Ensuring lockfile is up to date...${NC}"
-pnpm install --no-frozen-lockfile
-echo -e "${GREEN}✓ Lockfile updated${NC}"
-echo ""
-
 # Step 1: Build locally
 echo -e "${BLUE}Step 1: Building locally...${NC}"
 pnpm run build
@@ -86,88 +80,10 @@ echo -e "${BLUE}Step 4: Installing production dependencies on server...${NC}"
 
 ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no "$SERVER_USER@$SERVER_IP" << 'ENDSSH'
 cd /home/openhims/rustcare-ui
-
-# Check if node is installed, if not install it using nvm
-if ! command -v node &> /dev/null; then
-    echo "Node.js not found, installing via NVM..."
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    
-    if ! command -v nvm &> /dev/null; then
-        echo "Installing NVM..."
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-        export NVM_DIR="$HOME/.nvm"
-        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    fi
-    
-    nvm install 20
-    nvm use 20
-fi
-
-# Check if pnpm is installed, if not install it
-if ! command -v pnpm &> /dev/null; then
-    echo "pnpm not found, installing..."
-    npm install -g pnpm
-fi
-
-# Try frozen lockfile first, fall back to updating if needed
-if pnpm install --prod --frozen-lockfile 2>&1 | grep -q "ERR_PNPM_OUTDATED_LOCKFILE"; then
-    echo "Warning: Lockfile out of date. Updating lockfile..."
-    pnpm install --prod --no-frozen-lockfile
-else
-    echo "Dependencies installed successfully with frozen lockfile"
-fi
+pnpm install --prod --frozen-lockfile
 ENDSSH
 
 echo -e "${GREEN}✓ Production dependencies installed${NC}"
-echo ""
-
-# Step 5: Ensure systemd service exists and restart
-echo -e "${BLUE}Step 5: Setting up systemd service and restarting...${NC}"
-
-# Copy systemd service file if it doesn't exist
-ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no "$SERVER_USER@$SERVER_IP" << 'ENDSERVICEDEF'
-if [ ! -f /etc/systemd/system/remix.service ]; then
-    echo "Creating systemd service file..."
-    
-    sudo tee /etc/systemd/system/remix.service > /dev/null << 'EOF'
-[Unit]
-Description=RustCare Remix Application
-After=network.target
-
-[Service]
-Type=simple
-User=openhims
-WorkingDirectory=/home/openhims/rustcare-ui
-Environment="NVM_DIR=/home/openhims/.nvm"
-Environment="PATH=/home/openhims/.nvm/versions/node/v20.0.0/bin:/usr/local/bin:/usr/bin:/bin"
-ExecStart=/bin/bash -c '. /home/openhims/.nvm/nvm.sh && nvm use 20 && cd /home/openhims/rustcare-ui && pnpm start'
-Restart=always
-RestartSec=10
-StandardOutput=append:/home/openhims/rustcare-ui/app.log
-StandardError=append:/home/openhims/rustcare-ui/app.log
-
-[Install]
-WantedBy=multi-user.target
-EOF
-    
-    sudo systemctl daemon-reload
-    sudo systemctl enable remix.service
-    echo "Service file created and enabled"
-else
-    echo "Service file already exists"
-fi
-ENDSERVICEDEF
-
-# Restart the service
-ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no "$SERVER_USER@$SERVER_IP" << 'ENDSSH'
-sudo systemctl daemon-reload
-sudo systemctl restart remix.service
-sleep 2
-sudo systemctl status remix.service --no-pager
-ENDSSH
-
-echo -e "${GREEN}✓ Application restarted on server${NC}"
 echo ""
 
 # Summary
@@ -175,15 +91,11 @@ echo -e "${BLUE}================================${NC}"
 echo -e "${GREEN}✅ Deployment completed successfully!${NC}"
 echo -e "${BLUE}================================${NC}"
 echo ""
-echo -e "${YELLOW}Application is running at:${NC}"
-echo -e "  http://$SERVER_IP:3000"
+echo -e "${YELLOW}To start the application on the server:${NC}"
+echo -e "  ssh -i $SSH_KEY $SERVER_USER@$SERVER_IP"
+echo -e "  cd $REMOTE_DIR"
+echo -e "  pnpm start"
 echo ""
-echo -e "${YELLOW}To view logs:${NC}"
-echo -e "  ssh -i $SSH_KEY $SERVER_USER@$SERVER_IP 'sudo journalctl -u remix.service -f'"
-echo ""
-echo -e "${YELLOW}To check status:${NC}"
-echo -e "  ssh -i $SSH_KEY $SERVER_USER@$SERVER_IP 'sudo systemctl status remix.service'"
-echo ""
-echo -e "${YELLOW}To restart manually:${NC}"
-echo -e "  ssh -i $SSH_KEY $SERVER_USER@$SERVER_IP 'sudo systemctl restart remix.service'"
+echo -e "${YELLOW}Or run it in the background:${NC}"
+echo -e "  nohup pnpm start > app.log 2>&1 &"
 echo ""

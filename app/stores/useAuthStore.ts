@@ -37,7 +37,7 @@ const initialState = {
 export const useAuthStore = createEnhancedStore<AuthState>(
   defineStoreConfig({
     name: 'AuthStore',
-    
+
     // Mask sensitive fields
     fields: {
       token: {
@@ -49,33 +49,34 @@ export const useAuthStore = createEnhancedStore<AuthState>(
         maskPattern: 'email',
       },
     },
-    
+
     features: {
       auditLog: true, // Track login/logout
       persistence: true,
       devtools: true,
     },
-    
+
     persistence: {
       keys: ['user', 'token', 'isAuthenticated'],
     },
-    
+
     // Inject user context from auth state itself
-    contextProvider: () => {
-      const state = useAuthStore.getState();
-      return state.user ? {
-        userId: state.user.id,
-        roles: state.user.roles,
-        permissions: [], // Would come from permissions store
-        organizationId: state.user.organizationId,
-      } : null;
-    },
+    // contextProvider removed to avoid circular dependency during initialization
   }),
   (set, get) => ({
     ...initialState,
 
     setUser: (user) => {
       set({ user, isAuthenticated: !!user });
+
+      // Update enhanced store context
+      get().setUserContext(user ? {
+        userId: user.id,
+        roles: user.roles,
+        permissions: [], // Would come from permissions store
+        organizationId: user.organizationId,
+      } : { userId: '', roles: [], permissions: [] });
+
       get().addAuditEntry({
         action: 'SET_USER',
         entityType: 'user',
@@ -94,6 +95,15 @@ export const useAuthStore = createEnhancedStore<AuthState>(
         isAuthenticated: true,
         error: null,
       });
+
+      // Update enhanced store context
+      get().setUserContext({
+        userId: user.id,
+        roles: user.roles,
+        permissions: [],
+        organizationId: user.organizationId,
+      });
+
       get().addAuditEntry({
         action: 'LOGIN',
         entityType: 'user',
@@ -110,6 +120,10 @@ export const useAuthStore = createEnhancedStore<AuthState>(
         isAuthenticated: false,
         error: null,
       });
+
+      // Clear enhanced store context
+      get().setUserContext({ userId: '', roles: [], permissions: [] });
+
       get().addAuditEntry({
         action: 'LOGOUT',
         entityType: 'user',

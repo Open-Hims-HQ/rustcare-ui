@@ -1,6 +1,9 @@
 import type { MetaFunction } from "@remix-run/node";
-import { Link } from "@remix-run/react";
-import { Shield, Mail, Lock, ArrowRight, Github, Building2 } from "lucide-react";
+import { Link, useNavigate } from "@remix-run/react";
+import { Shield, Mail, Lock, ArrowRight, Github, Building2, AlertCircle } from "lucide-react";
+import { useState } from "react";
+import { authApi } from "~/lib/api/auth";
+import { useAuthStore } from "~/stores/useAuthStore";
 
 export const meta: MetaFunction = () => {
   return [
@@ -13,10 +16,38 @@ export const meta: MetaFunction = () => {
 };
 
 export default function LoginPage() {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsLoading(true);
+    setError(null);
+
+    const formData = new FormData(event.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    try {
+      const response = await authApi.login({ email, password });
+
+      // Update store state
+      useAuthStore.getState().login(response.user, response.token);
+
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Login error:", err);
+      setError(err instanceof Error ? err.message : "Login failed. Please check your credentials.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center p-4">
       {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
         <div className="absolute inset-0" style={{
           backgroundImage: `radial-gradient(circle at 1px 1px, rgb(59 130 246) 1px, transparent 0)`,
           backgroundSize: '40px 40px'
@@ -25,8 +56,8 @@ export default function LoginPage() {
 
       <div className="relative w-full max-w-md">
         {/* Logo & Header */}
-        <div className="text-center mb-8">
-          <Link to="/landing" className="inline-flex items-center gap-2 mb-4">
+        <div className="text-center mb-8 animate-fade-in-up">
+          <Link to="/landing" className="inline-flex items-center gap-2 mb-4 hover:opacity-80 transition-opacity">
             <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl shadow-lg">
               <Shield className="h-7 w-7 text-white" />
             </div>
@@ -39,7 +70,15 @@ export default function LoginPage() {
         </div>
 
         {/* Login Card */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100 animate-fade-in-up animation-delay-300">
+          {/* Error Message */}
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-700 animate-fade-in">
+              <AlertCircle className="h-5 w-5 flex-shrink-0" />
+              <p className="text-sm font-medium">{error}</p>
+            </div>
+          )}
+
           {/* Demo Notice */}
           <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
             <p className="text-sm text-blue-800 text-center font-semibold">
@@ -47,7 +86,7 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <form className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email Input */}
             <div>
               <label htmlFor="email" className="block text-sm font-semibold text-gray-900 mb-2">
@@ -61,9 +100,10 @@ export default function LoginPage() {
                   type="email"
                   id="email"
                   name="email"
+                  required
                   placeholder="admin@openhims.health"
                   defaultValue="admin@openhims.health"
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
                 />
               </div>
             </div>
@@ -81,20 +121,21 @@ export default function LoginPage() {
                   type="password"
                   id="password"
                   name="password"
+                  required
                   placeholder="••••••••"
                   defaultValue="demo123"
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
                 />
               </div>
             </div>
 
             {/* Remember Me & Forgot Password */}
             <div className="flex items-center justify-between">
-              <label className="flex items-center gap-2 cursor-pointer">
+              <label className="flex items-center gap-2 cursor-pointer group">
                 <input type="checkbox" className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
-                <span className="text-sm text-gray-600">Remember me</span>
+                <span className="text-sm text-gray-600 group-hover:text-gray-900 transition-colors">Remember me</span>
               </label>
-              <a href="#" className="text-sm font-semibold text-blue-600 hover:text-blue-700">
+              <a href="#" className="text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors">
                 Forgot password?
               </a>
             </div>
@@ -102,10 +143,17 @@ export default function LoginPage() {
             {/* Sign In Button */}
             <button
               type="submit"
-              className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:shadow-xl hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-2"
+              disabled={isLoading}
+              className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              Sign In
-              <ArrowRight className="h-5 w-5" />
+              {isLoading ? (
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <>
+                  Sign In
+                  <ArrowRight className="h-5 w-5" />
+                </>
+              )}
             </button>
           </form>
 
@@ -132,7 +180,7 @@ export default function LoginPage() {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Don't have an account?{" "}
-              <a href="#" className="font-semibold text-blue-600 hover:text-blue-700">
+              <a href="#" className="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
                 Request Access
               </a>
             </p>
@@ -140,28 +188,28 @@ export default function LoginPage() {
         </div>
 
         {/* Demo Credentials */}
-        <div className="mt-6 p-4 bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200">
+        <div className="mt-6 p-4 bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 animate-fade-in-up animation-delay-300">
           <p className="text-xs text-gray-600 text-center mb-2 font-semibold">Demo Credentials:</p>
           <div className="grid grid-cols-2 gap-3 text-xs">
-            <div className="p-2 bg-gray-50 rounded-lg">
-              <p className="text-gray-500">Admin</p>
-              <p className="font-mono text-gray-900">admin@openhims.health</p>
+            <div className="p-2 bg-gray-50 rounded-lg text-center">
+              <p className="text-gray-500 mb-1">Admin</p>
+              <code className="font-mono text-gray-900 bg-gray-100 px-2 py-0.5 rounded">admin@openhims.health</code>
             </div>
-            <div className="p-2 bg-gray-50 rounded-lg">
-              <p className="text-gray-500">Password</p>
-              <p className="font-mono text-gray-900">demo123</p>
+            <div className="p-2 bg-gray-50 rounded-lg text-center">
+              <p className="text-gray-500 mb-1">Password</p>
+              <code className="font-mono text-gray-900 bg-gray-100 px-2 py-0.5 rounded">demo123</code>
             </div>
           </div>
         </div>
 
         {/* Footer Links */}
-        <div className="mt-6 text-center space-y-2">
+        <div className="mt-6 text-center space-y-2 animate-fade-in">
           <div className="flex items-center justify-center gap-4 text-sm text-gray-600">
-            <a href="https://pages.openhims.health" className="hover:text-gray-900">About</a>
+            <a href="https://pages.openhims.health" className="hover:text-gray-900 transition-colors">About</a>
             <span>•</span>
-            <a href="https://github.com/Open-Hims-HQ" className="hover:text-gray-900">GitHub</a>
+            <a href="https://github.com/Open-Hims-HQ" className="hover:text-gray-900 transition-colors">GitHub</a>
             <span>•</span>
-            <a href="#" className="hover:text-gray-900">Privacy</a>
+            <a href="#" className="hover:text-gray-900 transition-colors">Privacy</a>
           </div>
           <p className="text-xs text-gray-500">
             © 2025 OpenHIMS. Open Source Healthcare Platform.

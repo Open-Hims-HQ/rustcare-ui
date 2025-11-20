@@ -171,6 +171,29 @@
   --z-modal: 1050;
   --z-popover: 1060;
   --z-tooltip: 1070;
+
+  /* ============================================
+     CUSTOM ANIMATIONS
+     ============================================ */
+  --animate-fade-in: fade-in 0.5s ease-out;
+  --animate-fade-in-up: fade-in-up 0.5s ease-out;
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 
 /* ============================================
@@ -294,6 +317,28 @@ textarea:focus-visible {
 
 .text-balance {
   text-wrap: balance;
+}
+
+/* Animation Delays */
+.animation-delay-300 {
+  animation-delay: 300ms;
+}
+
+.typing-animation {
+  overflow: hidden;
+  border-right: 2px solid transparent;
+  white-space: nowrap;
+  animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: orange; }
 }
 
 /* ============================================

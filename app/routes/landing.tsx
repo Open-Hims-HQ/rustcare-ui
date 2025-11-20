@@ -22,6 +22,7 @@ import {
   Accessibility,
   Languages,
 } from "lucide-react";
+import { MedicalHero } from "~/components/landing/MedicalHero";
 
 export const meta: MetaFunction = () => {
   return [
@@ -60,7 +61,7 @@ export default function LandingPage() {
   const memoizedSecurityFeatures = useMemo(() => securityFeatures, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 overflow-x-hidden">
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -74,18 +75,29 @@ export default function LandingPage() {
               </span>
             </div>
             <div className="hidden md:flex items-center gap-8">
-              <a href="#features" className="text-gray-600 hover:text-gray-900 transition-colors">
-                Features
-              </a>
-              <a href="#architecture" className="text-gray-600 hover:text-gray-900 transition-colors">
-                Architecture
-              </a>
-              <a href="#comparison" className="text-gray-600 hover:text-gray-900 transition-colors">
-                Why RustCare
-              </a>
-              <a href="#security" className="text-gray-600 hover:text-gray-900 transition-colors">
-                Security
-              </a>
+              {[
+                { name: "Features", href: "#features" },
+                { name: "Architecture", href: "#architecture" },
+                { name: "Why RustCare", href: "#comparison" },
+                { name: "Security", href: "#security" },
+              ].map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  className="text-gray-600 hover:text-gray-900 transition-colors cursor-pointer select-none"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    // Optional: Add a toast or visual cue here
+                  }}
+                  onDoubleClick={() => {
+                    const element = document.querySelector(item.href);
+                    element?.scrollIntoView({ behavior: "smooth" });
+                  }}
+                  title="Double-click to navigate"
+                >
+                  {item.name}
+                </a>
+              ))}
               <Link
                 to="/login"
                 className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:shadow-lg transition-all duration-300"
@@ -98,11 +110,15 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        {/* Parallax Background Elements */}
+        <div className="absolute top-20 left-10 w-32 h-32 bg-blue-200/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-20 right-10 w-40 h-40 bg-indigo-200/20 rounded-full blur-3xl animate-pulse delay-1000" />
+
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Column */}
-            <div className="space-y-8 animate-fade-in-up">
+            <div className="space-y-8 animate-fade-in-up z-10">
               <div className="inline-block">
                 <div className="px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold flex items-center gap-2">
                   <Zap className="h-4 w-4" />
@@ -118,17 +134,17 @@ export default function LandingPage() {
               </h1>
 
               <p className="text-xl text-gray-600 leading-relaxed">
-                Healthcare is too expensive. We're open-sourcing enterprise-grade 
+                Healthcare is too expensive. We're open-sourcing enterprise-grade
                 healthcare software to save costs for patients and providers worldwide.
               </p>
 
-              <div className="p-6 bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 rounded-xl">
+              <div className="p-6 bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200 rounded-xl transform hover:scale-[1.02] transition-transform duration-300">
                 <p className="text-lg text-gray-900 leading-relaxed">
-                  <span className="font-bold text-amber-700">"Why Open Source?"</span> 
+                  <span className="font-bold text-amber-700">"Why Open Source?"</span>
                   <br />
-                  As developers, we see healthcare costs skyrocketing. By open-sourcing 
-                  this platform, we eliminate expensive licensing fees, reduce IT costs, 
-                  and make quality healthcare accessible to everyone—from small clinics 
+                  As developers, we see healthcare costs skyrocketing. By open-sourcing
+                  this platform, we eliminate expensive licensing fees, reduce IT costs,
+                  and make quality healthcare accessible to everyone—from small clinics
                   in rural areas to large hospitals.
                 </p>
               </div>
@@ -154,22 +170,22 @@ export default function LandingPage() {
 
               {/* Stats */}
               <div className="grid grid-cols-3 gap-6 pt-8 border-t border-gray-200">
-                <div>
+                <div className="hover:-translate-y-1 transition-transform duration-300">
                   <div className="text-3xl font-bold text-gray-900">10,000+</div>
                   <div className="text-sm text-gray-600">Requests/sec</div>
                 </div>
-                <div>
+                <div className="hover:-translate-y-1 transition-transform duration-300 delay-100">
                   <div className="text-3xl font-bold text-gray-900">&lt;1ms</div>
                   <div className="text-sm text-gray-600">Auth Latency</div>
                 </div>
-                <div>
+                <div className="hover:-translate-y-1 transition-transform duration-300 delay-200">
                   <div className="text-3xl font-bold text-gray-900">&lt;100MB</div>
                   <div className="text-sm text-gray-600">RAM Usage</div>
                 </div>
               </div>
 
               {/* Raspberry Pi Highlight */}
-              <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl">
+              <div className="mt-6 p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-3">
                   <div className="flex items-center justify-center w-10 h-10 bg-green-600 rounded-lg">
                     <Server className="h-6 w-6 text-white" />
@@ -182,68 +198,9 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Right Column - Animated Dashboard Preview */}
-            <div className="relative animate-fade-in-up animation-delay-300">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl blur-3xl opacity-20 animate-pulse"></div>
-              <div className="relative bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
-                <div className="space-y-4">
-                  {/* Mock Terminal */}
-                  <div className="bg-gray-900 rounded-lg p-4 font-mono text-sm">
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                      <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                    </div>
-                    <div className="space-y-2 text-green-400">
-                      <div className="flex items-center gap-2">
-                        <span className="text-blue-400">$</span>
-                        <span className="typing-animation">cargo run --release</span>
-                      </div>
-                      <div className="text-gray-500">
-                        ✓ RustCare Engine started
-                      </div>
-                      <div className="text-gray-500">
-                        ✓ Auth gateway listening on :8081
-                      </div>
-                      <div className="text-gray-500">
-                        ✓ HIPAA audit logging enabled
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Activity className="h-4 w-4 text-green-400 animate-pulse" />
-                        <span>All systems operational</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Feature Badges */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg">
-                      <Shield className="h-5 w-5 text-blue-600" />
-                      <span className="text-sm font-semibold text-gray-900">
-                        Zero-Trust
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2 p-3 bg-green-50 rounded-lg">
-                      <Lock className="h-5 w-5 text-green-600" />
-                      <span className="text-sm font-semibold text-gray-900">
-                        AES-256
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2 p-3 bg-purple-50 rounded-lg">
-                      <Zap className="h-5 w-5 text-purple-600" />
-                      <span className="text-sm font-semibold text-gray-900">
-                        Sub-ms
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2 p-3 bg-orange-50 rounded-lg">
-                      <Database className="h-5 w-5 text-orange-600" />
-                      <span className="text-sm font-semibold text-gray-900">
-                        HIPAA
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            {/* Right Column - Animated Medical Hero */}
+            <div className="relative animate-fade-in-up animation-delay-300 h-full min-h-[500px] flex items-center justify-center">
+              <MedicalHero />
             </div>
           </div>
         </div>
@@ -272,17 +229,17 @@ export default function LandingPage() {
               </h3>
               <div className="space-y-4 text-gray-700 leading-relaxed">
                 <p>
-                  <strong>Healthcare shouldn't bankrupt families.</strong> Proprietary 
-                  EMR/EHR systems cost hospitals $50,000-500,000+ per year in licensing 
+                  <strong>Healthcare shouldn't bankrupt families.</strong> Proprietary
+                  EMR/EHR systems cost hospitals $50,000-500,000+ per year in licensing
                   fees. These costs get passed to patients.
                 </p>
                 <p>
-                  As software developers, we saw an opportunity: <strong>What if we 
-                  open-sourced enterprise healthcare software?</strong>
+                  As software developers, we saw an opportunity: <strong>What if we
+                    open-sourced enterprise healthcare software?</strong>
                 </p>
                 <p className="font-semibold text-amber-800">
-                  By eliminating licensing fees and vendor lock-in, we can save the 
-                  healthcare industry billions—money that should go to patient care, 
+                  By eliminating licensing fees and vendor lock-in, we can save the
+                  healthcare industry billions—money that should go to patient care,
                   not software licenses.
                 </p>
               </div>
@@ -1318,7 +1275,7 @@ export default function LandingPage() {
                   <p className="text-sm text-gray-600">Secure sandboxed execution</p>
                 </div>
               </div>
-              
+
               <div className="space-y-4">
                 <div className="p-4 bg-purple-50 rounded-xl border border-purple-200">
                   <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
@@ -2003,7 +1960,7 @@ pub fn get_patient_risk_score(patient_id: &str) -> Result<f64> {
             </div>
             <div className="mt-6 p-4 bg-gradient-to-r from-amber-100 to-orange-100 rounded-xl border border-amber-300">
               <p className="text-center text-gray-900">
-                <span className="font-bold text-amber-800">⚠️ Research Phase:</span> Post-quantum cryptography is under active research and development. 
+                <span className="font-bold text-amber-800">⚠️ Research Phase:</span> Post-quantum cryptography is under active research and development.
                 We're preparing the platform for the quantum computing era to ensure long-term security of healthcare data.
               </p>
             </div>
